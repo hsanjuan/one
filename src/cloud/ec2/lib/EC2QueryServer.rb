@@ -20,6 +20,7 @@ require 'erb'
 require 'time'
 require 'AWS'
 require 'base64'
+require 'openssl'
 require 'CloudServer'
 
 require 'ImageEC2'
@@ -86,34 +87,108 @@ class EC2QueryServer < CloudServer
     # params:: of the request
     # [return] true if authenticated
     def authenticate(params,env)
-        password = get_user_password(params['AWSAccessKeyId'])
-        return nil if !password
+        failed = 'Authentication failed. '
+	
+        # For https, the web service should be set to include the user cert in the environment.
+	cert_line_in = env['HTTP_SSL_CLIENT_CERT']
+	        	
+        if cert_line_in ==""
+	# Use the secret key for authentication.
+		
+            password = get_user_password(params['AWSAccessKeyId'])
+            return nil if !password
 
-        signature = case params['SignatureVersion']
-            when "1" then signature_version_1(params.clone, password)
-            when "2" then signature_version_2(params,
-                              password,
-                              env,
-                              true,
-                              false)
-        end
-
-        if params['Signature']==signature
-            return one_client_user(params['AWSAccessKeyId'], password)
-        else
-            if params['SignatureVersion']=="2"
-                signature = signature_version_2(params,
+            signature = case params['SignatureVersion']
+                when "1" then signature_version_1(params.clone, password)
+                when "2" then signature_version_2(params,
                                   password,
                                   env,
-                                  false,
+                                  true,
                                   false)
-                if params['Signature']==signature
-                    return one_client_user(params['AWSAccessKeyId'], password)
+            end
+
+            if params['Signature']==signature
+                return one_client_user(params['AWSAccessKeyId'], password)
+            else
+                if params['SignatureVersion']=="2"
+                    signature = signature_version_2(params,
+                                      password,
+                                      env,
+                                      false,
+                                      false)
+                    if params['Signature']==signature
+                        return one_client_user(params['AWSAccessKeyId'], password)
+                    end
                 end
             end
-        end
 
-        return nil
+            return nil
+        else
+	#  Use the https credentials for authentication	
+	
+	    # Get the DN from the certificate
+            begin
+                cert_array=cert_line_in.scan(/([^\s]*)\s/)
+                cert_array = cert_array[2..-3]
+                cert_array.unshift('-----BEGIN CERTIFICATE-----').push('-----END CERTIFICATE-----')
+                user_cert = cert_array.join("\n")
+                user_cert = OpenSSL::X509::Certificate.new(user_cert)
+                subject_name = user_cert.subject.to_s
+                puts(subject_name)
+            rescue
+	        raise failed + "Could not create X509 certificate from " + user_cert
+	    end
+	
+	    # Password should be DN with whitespace removed.
+	    password = subject_name.gsub(/\s/, '')
+	    begin
+	        username = get_username(password)
+	    puts("The username is " + username)
+	    rescue
+	        raise failed + "User with DN " + password + " not found."
+	    end
+	
+	    # Sign the message and compose the special login token
+	    # Get the host private key
+	    begin
+ 	        host_cert = File.read('/etc/grid-security/hostkey.pem')
+	    rescue
+ 	        raise failed + "Could not read " + '/etc/grid-security/hostkey.pem'
+ 	    end
+	    begin
+	        host_cert_array=host_cert.split("\n")	            
+ 	        begin_lines=host_cert_array.select{|l| l.match(/BEGIN RSA PRIVATE KEY/)}
+ 	        begin_index=host_cert_array.index(begin_lines[0])
+ 	        begin_line=host_cert_array[begin_index].to_s
+
+ 	        end_lines=host_cert_array.select{|l| l.match(/END RSA PRIVATE KEY/)}
+ 	        end_index=host_cert_array.index(end_lines[0])
+ 	        end_line=host_cert_array[end_index].to_s
+
+ 	        host_key_array=host_cert_array[begin_index..end_index]
+	        private_key=host_key_array.join("\n")
+ 	    rescue
+ 	        raise failed + "Could not get private key from " + '/etc/grid-security/hostkey.pem'
+ 	    end
+
+	    begin
+	        rsa=OpenSSL::PKey::RSA.new(private_key)
+	    rescue
+	        raise failed + "Could not create RSA key from " + '/etc/grid-security/hostkey.pem'
+	    end
+	
+	    # Sign with timestamp
+            time=Time.now.to_i+3600
+            text_to_sign="#{username}:#{password}:#{time}"		
+	    begin
+                special_token=Base64::encode64(rsa.private_encrypt(text_to_sign)).gsub!(/\n/, '').strip		
+            rescue
+	        raise failed + "Could not create host-signed token for " + password
+	    end
+			
+	    return one_client_user(username, "host-signed:#{special_token}}")
+
+        end	
     end
 
 
