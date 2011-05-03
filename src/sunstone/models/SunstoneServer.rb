@@ -31,6 +31,8 @@ $: << File.dirname(__FILE__)
 
 require 'models/OpenNebulaJSON'
 include OpenNebulaJSON
+require 'openssl'
+require 'base64'
 
 class SunstoneServer
     def initialize(username, password)
@@ -42,24 +44,101 @@ class SunstoneServer
     ############################################################################
     #
     ############################################################################
-    def self.authorize(user="", sha1_pass="")
-        if user.empty? || sha1_pass.empty?
-            return [401, false]
-        end
+    def self.authorize(user="", sha1_pass="", env="")
+        failed = 'Authentication failed. '
 
         # TBD get_user_password(name) from CloudServer
         user_pool = UserPool.new(Client.new)
         rc = user_pool.info
+
         if OpenNebula.is_error?(rc)
             return [500, false]
         end
 
-        user_pass = user_pool["USER[NAME=\"#{user}\"]/PASSWORD"]
-        if user_pass == sha1_pass
-            return [204, user_pool["USER[NAME=\"#{user}\"]/ID"]]
-        else
-            return [401, nil]
+        # For https, the web service should be set to include the user cert in the environment.
+	cert_line_in = env['HTTP_SSL_CLIENT_CERT']
+   	
+        if cert_line_in ==""
+	    # Use the secret key for authentication.
+
+            if user.empty? || sha1_pass.empty?
+                return [401, false]
+            end
+
+            user_pass = user_pool["USER[NAME=\"#{user}\"]/PASSWORD"]
+            if user_pass == sha1_pass
+                return [204, user_pool["USER[NAME=\"#{user}\"]/ID"]]
+            else
+                return [401, nil]
+            end
+
+	else
+        #  Use the https credentials for authentication
+
+            # Get the DN from the certificate
+            begin
+                cert_array=cert_line_in.scan(/([^\s]*)\s/)
+                cert_array = cert_array[2..-3]
+                cert_array.unshift('-----BEGIN CERTIFICATE-----').push('-----END CERTIFICATE-----')
+                user_cert = cert_array.join("\n")
+                user_cert = OpenSSL::X509::Certificate.new(user_cert)
+                subject_name = user_cert.subject.to_s
+            rescue
+                return [401, failed + "Could not create X509 certificate from " + user_cert]
+            end
+
+
+            # Password should be DN with whitespace removed.
+            password = subject_name.gsub(/\s/, '')
+
+            begin
+                username = user_pool["USER[PASSWORD=\"#{password}\"]/NAME"]
+            rescue
+                return [401, failed + "User with DN " + password + " not found."]
+            end
+
+            # Sign the message and compose the special login token
+            # Get the host private key
+            begin
+                host_cert = File.read('/etc/grid-security/hostkey.pem')
+            rescue
+                return [401, failed + "Could not read " + '/etc/grid-security/hostkey.pem']
+            end
+            begin
+                host_cert_array=host_cert.split("\n")
+                begin_lines=host_cert_array.select{|l| l.match(/BEGIN RSA PRIVATE KEY/)}
+                begin_index=host_cert_array.index(begin_lines[0])
+                begin_line=host_cert_array[begin_index].to_s
+
+                end_lines=host_cert_array.select{|l| l.match(/END RSA PRIVATE KEY/)}
+                end_index=host_cert_array.index(end_lines[0])
+                end_line=host_cert_array[end_index].to_s
+
+                host_key_array=host_cert_array[begin_index..end_index]
+                private_key=host_key_array.join("\n")
+            rescue
+                return [401, failed + "Could not get private key from " + '/etc/grid-security/hostkey.pem']
+            end
+
+            begin
+                rsa=OpenSSL::PKey::RSA.new(private_key)
+            rescue
+                return [401, failed + "Could not create RSA key from " + '/etc/grid-security/hostkey.pem']
+            end
+
+            # Sign with timestamp
+            time=Time.now.to_i+7*24*3600
+            text_to_sign="#{username}:#{password}:#{time}"
+            begin
+                special_token=Base64::encode64(rsa.private_encrypt(text_to_sign)).gsub!(/\n/, '').strip
+            rescue
+                return [401, failed + "Could not create host-signed token for " + password]
+            end
+
+            return [204, user_pool["USER[NAME=\"#{username}\"]/ID"], "#{username}", "host-signed:#{special_token}}"]
+            #return one_client_user(username, "host-signed:#{special_token}}")
         end
+
     end
 
     ############################################################################

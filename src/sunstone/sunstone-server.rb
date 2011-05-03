@@ -40,16 +40,27 @@ helpers do
     end
 
     def build_session
+
         auth = Rack::Auth::Basic::Request.new(request.env)
+
         if auth.provided? && auth.basic? && auth.credentials
             user = auth.credentials[0]
             sha1_pass = Digest::SHA1.hexdigest(auth.credentials[1])
 
-            rc = SunstoneServer.authorize(user, sha1_pass)
+            rc = SunstoneServer.authorize(user, sha1_pass, request.env)
+
             if rc[1]
-                session[:user]     = user
                 session[:user_id]  = rc[1]
-                session[:password] = sha1_pass
+                if rc[2]
+                    session[:user]     = rc[2]
+                else
+                    session[:user]     = user
+                end
+                if rc[3]
+                    session[:password] = rc[3]
+                else
+                    session[:password] = sha1_pass
+                end
                 session[:ip]       = request.ip
                 session[:remember] = params[:remember]
 
@@ -96,17 +107,32 @@ end
 # HTML Requests
 ##############################################################################
 get '/' do
-    redirect '/login' unless authorized?
 
-    time = Time.now + 60
-    response.set_cookie("one-user",
+    if authorized?
+        time = Time.now + 60
+        response.set_cookie("one-user",
                         :value=>"#{session[:user]}",
                         :expires=>time)
-    response.set_cookie("one-user_id",
+        response.set_cookie("one-user_id",
                         :value=>"#{session[:user_id]}",
                         :expires=>time)
 
-    File.read(File.dirname(__FILE__)+'/templates/index.html')
+        File.read(File.dirname(__FILE__)+'/templates/index.html')
+    else
+        cert_line_in = env['HTTP_SSL_CLIENT_CERT']
+        if cert_line_in ==""
+            redirect '/login'
+        else
+            encoded_login = ["dummy:dummy"].pack("m*")
+            env['HTTP_AUTHORIZATION'] =  "Basic #{encoded_login}"
+            rc = build_session
+            if rc[0] == 204
+                File.read(File.dirname(__FILE__)+'/templates/index.html')
+            else
+                redirect "https://#{request.host}:#{request.port}/login"
+            end
+        end
+    end
 end
 
 get '/login' do
