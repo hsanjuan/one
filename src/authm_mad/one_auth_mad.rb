@@ -37,6 +37,7 @@ require 'simple_permissions'
 require 'yaml'
 require 'sequel'
 require 'ssh_auth'
+require 'x509_auth'
 
 class AuthorizationManager < OpenNebulaDriver
     def initialize
