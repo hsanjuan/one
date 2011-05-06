@@ -30,6 +30,9 @@ end
 
 $: << RUBY_LIB_LOCATION
 
+if !ENV["X509_PROXY_CERT"]
+    ENV["X509_PROXY_CERT"]='/tmp/x509up_u' + Process.uid.to_s
+end
 
 require 'OpenNebula'
 
@@ -37,6 +40,7 @@ require 'rubygems'
 require 'sequel'
 require 'quota'
 require 'ssh_auth'
+require 'x509_auth'
 require 'client_utilities'
 require 'command_parse'
 require 'yaml'
@@ -58,7 +62,13 @@ Commands:
     oneauth quota set <id> <cpu> <memory> <num_vms>
     
 * login (generates authentication proxy)
-    oneauth login <username> [<expire time in seconds>]
+    oneauth login <username> [<lifetime in seconds>]
+    
+* x509_login (generates an X509-based authenication proxy based on a user certificate)
+    oneauth x509_login <username> [<lifetime in seconds>]
+    
+* host_login (generates an X509-based authenication proxy based on a host certificate)
+   oneauth host_login [<username>] [<lifetime in seconds>] [<login_file>]
     
 * key (gets public key)
     oneauth key
@@ -126,6 +136,43 @@ when "login"
     
     ssh=SshAuth.new
     ssh.login(user, time)
+    
+when "x509_login"
+    check_parameters("login", 1)
+    
+    user=ARGV[0]
+    time=ARGV[1]
+    
+    if time
+        time=time.to_i
+    else
+        time=3600
+    end
+    
+    ssh=X509Auth.new
+    ssh.login(user, time)
+    
+when "host_login" 
+    user=ARGV[0] 
+    time=ARGV[1]  
+    login_file=ARGV[2]    
+    
+    if !user
+        user='admin'
+    end
+    
+    if time
+        time=time.to_i
+    else
+        time=0
+    end
+            
+    if !login_file
+        login_file=''
+    end
+    
+    ssh=X509Auth.new
+    ssh.host_login(login_file, time, user)
     
 when "key"
     ssh=SshAuth.new
