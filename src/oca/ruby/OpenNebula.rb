@@ -104,7 +104,7 @@ module OpenNebula
             password=$2
 
             if password.match(/^plain:/)
-                @one_auth = "#{user}:#{password.split(':').last}"
+                @one_auth = "#{user}:#{password.sub(/^plain:/, '')}"
             else
                 @one_auth = "#{user}:#{Digest::SHA1.hexdigest(password)}"
             end
