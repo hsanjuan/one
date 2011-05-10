@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <stdlib.h>
+#include <algorithm>
 
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
@@ -200,8 +201,14 @@ int UserPool::authenticate(string& session)
     AuthRequest ar(uid);
 
     ar.add_authenticate(username,u_pass,secret);
+    
+    string use_authm_for_admin;
+    nd.get_configuration_attribute("USE_AUTH_MAD_FOR_ADMIN",use_authm_for_admin);
+    std::transform(use_authm_for_admin.begin(), use_authm_for_admin.end(), use_authm_for_admin.begin(),
+               (int(*)(int)) std::tolower);
 
-    if ( uid == 0 ) //oneadmin
+    // For the admin, use plain authentication unless allowed in config file
+    if ( uid == 0 && !(use_authm_for_admin == "true") )
     {
         if (ar.plain_authenticate())
         {
