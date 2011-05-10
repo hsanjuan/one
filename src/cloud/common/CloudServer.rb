@@ -101,7 +101,15 @@ class CloudServer
         return @user_pool["USER[NAME=\"#{name}\"]/PASSWORD"]
     end
 
-
+    # Gets the username associated with a password
+    # password:: _String_ the password
+    # [return] _Hash_ with the username
+    def get_username(password)
+        @user_pool.info
+	puts("The password is " + password)
+        return @user_pool["USER[PASSWORD=\"#{password}\"]/NAME"]
+    end
+    
     # Finds out if a port is available on ip
     # ip:: _String_ IP address where the port to check is
     # port:: _String_ port to find out whether is open
