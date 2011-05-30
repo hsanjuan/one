@@ -17,6 +17,8 @@
 #ifndef POOL_OBJECT_SQL_H_
 #define POOL_OBJECT_SQL_H_
 
+class ObjectCollection;
+
 #include "ObjectSQL.h"
 #include "ObjectXML.h"
 #include "Template.h"
@@ -258,6 +260,17 @@ public:
      *    @return 0 on success
      */
     void set_template_error_message(const string& message);
+
+    /**
+     *  Some PoolObjectSQL sub-classes are also a sub-class of ObjectCollection.
+     *
+     *    @return a pointer to the object if it is an ObjectCollection,
+     *            NULL otherwise.
+     */
+    virtual ObjectCollection * get_collection()
+    {
+        return 0;
+    };
 
 protected:
 

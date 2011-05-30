@@ -100,6 +100,32 @@ public:
      */
     int set_gid(int _gid);
 
+    /**
+     *  Deletes this group's ID from the set. Fails if the group is the main one
+     *    @param object The object
+     *
+     *    @return 0 on success, -1 if the ID was not in the set
+     */
+    int del_collection_id(PoolObjectSQL* object)
+    {
+        if( object->get_oid() == get_gid() )
+        {
+            return -1;
+        }
+
+        return ObjectCollection::del_collection_id(object);
+    };
+
+    /**
+     *  Some PoolObjectSQL sub-classes are also a sub-class of ObjectCollection.
+     *
+     *    @return a pointer to the object.
+     */
+    ObjectCollection * get_collection()
+    {
+        return this;
+    };
+
 private:
     // -------------------------------------------------------------------------
     // Friends

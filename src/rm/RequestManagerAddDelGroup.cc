@@ -103,7 +103,7 @@ void RequestManager::GenericAddDelGroup::execute(
 
     // Add the object_id to the group and, if the object keeps a list of the
     // groups it belongs to, the group_id to it.
-    rc = rm->add_object_group(object_type,group_type, object_id, group_id, oss);
+    rc = rm->add_object_group(object_type,group_type, object_id, group_id, oss, add);
 
     if( rc != 0 )
     {

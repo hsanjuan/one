@@ -50,6 +50,16 @@ public:
      */
     int from_xml(const string &xml_str);
 
+    /**
+     *  Some PoolObjectSQL sub-classes are also a sub-class of ObjectCollection.
+     *
+     *    @return a pointer to the object.
+     */
+    ObjectCollection * get_collection()
+    {
+        return this;
+    };
+
 private:
 
     // -------------------------------------------------------------------------

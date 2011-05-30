@@ -419,7 +419,7 @@ private:
         }
 
         // Add/Delete object to the group
-        group_collection = dynamic_cast<ObjectCollection*>(group);
+        group_collection = group->get_collection();
 
         if( group_collection == 0 )
         {

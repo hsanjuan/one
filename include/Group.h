@@ -26,7 +26,7 @@ using namespace std;
 /**
  *  The Group class.
  */
-class Group : public PoolObjectSQL, ObjectCollection
+class Group : public PoolObjectSQL, public ObjectCollection
 {
 public:
     /**
@@ -67,6 +67,15 @@ public:
      */
     int del_collection_id(PoolObjectSQL* object);
 
+    /**
+     *  Some PoolObjectSQL sub-classes are also a sub-class of ObjectCollection.
+     *
+     *    @return a pointer to the object.
+     */
+    ObjectCollection * get_collection()
+    {
+        return this;
+    };
 
 private:
 
