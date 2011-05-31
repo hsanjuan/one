@@ -37,6 +37,8 @@ int User::add_to_group()
     Nebula& nd = Nebula::instance();
     GroupPool * gpool = nd.get_gpool();
 
+    string error_str;
+
     if( gpool == 0 )
     {
         return -1;
@@ -49,7 +51,7 @@ int User::add_to_group()
         return -1;
     }
 
-    rc = group->add_collection_id(this);
+    rc = group->add_collection_id(this, error_str);
 
     if( rc == 0 )
     {
@@ -86,6 +88,11 @@ int User::delete_from_groups()
     GroupPool * gpool   = nd.get_gpool();
     Group *     group;
 
+    string error_str;
+
+    // This flag lets the user to be removed from its main group
+    cleaning = true;
+
     // Get a copy of the set, because the original will be modified deleting
     // elements from it.
     set<int>            group_set;
@@ -108,7 +115,7 @@ int User::delete_from_groups()
             continue;
         }
 
-        rc += group->del_collection_id(this);
+        rc += group->del_collection_id(this, error_str);
         gpool->update(group);
         group->unlock();
     }

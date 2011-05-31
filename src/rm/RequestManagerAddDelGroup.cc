@@ -32,7 +32,17 @@ void RequestManager::GenericAddDelGroup::execute(
 
     PoolSQL *   object_pool = rm->get_pool(object_type);
     PoolSQL *   group_pool  = rm->get_pool(group_type);
-    string      method_name = rm->get_method_prefix(object_type) + "Add";
+
+    string      method_name;
+
+    if( add )
+    {
+        method_name = rm->get_method_prefix(object_type) + "Add";
+    }
+    else
+    {
+        method_name = rm->get_method_prefix(object_type) + "Del";
+    }
 
     PoolObjectSQL *     object = 0;
     PoolObjectSQL *     group  = 0;

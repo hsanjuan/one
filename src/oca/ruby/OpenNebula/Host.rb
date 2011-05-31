@@ -123,7 +123,7 @@ module OpenNebula
 
         # Returns the cluster ID of the Host
         def cluster_id
-            self['CID']
+            self['CID'].to_i
         end
 
 

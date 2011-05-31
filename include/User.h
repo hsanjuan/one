@@ -103,17 +103,19 @@ public:
     /**
      *  Deletes this group's ID from the set. Fails if the group is the main one
      *    @param object The object
+     *    @param error_str Error reason, if any
      *
      *    @return 0 on success, -1 if the ID was not in the set
      */
-    int del_collection_id(PoolObjectSQL* object)
+    int del_collection_id(PoolObjectSQL* object, string& error_str)
     {
-        if( object->get_oid() == get_gid() )
+        if( !cleaning && object->get_oid() == get_gid() )
         {
+            error_str = "User cannot be removed from its main group";
             return -1;
         }
 
-        return ObjectCollection::del_collection_id(object);
+        return ObjectCollection::del_collection_id(object, error_str);
     };
 
     /**
@@ -146,6 +148,12 @@ private:
      * Flag marking user enabled/disabled
      */
     bool        enabled;
+
+    /**
+     *  The User can't be removed from its main group, unless it is being
+     *  dropped from the DB
+     */
+    bool        cleaning;
 
     // *************************************************************************
     // DataBase implementation (Private)
@@ -186,7 +194,7 @@ protected:
     User(int id, int _gid, const string& _username, const string& _password, bool _enabled):
         PoolObjectSQL(id,_username,-1,_gid,table),
         ObjectCollection("GROUPS"),
-        password(_password), enabled(_enabled)
+        password(_password), enabled(_enabled), cleaning(false)
         {};
 
     virtual ~User(){};

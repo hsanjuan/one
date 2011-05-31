@@ -91,5 +91,20 @@ module OpenNebula
             self['UID'].to_i
         end
 
+        # Returns whether or not the user with id 'uid' is part of this group
+        def contains(uid)
+            return self["USERS/ID[.=#{uid}]"] != nil
+        end
+
+        # Returns an array with the numeric user ids
+        def user_ids
+            array = Array.new
+
+            self.each("USERS/ID") do |id|
+                array << id.text.to_i
+            end
+
+            return array
+        end
     end
 end

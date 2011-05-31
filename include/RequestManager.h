@@ -394,7 +394,17 @@ private:
 
         PoolSQL *   object_pool = get_pool(object_type);
         PoolSQL *   group_pool  = get_pool(group_type);
-        string      method_name = get_method_prefix(object_type) + "Add";
+        string      method_name;
+        string      error_str;
+
+        if( add )
+        {
+            method_name = get_method_prefix(object_type) + "Add";
+        }
+        else
+        {
+            method_name = get_method_prefix(object_type) + "Del";
+        }
 
         PoolObjectSQL *     object = 0;
         PoolObjectSQL *     group  = 0;
@@ -428,11 +438,11 @@ private:
 
         if(add)
         {
-            rc = group_collection->add_collection_id(object);
+            rc = group_collection->add_collection_id(object, error_str);
         }
         else
         {
-            rc = group_collection->del_collection_id(object);
+            rc = group_collection->del_collection_id(object, error_str);
         }
 
         if( rc != 0 )
@@ -459,7 +469,8 @@ private:
         goto error_common;
 
     error_group_add_del:
-        oss.str(action_error(method_name, "MANAGE", group_type, group_id, rc));
+        oss << action_error(method_name, "MANAGE", group_type, group_id, rc)
+            << " Reason: " << error_str;
         goto error_common;
 
     error_common:

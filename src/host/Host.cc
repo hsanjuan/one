@@ -74,6 +74,9 @@ int Host::add_del_to_cluster(bool add)
     Nebula& nd          = Nebula::instance();
     ClusterPool * cpool = nd.get_cpool();
 
+    // TODO: error not returned.
+    string error_str;
+
     if( cpool == 0 )
     {
         return -1;
@@ -88,11 +91,13 @@ int Host::add_del_to_cluster(bool add)
 
     if( add )
     {
-        rc = static_cast<ObjectCollection*>(cluster)->add_collection_id(this);
+        rc = static_cast<ObjectCollection*>(cluster)->add_collection_id(
+                                                            this, error_str);
     }
     else
     {
-        rc = static_cast<ObjectCollection*>(cluster)->del_collection_id(this);
+        rc = static_cast<ObjectCollection*>(cluster)->del_collection_id(
+                                                            this, error_str);
     }
 
     if( rc == 0 )

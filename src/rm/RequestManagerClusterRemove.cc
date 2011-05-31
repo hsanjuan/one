@@ -37,7 +37,8 @@ void RequestManager::ClusterRemove::execute(
     Host *      host;
     Cluster *   cluster;
 
-    ostringstream oss;
+    string          error_str;
+    ostringstream   oss;
 
     /*   -- RPC specific vars --  */
     vector<xmlrpc_c::value> arrayData;
@@ -97,7 +98,8 @@ void RequestManager::ClusterRemove::execute(
     // Add host ID to cluster
     if( rc == 0 )
     {
-        static_cast<ObjectCollection*>(cluster)->add_collection_id(host);
+        static_cast<ObjectCollection*>(cluster)->add_collection_id(
+                                                            host, error_str);
     }
 
     if ( rc != 0 )
@@ -118,7 +120,7 @@ void RequestManager::ClusterRemove::execute(
 
     if( cluster != 0 )
     {
-        cluster->del_collection_id(host);
+        cluster->del_collection_id(host, error_str);
         ClusterRemove::cpool->update(cluster);
 
         cluster->unlock();
@@ -158,7 +160,9 @@ error_cluster_get:
 error_cluster_add:
     host->unlock();
     cluster->unlock();
-    oss.str(action_error(method_name, "USE", "CLUSTER", clid, rc));
+    oss << action_error(method_name, "USE", "CLUSTER", clid, rc)
+        << " Reason: " << error_str;
+
     goto error_common;
 
 error_common:

@@ -164,25 +164,25 @@ int Group::from_xml(const string& xml)
 /* Group :: User ID Set                                                     */
 /* ************************************************************************ */
 
-int Group::add_collection_id(PoolObjectSQL* object)
+int Group::add_collection_id(PoolObjectSQL* object, string& error_str)
 {
     // TODO: make a dynamic cast and check if object is indeed a User ?
-    return add_del_collection_id( static_cast<User*>(object), true );
+    return add_del_collection_id( static_cast<User*>(object), true, error_str);
 }
 
 /* ------------------------------------------------------------------------ */
 /* ------------------------------------------------------------------------ */
 
-int Group::del_collection_id(PoolObjectSQL* object)
+int Group::del_collection_id(PoolObjectSQL* object, string& error_str)
 {
     // TODO: make a dynamic cast and check if object is indeed a User ?
-    return add_del_collection_id( static_cast<User*>(object), false );
+    return add_del_collection_id( static_cast<User*>(object), false, error_str);
 }
 
 /* ------------------------------------------------------------------------ */
 /* ------------------------------------------------------------------------ */
 
-int Group::add_del_collection_id(User* object, bool add)
+int Group::add_del_collection_id(User* object, bool add, string& error_str)
 {
     int rc = 0;
     ObjectCollection * object_collection = 0;
@@ -193,11 +193,11 @@ int Group::add_del_collection_id(User* object, bool add)
     // Add/Remove object to the group
     if(add)
     {
-        rc = ObjectCollection::add_collection_id(object_id);
+        rc = ObjectCollection::add_collection_id(object_id, error_str);
     }
     else
     {
-        rc = ObjectCollection::del_collection_id(object_id);
+        rc = ObjectCollection::del_collection_id(object_id, error_str);
     }
 
     if( rc != 0 )
@@ -211,11 +211,21 @@ int Group::add_del_collection_id(User* object, bool add)
 
     if(add)
     {
-        rc = object_collection->add_collection_id( this );
+        rc = object_collection->add_collection_id( this, error_str );
+        if( rc != 0 )
+        {
+            string tmp_error;
+            ObjectCollection::del_collection_id(object_id, tmp_error);
+        }
     }
     else
     {
-        rc = object_collection->del_collection_id( this );
+        rc = object_collection->del_collection_id( this, error_str );
+        if( rc != 0 )
+        {
+            string tmp_error;
+            ObjectCollection::add_collection_id(object_id, tmp_error);
+        }
     }
 
     return rc;

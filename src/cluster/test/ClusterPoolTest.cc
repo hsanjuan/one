@@ -264,7 +264,7 @@ public:
         Cluster         * cluster, * cluster_old;
 
         int             rc, oid, host_gid;
-        string          xml_str;
+        string          xml_str, error_str;
 
         init_hp();
         host = hpool->get(0, false);
@@ -284,7 +284,8 @@ public:
         CPPUNIT_ASSERT( rc == 0 );
 
         // Add host ID to cluster
-        rc = static_cast<ObjectCollection*>(cluster)->add_collection_id(host);
+        rc = static_cast<ObjectCollection*>(cluster)->add_collection_id(
+                                                            host, error_str);
         CPPUNIT_ASSERT( rc == 0 );
 
         // Update the DB
@@ -295,7 +296,7 @@ public:
         cluster_old = cpool->get(host_gid, false);
         CPPUNIT_ASSERT(cluster_old != 0);
 
-        cluster_old->del_collection_id(host);
+        cluster_old->del_collection_id(host, error_str);
         cpool->update(cluster_old);
 
 
