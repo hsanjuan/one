@@ -75,7 +75,7 @@ module OpenNebula
             super(GROUP_METHODS[:delete])
         end
 
-        # Changes the owner/group
+        # Changes the owner
         # uid:: _Integer_ the new owner id. Set to -1 to leave the current one
         # [return] nil in case of success or an Error object
         def chown(uid)
