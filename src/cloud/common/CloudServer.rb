@@ -106,6 +106,26 @@ class CloudServer
     # [return] _Hash_ with the username
     def get_username(password)
         @user_pool.info
+	username = @user_pool["User[PASSWORD=\"#{password}\"]/NAME"]
+	return username if (username != nil)
+	 
+	# Check if the DN is part of a |-separted multi-DN password
+	user_elts = Array.new
+	@user_pool.each {|e| user_elts << e['PASSWORD']}
+	multiple_users = user_elts.select {|e| e=~ /\|/ }
+	matched = nil
+	multiple_users.each do |e|
+	   e.to_s.split('|').each do |w|
+	       if (w == password)
+	           matched=e
+		   break
+	       end
+	   end
+	   break if matched
+	end
+	if matched
+	    password = matched.to_s
+	end
 	puts("The password is " + password)
         return @user_pool["USER[PASSWORD=\"#{password}\"]/NAME"]
     end
