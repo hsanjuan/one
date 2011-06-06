@@ -75,6 +75,7 @@ class EC2QueryServer < CloudServer
         end
 
         @server_port=@config[:port]
+	@hostkey=@config[:hostkey]
 
         print_configuration
     end
@@ -144,16 +145,21 @@ class EC2QueryServer < CloudServer
 	    begin
 	        username = get_username(password)
 	    puts("The username is " + username)
+	    password = get_user_password(username)
 	    rescue
 	        raise failed + "User with DN " + password + " not found."
 	    end
 	
 	    # Sign the message and compose the special login token
+	    puts @hostkey
 	    # Get the host private key
+	    if @hostkey == nil
+	        @hostkey = '/etc/grid-security/hostkey.pem'
+	    end
 	    begin
- 	        host_cert = File.read('/etc/grid-security/hostkey.pem')
+ 	        host_cert = File.read(@hostkey)
 	    rescue
- 	        raise failed + "Could not read " + '/etc/grid-security/hostkey.pem'
+ 	        raise failed + "Could not read " + @hostkey
  	    end
 	    begin
 	        host_cert_array=host_cert.split("\n")	            
@@ -179,14 +185,22 @@ class EC2QueryServer < CloudServer
 	
 	    # Sign with timestamp
             time=Time.now.to_i+3600
-            text_to_sign="#{username}:#{password}:#{time}"		
+	    # If multiple DNs are authorized for the user, the '|'-separated
+	    # DN list may be very long, too long to encrypt with the host key
+	    # So encrypt a digest of the password instead
+	    passwd_digest = Digest::SHA1.hexdigest(password)
+            text_to_sign="#{username}:#{passwd_digest}:#{time}"	    	    
+	    puts "signing " + text_to_sign	
+	
 	    begin
                 special_token=Base64::encode64(rsa.private_encrypt(text_to_sign)).gsub!(/\n/, '').strip		
             rescue
 	        raise failed + "Could not create host-signed token for " + password
 	    end
+	    
+	    puts special_token
 			
-	    return one_client_user(username, "host-signed:#{special_token}}")
+	    return one_client_user(username, "host-signed:#{special_token}")
 
         end	
     end
