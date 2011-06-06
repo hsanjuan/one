@@ -20,10 +20,12 @@ if !ONE_LOCATION
     LOG_LOCATION = "/var/log/one"
     VAR_LOCATION = "/var/lib/one"
     RUBY_LIB_LOCATION = "/usr/lib/one/ruby"
+    ETC_LOCATION="/etc/one/"
 else
     VAR_LOCATION = ONE_LOCATION+"/var"
     LOG_LOCATION = ONE_LOCATION+"/var"
     RUBY_LIB_LOCATION = ONE_LOCATION+"/lib/ruby"
+    ETC_LOCATION=ONE_LOCATION+"/etc/"
 end
 
 $: << RUBY_LIB_LOCATION
@@ -39,6 +41,27 @@ class SunstoneServer
         # TBD one_client_user(name) from CloudServer
         @client = Client.new("dummy:dummy")
         @client.one_auth = "#{username}:#{password}"
+    end
+    
+    def self.load_config (config=nil)   
+        if (config == nil)          
+	    default_hostkey = '/etc/grid-security/hostkey.pem'
+	
+	    auth_conf = ETC_LOCATION+'/auth/auth.conf'
+		
+	    if File.readable?(auth_conf)
+                config_data=File.read(auth_conf)
+	        config=YAML::load(config_data)
+	        if !config[:hostkey]
+                    config[:hostkey] = default_hostkey
+                end
+	    else
+                default_config = ":hostkey: " + default_hostkey
+                config=YAML.load(default_config)
+	    end	
+	end
+	
+	return config
     end
 
     ############################################################################
@@ -93,16 +116,41 @@ class SunstoneServer
 
             begin
                 username = user_pool["USER[PASSWORD=\"#{password}\"]/NAME"]
+	    if (username == nil)
+	 
+	        # Check if the DN is part of a |-separted multi-DN password
+	        user_elts = Array.new
+	        user_pool.each {|e| user_elts << e['PASSWORD']}
+	        multiple_users = user_elts.select {|e| e=~ /\|/ }
+	        matched = nil
+	        multiple_users.each do |e|
+	           e.to_s.split('|').each do |w|
+	               if (w == password)
+	                   matched=e
+		           break
+	               end
+	           end
+	           break if matched
+	        end
+	        if matched
+	            password = matched.to_s
+	        end
+                username = user_pool["USER[PASSWORD=\"#{password}\"]/NAME"]
+	    end
+	
             rescue
                 return [401, failed + "User with DN " + password + " not found."]
             end
+	    
+	    config = self.load_config
+	    hostkey_path = config[:hostkey]
 
             # Sign the message and compose the special login token
             # Get the host private key
             begin
-                host_cert = File.read('/etc/grid-security/hostkey.pem')
+                host_cert = File.read(hostkey_path)
             rescue
-                return [401, failed + "Could not read " + '/etc/grid-security/hostkey.pem']
+                return [401, failed + "Could not read " + hostkey_path]
             end
             begin
                 host_cert_array=host_cert.split("\n")
@@ -117,18 +165,19 @@ class SunstoneServer
                 host_key_array=host_cert_array[begin_index..end_index]
                 private_key=host_key_array.join("\n")
             rescue
-                return [401, failed + "Could not get private key from " + '/etc/grid-security/hostkey.pem']
+                return [401, failed + "Could not get private key from " + hostkey_path]
             end
 
             begin
                 rsa=OpenSSL::PKey::RSA.new(private_key)
             rescue
-                return [401, failed + "Could not create RSA key from " + '/etc/grid-security/hostkey.pem']
+                return [401, failed + "Could not create RSA key from " + hostkey_path]
             end
 
             # Sign with timestamp
             time=Time.now.to_i+7*24*3600
-            text_to_sign="#{username}:#{password}:#{time}"
+	    passwd_digest = Digest::SHA1.hexdigest(password)
+            text_to_sign="#{username}:#{passwd_digest}:#{time}"
             begin
                 special_token=Base64::encode64(rsa.private_encrypt(text_to_sign)).gsub!(/\n/, '').strip
             rescue
@@ -139,7 +188,7 @@ class SunstoneServer
             #return one_client_user(username, "host-signed:#{special_token}}")
         end
 
-    end
+    end    
 
     ############################################################################
     #
