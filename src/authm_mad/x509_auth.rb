@@ -135,7 +135,7 @@ class X509Auth
 	default_ca_directory = '/etc/grid-security/certificates'
 	
 	auth_conf = ETC_LOCATION+'/auth/auth.conf'
-	
+		
 	if File.readable?(auth_conf)
             config_data=File.read(auth_conf)
 	    config=YAML::load(config_data)
@@ -255,7 +255,6 @@ class X509Auth
 # Server side    
     # auth method for auth_mad
     def auth(user_id, user, dn, login_token)        
- 
         begin
 	    failed = 'Authentication failed. '
 	    
@@ -264,7 +263,7 @@ class X509Auth
 	    hostcert_path = config[:hostcert]
 	    hostkey_path = config[:hostkey]
             ca_directory = config[:ca_directory]
-		    	    
+	    		    	    
 	    special_tag, special_token = login_token.split(':')	 
 	    if special_tag == "host-signed"
 		
@@ -276,8 +275,8 @@ class X509Auth
 		end
 	        public_key = extract_public_key(cert)				
 		# Decrypt the signed text with the public key
-                decrypted=decrypt(special_token, public_key)       
-                username, subjectname, time, last =decrypted.split(':')	
+                decrypted=decrypt(special_token, public_key)      
+                username, subjn_digest, time, last =decrypted.split(':')	
                 if last # There was a : in the subjectname, from kerberos X509 credential
                     subjectname = subjectname + ':' + time
                     time = last
@@ -295,7 +294,15 @@ class X509Auth
                 raise "Login name " + username + " did not match username " + user + "." if user!=username
 		
 		# The user is authorized if their subject name has been set as their password.
-	        raise "Login DN " + subjectname + " did not match user DN " + dn + "." if subjectname!=dn
+		if  user_id.to_i == 0
+		    dn_digest = dn
+		else
+		    # Compare digests. A digest is used instead of a plain DN because
+		    # it may not be possible to encrypt many '|'-separated DNs
+		    dn_digest = Digest::SHA1.hexdigest(dn)
+		end
+
+	        raise "Login DN hash " + subjn_digest + " did not match hash of user DN " + dn + ", which was " + dn_digest if subjn_digest!=dn_digest
 		
 	        true    
 	    else
