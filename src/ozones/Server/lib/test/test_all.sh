@@ -15,11 +15,6 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-if [ -z $OZONES_LOCATION ]; then
-    echo "OZONES_LOCATION not present"
-    exit
-fi
-
 rm ozones-test.db &> /dev/null
 
 spec ApacheWritter_spec.rb

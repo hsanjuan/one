@@ -1,11 +1,11 @@
 #!/usr/bin/ruby
 
-OZONES_LOCATION = ENV['OZONES_LOCATION']
-
-if !OZONES_LOCATION
-    puts "OZONES_LOCATION not found."
+if !ENV['ONE_LOCATION']
+    puts "ONE_LOCATION not found."
     exit 1
 end
+
+OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Client"
 
 $: << OZONES_LOCATION + "/lib"
 

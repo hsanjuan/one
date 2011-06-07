@@ -24,7 +24,7 @@ module OZones
     describe "Library using OZones" do
         before(:all) do
             # Create the DB, with sqlite
-            db_url = "sqlite://" + ENV['OZONES_LOCATION'] + "/lib/test/ozones-test.db"
+            db_url = "sqlite://" + File.dirname(__FILE__) + "/ozones-test.db"
  
             #DataMapper::Logger.new($stdout, :debug)
             DataMapper.setup(:default, db_url)
@@ -69,7 +69,7 @@ module OZones
         end
                 
         it "should be able to write an Apache htaccess to proxy petitions to vdcs" do
-            pr = OZones::ProxyRules.new("apache",ENV['OZONES_LOCATION'] + "/Server/lib/test/htaccess")
+            pr = OZones::ProxyRules.new("apache",File.dirname(__FILE__) + "/htaccess")
             pr.update
             
             generated = IO.read("htaccess")

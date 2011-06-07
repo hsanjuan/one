@@ -16,7 +16,22 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-OZONES_LOCATION = ENV["OZONES_LOCATION"]
+if !ENV['ONE_LOCATION']
+    puts "ONE_LOCATION not found."
+    exit 1
+end
+
+ONE_LOCATION=ENV["ONE_LOCATION"]
+
+if !ONE_LOCATION
+    RUBY_LIB_LOCATION="/usr/lib/one/ruby"
+else
+    RUBY_LIB_LOCATION=ONE_LOCATION+"/lib/ruby"
+end
+
+OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Server"
+
+$: << RUBY_LIB_LOCATION
 $: << OZONES_LOCATION + "/lib"
 $: << OZONES_LOCATION + "/models"
 
@@ -34,12 +49,12 @@ require 'OzonesServer'
 ##############################################################################
 # Read configuration
 ##############################################################################
-config_data=File.read(ENV['OZONES_LOCATION']+'/etc/ozones.conf')
+config_data=File.read(ONE_LOCATION+'/etc/ozones.conf')
 config=YAML::load(config_data)
 
 db_type = config[:databasetype]
 db_name = config[:databasename]
-db_url = db_type + "://" + ENV['OZONES_LOCATION'] + "/var/" + db_name
+db_url = db_type + "://" + ONE_LOCATION + "/var/" + db_name
 
 ##############################################################################
 # DB bootstrapping

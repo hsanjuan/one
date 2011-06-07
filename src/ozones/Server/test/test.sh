@@ -16,12 +16,10 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-if [ -z $OZONES_LOCATION ]; then
-    echo "OZONES_LOCATION not defined."
-    exit -1
-fi
 
-VAR_LOCATION="$OZONES_LOCATION/var"
+VAR_LOCATION="$PWD/var"
+
+mkdir -p $VAR_LOCATION
 
 if [ "$(ls -A $VAR_LOCATION)" ]; then
     echo "$VAR_LOCATION is not empty."

@@ -20,7 +20,7 @@ require 'spec'
 require 'json'
 require File.dirname(__FILE__) + "/../../../Client/lib/OZonesClient.rb"
 
-EXAMPLES_PATH = ENV['OZONES_LOCATION'] + "/test/examples/"
+EXAMPLES_PATH = File.dirname(__FILE__) + "/../examples/"
 
 describe 'OZones Pool' do
     before(:all) do
