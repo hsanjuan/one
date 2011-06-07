@@ -1,3 +1,4 @@
 NAME=testvdc0
-HOSTS=testhostvdc0n0,testhostvdc0n1,testhostvdc0n2
 ZONEID=1
+VDCADMINNAME=adminname
+VDCADMINPASS=adminpass

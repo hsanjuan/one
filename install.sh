@@ -41,6 +41,7 @@ usage() {
  echo "    an absolute path."
  echo "-c: install client utilities: OpenNebula cli, occi and ec2 client files"
  echo "-s: install OpenNebula Sunstone"
+ echo "-o: install OpenNebula Zones (OZones)"
  echo "-r: remove Opennebula, only useful if -d was not specified, otherwise"
  echo "    rm -rf \$ONE_LOCATION would do the job"
  echo "-l: creates symlinks instead of copying files, useful for development"
@@ -48,7 +49,7 @@ usage() {
 }
 #-------------------------------------------------------------------------------
 
-TEMP_OPT=`getopt -o hkrlcsu:g:d: -n 'install.sh' -- "$@"`
+TEMP_OPT=`getopt -o hkrlcsou:g:d: -n 'install.sh' -- "$@"`
 
 if [ $? != 0 ] ; then
     usage
@@ -62,6 +63,7 @@ UNINSTALL="no"
 LINK="no"
 CLIENT="no"
 SUNSTONE="no"
+OZONES="no"
 ONEADMIN_USER=`id -u`
 ONEADMIN_GROUP=`id -g`
 SRC_DIR=$PWD
@@ -74,6 +76,7 @@ while true ; do
         -l) LINK="yes" ; shift ;;
         -c) CLIENT="yes"; INSTALL_ETC="no" ; shift ;;
         -s) SUNSTONE="yes"; INSTALL_ETC="no" ; shift ;;
+        -o) OZONES="yes"; INSTALL_ETC="no" ; shift ;;
         -u) ONEADMIN_USER="$2" ; shift 2;;
         -g) ONEADMIN_GROUP="$2"; shift 2;;
         -d) ROOT="$2" ; shift 2 ;;
@@ -93,6 +96,7 @@ if [ -z "$ROOT" ] ; then
     LOG_LOCATION="/var/log/one"
     VAR_LOCATION="/var/lib/one"
     SUNSTONE_LOCATION="$LIB_LOCATION/sunstone"
+    OZONES_LOCATION="$LIB_LOCATION/ozones"
     IMAGES_LOCATION="$VAR_LOCATION/images"
     RUN_LOCATION="/var/run/one"
     LOCK_LOCATION="/var/lock/one"
@@ -108,6 +112,12 @@ if [ -z "$ROOT" ] ; then
         CHOWN_DIRS=""
     elif [ "$SUNSTONE" = "yes" ]; then
         MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $VAR_LOCATION $SUNSTONE_LOCATION"
+
+        DELETE_DIRS="$MAKE_DIRS"
+
+        CHOWN_DIRS=""
+    elif [ "$OZONES" = "yes" ]; then
+        MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $VAR_LOCATION $OZONES_LOCATION"
 
         DELETE_DIRS="$MAKE_DIRS"
 
@@ -130,6 +140,7 @@ else
     ETC_LOCATION="$ROOT/etc"
     VAR_LOCATION="$ROOT/var"
     SUNSTONE_LOCATION="$LIB_LOCATION/sunstone"
+    OZONES_LOCATION="$LIB_LOCATION/ozones"
     IMAGES_LOCATION="$VAR_LOCATION/images"
     INCLUDE_LOCATION="$ROOT/include"
     SHARE_LOCATION="$ROOT/share"
@@ -143,6 +154,10 @@ else
         MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $VAR_LOCATION $SUNSTONE_LOCATION"
 
         DELETE_DIRS="$MAKE_DIRS"
+    elif [ "$OZONES" = "yes" ]; then
+        MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $VAR_LOCATION $OZONES_LOCATION"
+
+        DELETE_DIRS="$MAKE_DIRS"        
     else
         MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $ETC_LOCATION $VAR_LOCATION \
                    $INCLUDE_LOCATION $SHARE_LOCATION $IMAGES_LOCATION \
@@ -214,6 +229,18 @@ SUNSTONE_DIRS="$SUNSTONE_LOCATION/models \
                $SUNSTONE_LOCATION/public/vendor/jGrowl \
                $SUNSTONE_LOCATION/public/images \
                $SUNSTONE_LOCATION/templates"
+               
+OZONES_DIRS="$OZONES_LOCATION/Server \
+             $OZONES_LOCATION/Server/lib \
+             $OZONES_LOCATION/Server/lib/OZones \
+             $OZONES_LOCATION/Server/models"
+
+OZONES_CLIENT_DIRS="$LIB_LOCATION/ruby \
+                 $LIB_LOCATION/ruby/OpenNebula \
+                 $OZONES_LOCATION/Client \
+                 $OZONES_LOCATION/Client/lib \
+                 $OZONES_LOCATION/Client/lib/CLI \
+                 $OZONES_LOCATION/Client/lib/CLI/OZonesHelper"
 
 LIB_ECO_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula \
@@ -232,11 +259,14 @@ LIB_CLI_DIRS="$LIB_LOCATION/ruby \
 
 if [ "$CLIENT" = "yes" ]; then
     MAKE_DIRS="$MAKE_DIRS $LIB_ECO_CLIENT_DIRS $LIB_OCCI_CLIENT_DIRS \
-               $LIB_CLI_DIRS"
+               $LIB_CLI_DIRS $OZONES_CLIENT_DIRS"
 elif [ "$SUNSTONE" = "yes" ]; then
     MAKE_DIRS="$MAKE_DIRS $SUNSTONE_DIRS $LIB_OCA_CLIENT_DIRS"
+elif [ "$OZONES" = "yes" ]; then
+    MAKE_DIRS="$MAKE_DIRS $OZONES_DIRS $OZONES_CLIENT_DIRS $LIB_OCA_CLIENT_DIRS"
 else
-    MAKE_DIRS="$MAKE_DIRS $SHARE_DIRS $ETC_DIRS $LIB_DIRS $VAR_DIRS $SUNSTONE_DIRS"
+    MAKE_DIRS="$MAKE_DIRS $SHARE_DIRS $ETC_DIRS $LIB_DIRS $VAR_DIRS \
+               $OZONES_DIRS $OZONES_CLIENT_DIRS $SUNSTONE_DIRS"
 fi
 
 #-------------------------------------------------------------------------------
@@ -291,9 +321,15 @@ INSTALL_CLIENT_FILES=(
     COMMON_CLOUD_CLIENT_LIB_FILES:$LIB_LOCATION/ruby/cloud
     OCCI_LIB_CLIENT_FILES:$LIB_LOCATION/ruby/cloud/occi
     OCCI_BIN_CLIENT_FILES:$BIN_LOCATION
+    OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
+    OZONES_BIN_CLIENT_FILES:$BIN_LOCATION
     CLI_BIN_FILES:$BIN_LOCATION
     CLI_LIB_FILES:$LIB_LOCATION/ruby
     RUBY_OPENNEBULA_LIB_FILES:$LIB_LOCATION/ruby/OpenNebula
+    OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
+    OZONES_LIB_CLIENT_CLI_FILES:$OZONES_LOCATION/Client/lib/CLI
+    OZONES_LIB_CLIENT_CLI_HELPER_FILES:$OZONES_LOCATION/Client/lib/CLI/OZonesHelper    
+    OZONES_BIN_CLIENT_FILES:$BIN_LOCATION  
 )
 
 INSTALL_SUNSTONE_RUBY_FILES=(
@@ -318,6 +354,23 @@ INSTALL_SUNSTONE_FILES=(
     SUNSTONE_PUBLIC_IMAGES_FILES:$SUNSTONE_LOCATION/public/images
 )
 
+INSTALL_OZONES_RUBY_FILES=(
+    OZONES_RUBY_LIB_FILES:$LIB_LOCATION/ruby
+    RUBY_OPENNEBULA_LIB_FILES:$LIB_LOCATION/ruby/OpenNebula
+)
+
+INSTALL_OZONES_FILES=(
+    OZONES_FILES:$OZONES_LOCATION/Server
+    OZONES_BIN_FILES:$BIN_LOCATION
+    OZONES_MODELS_FILES:$OZONES_LOCATION/Server/models
+    OZONES_LIB_FILES:$OZONES_LOCATION/Server/lib
+    OZONES_LIB_ZONE_FILES:$OZONES_LOCATION/Server/lib/OZones
+    OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
+    OZONES_LIB_CLIENT_CLI_FILES:$OZONES_LOCATION/Client/lib/CLI
+    OZONES_LIB_CLIENT_CLI_HELPER_FILES:$OZONES_LOCATION/Client/lib/CLI/OZonesHelper    
+    OZONES_BIN_CLIENT_FILES:$BIN_LOCATION    
+)
+
 INSTALL_ETC_FILES=(
     ETC_FILES:$ETC_LOCATION
     VMM_EC2_ETC_FILES:$ETC_LOCATION/vmm_ec2
@@ -335,6 +388,7 @@ INSTALL_ETC_FILES=(
     OCCI_ETC_FILES:$ETC_LOCATION
     OCCI_ETC_TEMPLATE_FILES:$ETC_LOCATION/occi_templates
     SUNSTONE_ETC_FILES:$ETC_LOCATION
+    OZONES_ETC_FILES:$ETC_LOCATION
 )
 
 #-------------------------------------------------------------------------------
@@ -834,6 +888,41 @@ SUNSTONE_PUBLIC_IMAGES_FILES="src/sunstone/public/images/ajax-loader.gif \
 
 SUNSTONE_RUBY_LIB_FILES="src/mad/ruby/CommandManager.rb \
                          src/oca/ruby/OpenNebula.rb"
+                         
+                         
+#-----------------------------------------------------------------------------
+# Ozones files
+#-----------------------------------------------------------------------------
+
+OZONES_FILES="src/ozones/Server/config.ru \
+              src/ozones/Server/ozones-server.rb"
+
+OZONES_BIN_FILES="src/ozones/Server/bin/ozones-server"
+
+OZONES_ETC_FILES="src/ozones/Server/etc/ozones-server.conf"
+
+OZONES_MODELS_FILES="src/ozones/Server/models/OzonesServer.rb \
+                     src/ozones/Server/models/OCAInteraction.rb"
+                     
+OZONES_LIB_FILES="src/ozones/Server/lib/OZones.rb"
+
+OZONES_LIB_ZONE_FILES="src/ozones/Server/lib/OZones/Zones.rb \
+                src/ozones/Server/lib/OZones/VDC.rb \
+                src/ozones/Server/lib/OZones/ProxyRules.rb \
+                src/ozones/Server/lib/OZones/JSONUtils.rb \
+                src/ozones/Server/lib/OZones/ApacheWritter.rb"
+                
+OZONES_LIB_CLIENT_FILES="src/ozones/Client/lib/OZonesClient.rb"
+                                
+OZONES_LIB_CLIENT_CLI_FILES="src/ozones/Client/lib/CLI/OZonesHelper.rb"                   
+                
+OZONES_LIB_CLIENT_CLI_HELPER_FILES="src/ozones/Client/lib/CLI/OZonesHelper/VDCHelper.rb \
+                src/ozones/Client/lib/CLI/OZonesHelper/ZonesHelper.rb"                
+
+OZONES_BIN_CLIENT_FILES="src/ozones/Client/bin/ovdcs \
+               src/ozones/Client/bin/ozones"
+               
+OZONES_RUBY_LIB_FILES="src/oca/ruby/OpenNebula.rb"
 
 #-----------------------------------------------------------------------------
 # MAN files
@@ -891,8 +980,10 @@ if [ "$CLIENT" = "yes" ]; then
     INSTALL_SET=${INSTALL_CLIENT_FILES[@]}
 elif [ "$SUNSTONE" = "yes" ]; then
     INSTALL_SET="${INSTALL_SUNSTONE_RUBY_FILES[@]} ${INSTALL_SUNSTONE_FILES[@]}"
+elif [ "$OZONES" = "yes" ]; then
+    INSTALL_SET="${INSTALL_OZONES_RUBY_FILES[@]} ${INSTALL_OZONES_FILES[@]}"
 else
-    INSTALL_SET="${INSTALL_FILES[@]} ${INSTALL_SUNSTONE_FILES[@]}"
+    INSTALL_SET="${INSTALL_FILES[@]} ${INSTALL_OZONES_FILES[@]} ${INSTALL_SUNSTONE_FILES[@]}"
 fi
 
 for i in ${INSTALL_SET[@]}; do

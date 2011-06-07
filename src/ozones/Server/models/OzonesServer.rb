@@ -14,33 +14,13 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
+require 'OCAInteraction'
+
 class OzonesServer
     
-    # @client = Client.new("dummy:dummy")
-    #    @client.one_auth = "#{username}:#{password}"
-
-    ############################################################################
-    #
-    ############################################################################
-    def self.authorize_in_zone(user="", sha1_pass="", endpoint="")
-        if user.empty? || sha1_pass.empty?
-            return [401, false]
-        end
-        
-        user_pool = UserPool.new(Client.new)
-        rc = user_pool.info
-        if OpenNebula.is_error?(rc)
-            return [500, false]
-        end
-
-        user_pass = user_pool["USER[NAME=\"#{user}\"]/PASSWORD"]
-        if user_pass == sha1_pass
-            return [204, user_pool["USER[NAME=\"#{user}\"]/ID"]]
-        else
-            return [401, nil]
-        end
+    def initialize
+        @ocaInt = OCAInteraction.new
     end
-
 
     ############################################################################
     # Retrieve resources
@@ -50,7 +30,8 @@ class OzonesServer
             when "vdc"      then OZones::Vdc
             when "zone"     then OZones::Zones
             else
-                error = OZones::Error.new("Error: #{kind} resource not supported")
+                error = OZones::Error.new(
+                                        "Error: #{kind} resource not supported")
                 return [404, error.to_json]
         end
         
@@ -71,13 +52,15 @@ class OzonesServer
             when "vdc"  then OZones::Vdc.get(id)
             when "zone" then OZones::Zones.get(id)
             else
-                return OZones::Error.new("Error: #{kind} resource not supported")
+                return OZones::Error.new(
+                                        "Error: #{kind} resource not supported")
         end
         
         if resource
             return resource
         else 
-            return OZones::Error.new("Error: Resource #{kind} with id #{id} not found")
+            return OZones::Error.new(
+                              "Error: Resource #{kind} with id #{id} not found")
         end
     end
 
@@ -89,37 +72,74 @@ class OzonesServer
         resource = case kind
             when "vdc"  then 
                 vdc_data=Hash.new
-                data.each{|key,value|vdc_data[key.downcase.to_sym]=value if key!="pool"}
+                data.each{|key,value|
+                    vdc_data[key.downcase.to_sym]=value if key!="pool"
+                }
                 zone=OZones::Zones.get(vdc_data[:zoneid])
                 if !zone
-                    error = OZones::Error.new("Error: Zone #{vdc_data[:zoneid]} not found, cannot create Vdc.")
+                    error = OZones::Error.new("Error: Zone " + 
+                          "#{vdc_data[:zoneid]} not found, cannot create Vdc.")
                     return [404, error.to_json]
                 end
+
+                vdcadminname = vdc_data[:vdcadminname]
+                vdcadminpass = vdc_data[:vdcadminpass]
                 vdc_data.delete(:zoneid) 
+                vdc_data.delete(:vdcadminname)
+                vdc_data.delete(:vdcadminpass)
+                
                 vdc = OZones::Vdc.create(vdc_data)
 
                 zone.vdcs << vdc
                 zone.save
                     
                 if zone.saved? and vdc.saved?
-                    pr.update # Rewrite proxy conf file
-                    return [200, OZones.str_to_json("Resource #{kind.upcase} successfuly created with ID #{vdc.id}")]
+                    rc = @ocaInt.create_vdc_in_zone(zone,
+                                                    vdc,
+                                                    vdcadminname,
+                                                    vdcadminpass)
+                    if OpenNebula.is_error?(rc)
+                        return [400, OZones::Error.new(
+                             "Error: Couldn't create #{kind}. Reason: " +
+                             rc.message).to_json]
+                    else
+                        pr.update # Rewrite proxy conf file
+                        return [200, OZones.str_to_json("Resource " + 
+                        "#{kind.upcase} successfuly created with ID #{vdc.id}")]
+                    end
                 else
-                    return [400, OZones::Error.new("Error: Couldn't create resource #{kind}").to_json]
+                    return [400, OZones::Error.new(
+                            "Error: Couldn't create resource #{kind}").to_json]
                 end
             when "zone" then 
                 zone_data=Hash.new
-                data.each{|key,value|zone_data[key.downcase.to_sym]=value if key!="pool"}
+                data.each{|key,value|
+                    zone_data[key.downcase.to_sym]=value if key!="pool"
+                }
+                
+                rc = @ocaInt.check_oneadmin(zone_data[:onename], 
+                                            zone_data[:onepass], 
+                                            zone_data[:endpoint])
+                
+                if OpenNebula.is_error?(rc)
+                    return [400, OZones::Error.new(
+                            "Error: Couldn't create resource #{kind}. Reason: "+
+                            rc.message).to_json]
+                end
+                
                 zone = OZones::Zones.create(zone_data)
                 rc = zone.save
                 if rc
                     pr.update # Rewrite proxy conf file
-                    return [200, OZones.str_to_json("Resource #{kind.upcase} successfuly created with ID #{vdc.id}")]
+                    return [200, OZones.str_to_json("Resource " + 
+                     "#{kind.upcase} successfuly created with ID #{zone.id}")]
                 else
-                    return [400, OZones::Error.new("Error: Couldn't create resource #{kind.upcase}").to_json]
+                    return [400, OZones::Error.new(
+                    "Error: Couldn't create resource #{kind.upcase}").to_json]
                 end               
             else
-                error = OZones::Error.new("Error: #{kind.upcase} resource not supported")
+                error = OZones::Error.new(
+                                 "Error: #{kind.upcase} resource not supported")
                 return [404, error.to_json]
             end
     end
@@ -134,10 +154,12 @@ class OzonesServer
         end
 
         if !resource.destroy
-            return [500, OZones::Error.new("Error: Couldn't delete resource #{kind} with id #{id}").to_json]
+            return [500, OZones::Error.new(
+               "Error: Couldn't delete resource #{kind} with id #{id}").to_json]
         else
             pr.update # Rewrite proxy conf file
-            return [200, OZones.str_to_json("Resource #{kind} with id #{id} successfuly deleted")]
+            return [200, OZones.str_to_json(
+                         "Resource #{kind} with id #{id} successfuly deleted")]
         end
     end
 

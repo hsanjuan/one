@@ -23,7 +23,6 @@ module OZones
 
         property :id,         Serial
         property :name,       String, :required => true, :unique => true 
-        property :hosts,      String, :required => true
 
         belongs_to :zones
         
