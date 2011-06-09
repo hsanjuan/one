@@ -16,31 +16,23 @@
 
 module OZones
     
-    class Vdc 
-        include DataMapper::Resource
-        include OpenNebulaJSON::JSONUtils
-        extend OpenNebulaJSON::JSONUtils
-
-        property :id,         Serial
-        property :name,       String, :required => true, :unique => true 
-
-        belongs_to :zones
+    class AggregatedVirtualNetworks < AggregatedPool 
         
-        def self.to_hash
-            zonePoolHash = Hash.new
-            zonePoolHash["vdcpool"] = Hash.new
-            zonePoolHash["vdcpool"]["vdc"] = Array.new
-            self.all.each{|vdc|
-                  zonePoolHash["vdcpool"]["vdc"] << vdc.attributes              
-            }
-            return zonePoolHash
+        def initialize
+            super("AGGREGATED_VN_POOL")
         end
         
-        def to_hash
-            vdc_attributes = Hash.new
-            vdc_attributes[:vdc] = attributes
-            return vdc_attributes
-        end
+        def factory(client)  
+            vnpool = OpenNebulaJSON::HostPoolJSON.new(client)
+            
+            rc = vnpool.info
+
+            if OpenNebula.is_error?(rc)
+                return rc.to_hash
+            else
+                return vnpool.to_hash
+            end
+         end    
     end
     
-end
+end 

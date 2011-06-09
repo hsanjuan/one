@@ -14,11 +14,18 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-require 'OZones/JSONUtils'
+require 'OpenNebulaJSON'
+
 require 'OZones/Zones'
 require 'OZones/VDC'
 require 'OZones/ProxyRules'
 require 'OZones/ApacheWritter'
+require 'OZones/AggregatedPool'
+require 'OZones/AggregatedHosts'
+require 'OZones/AggregatedVirtualMachines'
+require 'OZones/AggregatedVirtualNetworks'
+require 'OZones/AggregatedImages'
+require 'OZones/AggregatedUsers'
 
 module OZones
     # -------------------------------------------------------------------------

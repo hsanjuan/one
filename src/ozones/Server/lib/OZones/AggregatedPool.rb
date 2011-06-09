@@ -15,29 +15,32 @@
 #--------------------------------------------------------------------------- #
 
 module OZones
-    require 'json'
-
-    module JSONUtils
-        def to_json
-            begin
-                JSON.pretty_generate self.to_hash
-            rescue Exception => e
-                OZones::Error.new(e.message)
-            end
+    
+    class AggregatedPool 
+        include  OpenNebulaJSON::JSONUtils 
+         
+        def initialize(tag)
+            @tag                          = tag
+            @sup_aggregated_pool          = Hash.new
         end
-
-        def parse_json(json_str, root_element)
-            begin
-                hash = JSON.parse(json_str)
-            rescue Exception => e
-                return OZones::Error.new(e.message)
-            end
-
-            if hash.has_key?(root_element)
-                return hash[root_element]
-            else
-                return OZones::Error.new("Error parsing JSON: Wrong resource type")
-            end
+    
+        def info
+            @sup_aggregated_pool          = Hash.new
+            @sup_aggregated_pool[@tag]    = Hash.new
+        
+            OZones::Zones.all.each{|zone|
+                client   = OpenNebula::Client.new(
+                                      zone.onename + ":" + zone.onepass,
+                                      zone.endpoint)
+                zone_tag = "ZONE "+zone[:id].to_s
+                @sup_aggregated_pool[@tag][zone_tag] = factory(client)                                    
+            }
+        end    
+    
+        def to_hash
+            info
+            return @sup_aggregated_pool
         end
-     end
+    end
+    
 end

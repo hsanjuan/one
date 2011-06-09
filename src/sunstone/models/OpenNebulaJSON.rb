@@ -30,10 +30,14 @@ require 'OpenNebulaJSON/VirtualNetworkJSON'
 module OpenNebula
     class Error
         def to_json
+            return JSON.pretty_generate to_hash
+        end
+        
+        def to_hash
             message = { :message => @message }
             error_hash = { :error => message }
-
-            return JSON.pretty_generate error_hash
+            
+            return error_hash
         end
     end
 end

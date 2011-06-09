@@ -18,8 +18,8 @@ module OZones
     
     class Zones 
         include DataMapper::Resource
-        include JSONUtils
-        extend JSONUtils
+        include OpenNebulaJSON::JSONUtils
+        extend OpenNebulaJSON::JSONUtils
         
         property :id,         Serial
         property :name,       String, :required => true, :unique => true 
@@ -50,4 +50,5 @@ module OZones
             return zone_attributes
         end
     end 
+    
 end
