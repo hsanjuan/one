@@ -38,6 +38,27 @@ class OzonesServer
         return [200, pool.to_json]
     end
     
+    # Gets an aggreageted pool for a zone or vdc
+    # ie All the hosts in all the Zones    
+    def get_aggregated_pool(kind, aggkind)
+        aggpool = case kind
+            when "zone"     then 
+                case aggkind
+                    when "host"  then OZones::AggregatedHosts.new
+                    when "image" then OZones::AggregatedImages.new
+                    when "user"  then OZones::AggregatedUsers.new                        
+                    when "vm"    then OZones::AggregatedVirtualMachines.new
+                    when "vn"    then OZones::AggregatedVirtualNetworks.new
+                end
+            else
+                error = OZones::Error.new(
+                  "Error: #{aggkind} aggregated pool for #{kind} not supported")
+                return [404, error.to_json]
+        end
+        
+        return [200, aggpool.to_json]
+    end
+    
     def get_resource(kind, id)
         resource = retrieve_resource(kind, id)
         if OZones.is_error?(resource)

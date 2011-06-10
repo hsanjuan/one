@@ -30,10 +30,13 @@ else
 end
 
 OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Server"
+ENV['OZONES_LOCATION']=OZONES_LOCATION
 
 $: << RUBY_LIB_LOCATION
 $: << OZONES_LOCATION + "/lib"
 $: << OZONES_LOCATION + "/models"
+$: << ENV['ONE_LOCATION'] + "/lib/sunstone/models"
+
 
 ##############################################################################
 # Required libraries
@@ -49,7 +52,7 @@ require 'OzonesServer'
 ##############################################################################
 # Read configuration
 ##############################################################################
-config_data=File.read(ONE_LOCATION+'/etc/ozones.conf')
+config_data=File.read(ONE_LOCATION+'/etc/ozones-server.conf')
 config=YAML::load(config_data)
 
 db_type = config[:databasetype]
@@ -189,6 +192,10 @@ end
 ##############################################################################
 get '/:pool' do
     @OzonesServer.get_pool(params[:pool])
+end
+
+get '/:pool/:aggpool' do
+    @OzonesServer.get_aggregated_pool(params[:pool], params[:aggpool])
 end
 
 ##############################################################################

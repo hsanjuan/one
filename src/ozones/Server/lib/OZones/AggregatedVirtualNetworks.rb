@@ -23,16 +23,8 @@ module OZones
         end
         
         def factory(client)  
-            vnpool = OpenNebulaJSON::HostPoolJSON.new(client)
-            
-            rc = vnpool.info
-
-            if OpenNebula.is_error?(rc)
-                return rc.to_hash
-            else
-                return vnpool.to_hash
-            end
-         end    
+            OpenNebulaJSON::VirtualNetworkPoolJSON.new(client)
+        end    
     end
     
 end 

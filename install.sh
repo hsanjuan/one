@@ -909,8 +909,13 @@ OZONES_LIB_FILES="src/ozones/Server/lib/OZones.rb"
 OZONES_LIB_ZONE_FILES="src/ozones/Server/lib/OZones/Zones.rb \
                 src/ozones/Server/lib/OZones/VDC.rb \
                 src/ozones/Server/lib/OZones/ProxyRules.rb \
-                src/ozones/Server/lib/OZones/JSONUtils.rb \
-                src/ozones/Server/lib/OZones/ApacheWritter.rb"
+                src/ozones/Server/lib/OZones/ApacheWritter.rb \
+                src/ozones/Server/lib/OZones/AggregatedHosts.rb \
+                src/ozones/Server/lib/OZones/AggregatedUsers.rb \
+                src/ozones/Server/lib/OZones/AggregatedVirtualMachines.rb \
+                src/ozones/Server/lib/OZones/AggregatedVirtualNetworks.rb \
+                src/ozones/Server/lib/OZones/AggregatedPool.rb \
+                src/ozones/Server/lib/OZones/AggregatedImages.rb"                                                                                                                
                 
 OZONES_LIB_CLIENT_FILES="src/ozones/Client/lib/OZonesClient.rb"
                                 

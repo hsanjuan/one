@@ -22,17 +22,9 @@ module OZones
             super("AGGREGATED_HOST_POOL")
         end
         
-        def factory(client)  
-            hostpool = OpenNebulaJSON::HostPoolJSON.new(client)
-            
-            rc = hostpool.info
-
-            if OpenNebula.is_error?(rc)
-                return rc.to_hash
-            else
-                return hostpool.to_hash
-            end
-         end    
+        def factory(client) 
+            OpenNebulaJSON::HostPoolJSON.new(client)
+        end    
     end
     
 end 

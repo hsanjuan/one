@@ -21,7 +21,6 @@ module OZones
          
         def initialize(tag)
             @tag                          = tag
-            @sup_aggregated_pool          = Hash.new
         end
     
         def info
@@ -32,8 +31,16 @@ module OZones
                 client   = OpenNebula::Client.new(
                                       zone.onename + ":" + zone.onepass,
                                       zone.endpoint)
-                zone_tag = "ZONE "+zone[:id].to_s
-                @sup_aggregated_pool[@tag][zone_tag] = factory(client)                                    
+                zone_tag = zone[:id].to_s
+                pool = factory(client)       
+                rc = pool.info
+
+                if !rc  
+                    @sup_aggregated_pool[@tag][zone_tag] = pool.to_hash        
+                else
+                    @sup_aggregated_pool[@tag][zone_tag] = rc.to_hash 
+                end
+
             }
         end    
     

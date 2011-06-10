@@ -16,23 +16,15 @@
 
 module OZones
     
-    class AggregatedHosts < AggregatedPool 
+    class AggregatedUsers < AggregatedPool 
         
         def initialize
             super("AGGREGATED_USER_POOL")
         end
         
         def factory(client)  
-            userpool = OpenNebulaJSON::UserJSON.new(client)
-            
-            rc = userpool.info
-
-            if OpenNebula.is_error?(rc)
-                return rc.to_hash
-            else
-                return userpool.to_hash
-            end
-         end    
+            OpenNebulaJSON::UserPoolJSON.new(client)
+        end    
     end
     
 end 

@@ -22,17 +22,9 @@ module OZones
             super("AGGREGATED_VM_POOL")
         end
         
-        def factory(client)  
-            vmpool = OpenNebulaJSON::VirtualMachinePoolJSON.new(client)
-            
-            rc = vmpool.info
-
-            if OpenNebula.is_error?(rc)
-                return rc.to_hash
-            else
-                return vmpool.to_hash
-            end
-         end    
+        def factory(client) 
+            OpenNebulaJSON::VirtualMachinePoolJSON.new(client)
+        end    
     end
     
 end 
