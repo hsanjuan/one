@@ -18,6 +18,7 @@
 
 
 VAR_LOCATION="$PWD/var"
+OZONES_LOCATION="$PWD/../"
 
 mkdir -p $VAR_LOCATION
 

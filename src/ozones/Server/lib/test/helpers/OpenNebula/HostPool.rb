@@ -14,17 +14,39 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-module OZones
-    
-    class AggregatedImages < AggregatedPool 
+require 'OpenNebula/Pool'
+
+module OpenNebula
+    class HostPool < Pool
+        #######################################################################
+        # Constants and Class attribute accessors
+        #######################################################################
+
+        HOST_POOL_METHODS = {
+            :info => "hostpool.info"
+        }
+
+        #######################################################################
+        # Class constructor & Pool Methods
+        #######################################################################
         
-        def initialize
-            super("AGGREGATED_IMAGES_POOL")
+        # +client+ a Client object that represents a XML-RPC connection
+        def initialize(client)
+            super('HOST_POOL','HOST',client)
         end
-        
-        def factory(client)
-            OpenNebulaJSON::ImagePoolJSON.new(client)
-        end    
+
+        # Factory Method for the Host Pool
+        def factory(element_xml)
+            OpenNebula::Host.new(element_xml,@client)
+        end
+
+        #######################################################################
+        # XML-RPC Methods for the Host Pool 
+        #######################################################################
+
+        # Retrieves all the Hosts in the pool.
+        def info()
+            super(HOST_POOL_METHODS[:info])
+        end
     end
-    
-end 
+end

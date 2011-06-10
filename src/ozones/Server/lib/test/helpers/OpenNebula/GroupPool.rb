@@ -14,17 +14,39 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-module OZones
-    
-    class AggregatedImages < AggregatedPool 
-        
-        def initialize
-            super("AGGREGATED_IMAGES_POOL")
+require 'OpenNebula/Pool'
+
+module OpenNebula
+    class GroupPool < Pool
+        # ---------------------------------------------------------------------
+        # Constants and Class attribute accessors
+        # ---------------------------------------------------------------------
+
+        GROUP_POOL_METHODS = {
+            :info => "grouppool.info"
+        }
+
+        # ---------------------------------------------------------------------
+        # Class constructor & Pool Methods
+        # ---------------------------------------------------------------------
+
+        # +client+ a Client object that represents a XML-RPC connection
+        def initialize(client)
+            super('GROUP_POOL','GROUP',client)
         end
-        
-        def factory(client)
-            OpenNebulaJSON::ImagePoolJSON.new(client)
-        end    
+
+        # Factory method to create User objects
+        def factory(element_xml)
+            OpenNebula::Group.new(element_xml,@client)
+        end
+
+        # ---------------------------------------------------------------------
+        # XML-RPC Methods for the User Object
+        # ---------------------------------------------------------------------
+
+        # Retrieves all the Groups in the pool.
+        def info()
+            super(GROUP_POOL_METHODS[:info])
+        end
     end
-    
-end 
+end

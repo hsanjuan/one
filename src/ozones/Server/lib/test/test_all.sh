@@ -15,6 +15,14 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-rm ozones-test.db &> /dev/null
 
-spec ApacheWritter_spec.rb
+for j in `ls ./spec/*_spec.rb` ; do
+    rm ozones-test.db &> /dev/null
+    
+    spec $j -f s
+    CODE=$?
+
+    if [ $CODE != 0 ] ; then
+        exit 1
+    fi
+done

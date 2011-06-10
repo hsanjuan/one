@@ -31,8 +31,15 @@ module OZones
                 client   = OpenNebula::Client.new(
                                       zone.onename + ":" + zone.onepass,
                                       zone.endpoint)
-                zone_tag = zone[:id].to_s
-                pool = factory(client)       
+
+                zone_tag = zone[:id].to_s                        
+                pool = factory(client)  
+                
+                if OpenNebula.is_error?(pool)
+                    @sup_aggregated_pool[@tag][zone_tag] = pool.to_hash
+                    next
+                end
+                     
                 rc = pool.info
 
                 if !rc  

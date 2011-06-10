@@ -15,17 +15,21 @@
 #--------------------------------------------------------------------------- #
 
 $: << '../'
+$: << 'helpers'
+$: << '../../../../sunstone/models'
 
 require 'rubygems'
 require 'data_mapper'
 
 module OZones
 
-    describe "Library using OZones" do
+    describe "Aggregated Pools" do
         before(:all) do
             # Create the DB, with sqlite
-            db_url = "sqlite://" + File.dirname(__FILE__) + "/ozones-test.db"
- 
+            db_url = "sqlite://" +  File.expand_path(".") + "/ozones-test.db"
+            
+            @fixtures_path = File.expand_path(".") + "/fixtures"
+
             #DataMapper::Logger.new($stdout, :debug)
             DataMapper.setup(:default, db_url)
 
@@ -34,20 +38,22 @@ module OZones
             DataMapper.finalize
             DataMapper.auto_upgrade!
             
+            # Create Zones
             @zoneA = OZones::Zones.create(
                      :name     =>    "zoneA",
                      :onename  =>    "oneadminA",
                      :onepass  =>    "onepassA",
-                     :endpoint =>    "http://zonea.zoneadomain.za:2633"
+                     :endpoint =>    "http://zonea.zoneadomain.za:2633/RPC2"
                     )
                     
             @zoneB = OZones::Zones.create(
                      :name     =>    "zoneB",
                      :onename  =>    "oneadminB",
                      :onepass  =>    "onepassB",
-                     :endpoint =>    "http://zoneb.zoneadomain.za:2634"
+                     :endpoint =>    "http://zoneb.zoneadomain.za:2634/RPC2"
                     )
-                    
+               
+            # Create VDCs        
             @vdca = OZones::Vdc.create(
                      :name     =>    "vdca"
                     )
@@ -68,17 +74,46 @@ module OZones
             @zoneB.save
         end
                 
-        it "should be able to write an Apache htaccess to proxy petitions to vdcs" do
-            pr = OZones::ProxyRules.new("apache",File.dirname(__FILE__) + "/htaccess")
-            pr.update
+        it "should be able to retrieve an aggregated host pool" do
+            ahp      = AggregatedHosts.new
+            ahp_json = ahp.to_json
             
-            generated = IO.read("htaccess")
-            golden    = IO.read("htaccess.golden")
+            ahp_json.should eql(File.read(
+                                 @fixtures_path+"/json/aggregatedhosts.json"))
             
-            generated.should eql(golden)
+            
         end
+        
+        it "should be able to retrieve an aggregated vm pool" do
+            avmp      = AggregatedVirtualMachines.new
+            avmp_json = avmp.to_json
+            
+            avmp_json.should eql(File.read(
+                                 @fixtures_path+"/json/aggregatedvms.json"))                
+        end
+        
+        it "should be able to retrieve an aggregated image pool" do
+            aip       = AggregatedImages.new
+            aip_json  = aip.to_json
+            
+            aip_json.should eql(File.read(
+                                @fixtures_path+"/json/aggregatedimages.json"))                
+        end  
+        
+        it "should be able to retrieve an aggregated network pool" do
+            avnp       = AggregatedVirtualNetworks.new
+            avnp_json  = avnp.to_json
+            
+            avnp_json.should eql(File.read(
+                                @fixtures_path+"/json/aggregatedvns.json"))                
+        end  
+        
+        it "should be able to retrieve an aggregated user pool" do
+            aup        = AggregatedUsers.new
+            aup_json   = aup.to_json
+            
+            aup_json.should eql(File.read(
+                                @fixtures_path+"/json/aggregatedusers.json"))                
+        end       
     end
 end
-
-
-
