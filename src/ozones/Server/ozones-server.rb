@@ -194,15 +194,19 @@ get '/:pool' do
     @OzonesServer.get_pool(params[:pool])
 end
 
+##############################################################################
+# GET Resource information
+##############################################################################
+get %r{/(zone|vdc)/(\d+)} do |kind, id|
+    @OzonesServer.get_resource(kind,id)
+end
+
 get '/:pool/:aggpool' do
     @OzonesServer.get_aggregated_pool(params[:pool], params[:aggpool])
 end
 
-##############################################################################
-# GET Resource information
-##############################################################################
-get '/:resource/:id' do
-    @OzonesServer.get_resource(params[:resource], params[:id])
+get '/:pool/:id/:aggpool' do
+    @OzonesServer.get_full_resource(params[:pool], params[:id], params[:aggpool])
 end
 
 ##############################################################################
