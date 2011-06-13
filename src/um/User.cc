@@ -26,102 +26,6 @@
 #include "Nebula.h"
 #include "Group.h"
 
-/* ************************************************************************** */
-/* User :: Group Set Management                                               */
-/* ************************************************************************** */
-
-int User::add_to_group()
-{
-    // Add this User's ID to the Main Group
-    int rc = 0;
-    Nebula& nd = Nebula::instance();
-    GroupPool * gpool = nd.get_gpool();
-
-    string error_str;
-
-    if( gpool == 0 )
-    {
-        return -1;
-    }
-
-    Group * group = gpool->get( get_gid(), true );
-
-    if( group == 0 )
-    {
-        return -1;
-    }
-
-    rc = group->add_collection_id(this, error_str);
-
-    if( rc == 0 )
-    {
-        gpool->update(group);
-    }
-    group->unlock();
-
-    return rc;
-}
-
-/* -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- */
-
-int User::set_gid(int _gid)
-{
-    gid = _gid;
-
-    // The primary group is also kept in the Group Ids set.
-    // This method may return -1, because the Group could be a secondary group
-    // and be already in the set.
-    add_to_group();
-
-    return 0;
-}
-
-/* -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- */
-
-int User::delete_from_groups()
-{
-    int rc = 0;
-
-    Nebula&     nd      = Nebula::instance();
-    GroupPool * gpool   = nd.get_gpool();
-    Group *     group;
-
-    string error_str;
-
-    // This flag lets the user to be removed from its main group
-    cleaning = true;
-
-    // Get a copy of the set, because the original will be modified deleting
-    // elements from it.
-    set<int>            group_set;
-    set<int>::iterator  it;
-
-    group_set = get_collection_copy();
-
-    if( gpool == 0 )
-    {
-        return -1;
-    }
-
-    for ( it = group_set.begin(); it != group_set.end(); it++ )
-    {
-        group = gpool->get( *it, true );
-
-        if( group == 0 )
-        {
-            rc = -1;
-            continue;
-        }
-
-        rc += group->del_collection_id(this, error_str);
-        gpool->update(group);
-        group->unlock();
-    }
-
-    return rc;
-}
 
 /* ************************************************************************** */
 /* User :: Database Access Functions                                          */
@@ -212,18 +116,6 @@ error_username:
 /* ************************************************************************** */
 /* User :: Misc                                                               */
 /* ************************************************************************** */
-
-ostream& operator<<(ostream& os, User& user)
-{
-    string user_str;
-
-    os << user.to_xml(user_str);
-
-    return os;
-};
-
-/* -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- */
 
 string& User::to_xml(string& xml) const
 {

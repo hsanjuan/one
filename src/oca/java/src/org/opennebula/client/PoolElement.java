@@ -141,9 +141,25 @@ public abstract class PoolElement {
      */
     public int uid()
     {
+<<<<<<< HEAD
         String uid = xpath("UID");
 
         return uid != null ? Integer.parseInt( uid ) : -1;
+=======
+        String  uid_str = xpath("UID");
+        int     uid_int = -1;
+
+        if ( uid_str != null )
+        {
+            try
+            {
+                uid_int = Integer.parseInt( uid_str );
+            }
+            catch (NumberFormatException e) {}
+        }
+
+        return uid_int;
+>>>>>>> master
     }
 
     /**
@@ -153,9 +169,25 @@ public abstract class PoolElement {
      */
     public int gid()
     {
+<<<<<<< HEAD
         String gid = xpath("GID");
 
         return gid != null ? Integer.parseInt( gid ) : -1;
+=======
+        String  gid_str = xpath("GID");
+        int     gid_int = -1;
+
+        if ( gid_str != null )
+        {
+            try
+            {
+                gid_int = Integer.parseInt( gid_str );
+            }
+            catch (NumberFormatException e) {}
+        }
+
+        return gid_int;
+>>>>>>> master
     }
 
     /**
@@ -165,7 +197,8 @@ public abstract class PoolElement {
      *
      * @param expression The XPath expression.
      * @return The String that is the result of evaluating the
-     * expression and converting the result to a String. Null if
+     * expression and converting the result to a String. An empty String is
+     * returned if the expression is not a valid path; null if
      * the internal xml representation is not built.
      */
     public String xpath(String expression)

@@ -243,10 +243,9 @@ void Nebula::start()
             VirtualMachinePool::bootstrap(db);
             HostPool::bootstrap(db);
             VirtualNetworkPool::bootstrap(db);
+            GroupPool::bootstrap(db);
             UserPool::bootstrap(db);
             ImagePool::bootstrap(db);
-            ClusterPool::bootstrap(db);
-            GroupPool::bootstrap(db);
             VMTemplatePool::bootstrap(db);
         }
     }
@@ -287,8 +286,6 @@ void Nebula::start()
         ipool  = new ImagePool(db,
                                default_image_type,
                                default_device_prefix);
-
-        cpool = new ClusterPool(db);
 
         tpool = new VMTemplatePool(db);
     }
@@ -450,17 +447,7 @@ void Nebula::start()
 
         nebula_configuration->get("PORT", rm_port);
 
-        rm = new RequestManager(
-            vmpool,
-            hpool,
-            vnpool,
-            upool,
-            ipool,
-            cpool,
-            tpool,
-            gpool,
-            rm_port,
-            log_location + "one_xmlrpc.log");
+        rm = new RequestManager(rm_port, log_location + "one_xmlrpc.log");
     }
     catch (bad_alloc&)
     {

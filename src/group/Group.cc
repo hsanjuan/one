@@ -24,10 +24,10 @@
 
 const char * Group::table = "group_pool";
 
-const char * Group::db_names = "oid, name, body, uid";
+const char * Group::db_names = "oid, name, body";
 
 const char * Group::db_bootstrap = "CREATE TABLE IF NOT EXISTS group_pool ("
-    "oid INTEGER PRIMARY KEY, name VARCHAR(256), body TEXT, uid INTEGER, "
+    "oid INTEGER PRIMARY KEY, name VARCHAR(256), body TEXT, "
     "UNIQUE(name))";
 
 /* ************************************************************************ */
@@ -74,8 +74,7 @@ int Group::insert_replace(SqlDB *db, bool replace)
     oss <<" INTO "<<table <<" ("<< db_names <<") VALUES ("
         <<          oid                 << ","
         << "'" <<   sql_name            << "',"
-        << "'" <<   sql_xml             << "',"
-        <<          uid                 << ")";
+        << "'" <<   sql_xml             << "')";
 
     rc = db->exec(oss);
 
@@ -93,18 +92,6 @@ error_name:
 /* ------------------------------------------------------------------------ */
 /* ------------------------------------------------------------------------ */
 
-ostream& operator<<(ostream& os, Group& group)
-{
-    string group_str;
-
-    os << group.to_xml(group_str);
-
-    return os;
-}
-
-/* ------------------------------------------------------------------------ */
-/* ------------------------------------------------------------------------ */
-
 string& Group::to_xml(string& xml) const
 {
     ostringstream   oss;
@@ -115,7 +102,6 @@ string& Group::to_xml(string& xml) const
     oss <<
     "<GROUP>"    <<
         "<ID>"   << oid  << "</ID>"   <<
-        "<UID>"  << uid  << "</UID>"  <<
         "<NAME>" << name << "</NAME>" <<
         collection_xml <<
     "</GROUP>";
@@ -138,7 +124,6 @@ int Group::from_xml(const string& xml)
 
     // Get class base attributes
     rc += xpath(oid, "/GROUP/ID",   -1);
-    rc += xpath(uid, "/GROUP/UID",  -1);
     rc += xpath(name,"/GROUP/NAME", "not_found");
 
     // Get associated classes
@@ -160,6 +145,7 @@ int Group::from_xml(const string& xml)
     return 0;
 }
 
+<<<<<<< HEAD
 /* ************************************************************************ */
 /* Group :: User ID Set                                                     */
 /* ************************************************************************ */
@@ -231,6 +217,8 @@ int Group::add_del_collection_id(User* object, bool add, string& error_str)
     return rc;
 }
 
+=======
+>>>>>>> master
 /* ------------------------------------------------------------------------ */
 /* ------------------------------------------------------------------------ */
 

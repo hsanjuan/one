@@ -77,11 +77,6 @@ void Nebula::start()
         delete ipool;
     }
 
-    if ( cpool != 0)
-    {
-        delete cpool;
-    }
-
     if ( tpool != 0)
     {
         delete tpool;
@@ -125,6 +120,11 @@ void Nebula::start()
     if ( hm != 0)
     {
         delete hm;
+    }
+
+    if ( imagem != 0 )
+    {
+        delete imagem;
     }
 
     if ( authm != 0)
@@ -176,7 +176,6 @@ void Nebula::start()
         VirtualNetworkPool::bootstrap(db);
         UserPool::bootstrap(db);
         ImagePool::bootstrap(db);
-        ClusterPool::bootstrap(db);
         VMTemplatePool::bootstrap(db);
         GroupPool::bootstrap(db);
     }
@@ -191,8 +190,8 @@ void Nebula::start()
     {
         string  mac_prefix = "00:00";
         int     size = 1;
-        string  default_image_type;
-        string  default_device_prefix;
+        string  default_image_type      = "OS";
+        string  default_device_prefix   = "hd";
 
         if (tester->need_vm_pool)
         {
@@ -224,11 +223,6 @@ void Nebula::start()
             ipool  = tester->create_ipool(db,
                                           default_image_type,
                                           default_device_prefix);
-        }
-
-        if (tester->need_cluster_pool)
-        {
-            cpool  = tester->create_cpool(db);
         }
 
         if (tester->need_template_pool)
@@ -379,8 +373,7 @@ void Nebula::start()
     {
         try
         {
-            rm = tester->create_rm(vmpool,hpool,vnpool,upool,ipool,cpool,tpool,
-                                   gpool,log_location + "one_xmlrpc.log");
+            rm = tester->create_rm(log_location + "one_xmlrpc.log");
         }
         catch (bad_alloc&)
         {
@@ -445,7 +438,7 @@ void Nebula::start()
         }
     }
 
-    // ---- Auth Manager ----
+    // ---- Image Manager ----
     if (tester->need_imagem)
     {
         try
@@ -492,6 +485,11 @@ void Nebula::start()
     if( hm != 0 )
     {
         hm->load_mads(0);
+    }
+
+    if( imagem != 0 )
+    {
+        imagem->load_mads(0);
     }
 
     if( authm != 0 )

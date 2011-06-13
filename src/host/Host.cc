@@ -30,12 +30,11 @@
 
 Host::Host(
     int id,
-    int cluster_id,
     const string& _hostname,
     const string& _im_mad_name,
     const string& _vmm_mad_name,
     const string& _tm_mad_name):
-        PoolObjectSQL(id,_hostname,-1,cluster_id,table),
+        PoolObjectSQL(id,_hostname,-1,-1,table),
         state(INIT),
         im_mad_name(_im_mad_name),
         vmm_mad_name(_vmm_mad_name),
@@ -53,6 +52,7 @@ Host::~Host()
     }
 }
 
+<<<<<<< HEAD
 /* ************************************************************************** */
 /* Host :: Cluster Management                                                 */
 /* ************************************************************************** */
@@ -109,17 +109,19 @@ int Host::add_del_to_cluster(bool add)
     return rc;
 }
 
+=======
+>>>>>>> master
 /* ************************************************************************ */
 /* Host :: Database Access Functions                                        */
 /* ************************************************************************ */
 
 const char * Host::table = "host_pool";
 
-const char * Host::db_names = "oid, name, body, state, last_mon_time, cid";
+const char * Host::db_names = "oid, name, body, state, last_mon_time";
 
 const char * Host::db_bootstrap = "CREATE TABLE IF NOT EXISTS host_pool ("
     "oid INTEGER PRIMARY KEY, name VARCHAR(256), body TEXT, state INTEGER, "
-    "last_mon_time INTEGER, cid INTEGER, UNIQUE(name))";
+    "last_mon_time INTEGER, UNIQUE(name))";
 
 /* ------------------------------------------------------------------------ */
 /* ------------------------------------------------------------------------ */
@@ -195,8 +197,7 @@ int Host::insert_replace(SqlDB *db, bool replace)
         << "'" <<   sql_hostname        << "',"
         << "'" <<   sql_xml             << "',"
         <<          state               << ","
-        <<          last_monitored      << ","
-        <<          gid                 << ")";
+        <<          last_monitored      << ")";
 
     rc = db->exec(oss);
 
@@ -245,18 +246,6 @@ int Host::update_info(string &parse_str)
 /* Host :: Misc                                                             */
 /* ************************************************************************ */
 
-ostream& operator<<(ostream& os, Host& host)
-{
-    string host_str;
-
-    os << host.to_xml(host_str);
-
-    return os;
-}
-
-/* ------------------------------------------------------------------------ */
-/* ------------------------------------------------------------------------ */
-
 string& Host::to_xml(string& xml) const
 {
     string template_xml;
@@ -272,7 +261,6 @@ string& Host::to_xml(string& xml) const
        "<VM_MAD>"        << vmm_mad_name   << "</VM_MAD>"        <<
        "<TM_MAD>"        << tm_mad_name    << "</TM_MAD>"        <<
        "<LAST_MON_TIME>" << last_monitored << "</LAST_MON_TIME>" <<
-       "<CID>"           << gid            << "</CID>"       <<
        host_share.to_xml(share_xml)  <<
        obj_template->to_xml(template_xml) <<
     "</HOST>";
@@ -305,7 +293,6 @@ int Host::from_xml(const string& xml)
     rc += xpath(tm_mad_name, "/HOST/TM_MAD", "not_found");
 
     rc += xpath(last_monitored, "/HOST/LAST_MON_TIME", 0);
-    rc += xpath(gid, "/HOST/CID", 0);
 
     state = static_cast<HostState>( int_state );
 

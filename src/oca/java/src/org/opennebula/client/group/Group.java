@@ -31,7 +31,10 @@ public class Group extends PoolElement{
     private static final String ALLOCATE        = METHOD_PREFIX + "allocate";
     private static final String INFO            = METHOD_PREFIX + "info";
     private static final String DELETE          = METHOD_PREFIX + "delete";
+<<<<<<< HEAD
     private static final String CHOWN           = METHOD_PREFIX + "chown";
+=======
+>>>>>>> master
 
 
     /**
@@ -96,6 +99,7 @@ public class Group extends PoolElement{
         return client.call(DELETE, id);
     }
 
+<<<<<<< HEAD
     /**
      * Changes the group's owner
      *
@@ -109,6 +113,8 @@ public class Group extends PoolElement{
         return client.call(CHOWN, id, uid, -1);
     }
 
+=======
+>>>>>>> master
     // =================================
     // Instanced object XML-RPC methods
     // =================================
@@ -127,6 +133,7 @@ public class Group extends PoolElement{
     }
 
     /**
+<<<<<<< HEAD
      * Changes the group's owner
      *
      * @param uid The new owner user ID.
@@ -138,6 +145,8 @@ public class Group extends PoolElement{
     }
 
     /**
+=======
+>>>>>>> master
      * Deletes the group from OpenNebula.
      *
      * @see Group#delete(Client, int)

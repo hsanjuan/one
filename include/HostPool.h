@@ -139,6 +139,19 @@ public:
         }
     };
 
+    int drop(PoolObjectSQL * objsql, string& error_msg)
+    {
+        Host * host = static_cast<Host *>(objsql);
+
+        if ( host->get_share_running_vms() > 0 )
+        {
+            error_msg = "Can not remove a host with running VMs";
+            return -1;
+        }
+
+        return PoolSQL::drop(objsql, error_msg);
+    };
+
     /**
      *  Dumps the HOST pool in XML format. A filter can be also added to the
      *  query
@@ -165,17 +178,6 @@ public:
         return PoolSQL::search(oids, Host::table, where);
     };
 
-    /**
-     *  Drops the object's data in the data base. The object mutex SHOULD be
-     *  locked.
-     *    @param objsql a pointer to the object
-     *    @return 0 on success.
-     */
-    int drop(Host * host)
-    {
-        host->delete_from_cluster();
-        return host->drop(db);
-    };
 private:
 
     /**

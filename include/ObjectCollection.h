@@ -19,6 +19,8 @@
 
 #include <set>
 
+#include "PoolObjectSQL.h"
+
 using namespace std;
 
 /**
@@ -26,15 +28,15 @@ using namespace std;
  */
 class ObjectCollection
 {
-public:
+protected:
 
     ObjectCollection(const string& _collection_name)
-        :collection_name(_collection_name)
-    {};
+        :collection_name(_collection_name){};
 
     ~ObjectCollection(){};
 
     /**
+<<<<<<< HEAD
      *  Adds this object's ID to the set.
      *    @param object The new object
      *    @param error_str Error reason, if any
@@ -57,6 +59,22 @@ public:
     {
         return del_collection_id(object->get_oid(), error_str);
     };
+=======
+     *  Adds an ID to the set.
+     *    @param id The new id
+     *
+     *    @return 0 on success, -1 if the ID was already in the set
+     */
+    int add_collection_id(int id);
+
+    /**
+     *  Deletes an ID from the set.
+     *    @param id The id
+     *
+     *    @return 0 on success, -1 if the ID was not in the set
+     */
+    int del_collection_id(int id);
+>>>>>>> master
 
     /**
      *  Returns how many IDs are there in the set.
@@ -67,45 +85,13 @@ public:
         return collection_set.size();
     };
 
-protected:
-
     /**
      *  Rebuilds the object from an xml node
      *    @param node The xml node pointer
      *
      *    @return 0 on success, -1 otherwise
      */
-    int from_xml_node(const xmlNodePtr node)
-    {
-        ObjectXML   xml(node);
-        int         rc = 0;
-        int         id;
-
-        vector<string>              values;
-        vector<string>::iterator    it;
-        istringstream               iss;
-
-        string xpath_expr = "/" + collection_name + "/ID";
-
-        values = xml[xpath_expr.c_str()];
-
-        for ( it = values.begin() ; it < values.end(); it++ )
-        {
-            iss.str(*it);
-            iss >> dec >> id;
-
-            if ( iss.fail() )
-            {
-                rc = -1;
-            }
-            else
-            {
-                collection_set.insert(id);
-            }
-        }
-
-        return rc;
-    };
+    int from_xml_node(const xmlNodePtr node);
 
     /**
      * Function to print the Collection object into a string in
@@ -113,6 +99,7 @@ protected:
      *  @param xml the resulting XML string
      *  @return a reference to the generated string
      */
+<<<<<<< HEAD
     string& to_xml(string& xml) const
     {
         ostringstream       oss;
@@ -171,6 +158,10 @@ protected:
 
         return 0;
     };
+=======
+    string& to_xml(string& xml) const;
+
+>>>>>>> master
 
     /**
      *  Returns a copy of the IDs set

@@ -122,9 +122,13 @@ int UserPool::allocate (
     bool    enabled,
     string& error_str)
 {
-    User *          user;
+    Nebula&     nd    = Nebula::instance();
+
+    User *      user;
+    GroupPool * gpool;
+    Group *     group;
+
     ostringstream   oss;
-    int             rc;
 
     if ( username.empty() )
     {
@@ -141,28 +145,32 @@ int UserPool::allocate (
     // Build a new User object
     user = new User(-1, gid, username, password, enabled);
 
+    user->add_collection_id(gid); //Adds the primary group to the collection
+
     // Insert the Object in the pool
     *oid = PoolSQL::allocate(user, error_str);
 
-    if( *oid != -1 )
-    {
-        // Add this User's ID to his group
-
-        user = get(*oid, true);
-
-        rc = user->add_to_group();
-
-        if( rc != 0 )
-        {
-            goto error_group;
-        }
-
-        update( user );
-        user->unlock();
+    if ( *oid < 0 )
+    { 
+        return *oid;
     }
 
-    return *oid;
+    // Adds User to group
+    gpool = nd.get_gpool();
+    group = gpool->get(gid, true);
 
+    if( group == 0 )
+    {
+        return -1;
+    }
+
+    group->add_user(*oid);
+
+    gpool->update(group);
+
+    group->unlock();
+
+    return *oid;
 
 error_name:
     oss << "NAME cannot be empty.";
@@ -171,11 +179,6 @@ error_name:
 error_duplicated:
     oss << "NAME is already taken by USER " << user->get_oid() << ".";
     goto error_common;
-
-error_group:
-    oss << "Error trying to add USER to group " << gid << ".";
-    drop( user );
-    user->unlock();
 
 error_common:
     *oid = -1;
@@ -187,20 +190,24 @@ error_common:
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
-int UserPool::authenticate(string& session)
+bool UserPool::authenticate(const string& session, int& user_id, int& group_id)
 {
     map<string, int>::iterator index;
 
     User * user = 0;
     string username;
     string secret, u_pass;
-    int    uid;
 
-    int user_id = -1;
-    int rc;
+    int  uid, gid;
+    int  rc;
+    bool result;
 
     Nebula&     nd      = Nebula::instance();
     AuthManager * authm = nd.get_authm();
+
+    user_id  = -1;
+    group_id = -1;
+    result   = false;
 
     rc = User::split_secret(session,username,secret);
 
@@ -215,6 +222,7 @@ int UserPool::authenticate(string& session)
     {
         u_pass = user->password;
         uid    = user->oid;
+        gid    = user->gid;
 
         user->unlock();
     }
@@ -222,6 +230,7 @@ int UserPool::authenticate(string& session)
     {
         u_pass = "-";
         uid    = -1;
+        gid    = -1;
     }
 
     AuthRequest ar(uid);
@@ -232,14 +241,18 @@ int UserPool::authenticate(string& session)
     {
         if (ar.plain_authenticate())
         {
-            user_id = 0;
+            user_id  = 0;
+            group_id = GroupPool::ONEADMIN_ID;
+            result   = true;
         }
     }
     else if (authm == 0) //plain auth
     {
         if ( user != 0 && ar.plain_authenticate()) //no plain for external users
         {
-            user_id = uid;
+            user_id  = uid;
+            group_id = gid;
+            result   = true;
         }
     }
     else //use the driver
@@ -251,7 +264,9 @@ int UserPool::authenticate(string& session)
         {
             if ( user != 0 ) //knwon user_id
             {
-                user_id = uid;
+                user_id  = uid;
+                group_id = gid;
+                result   = true;
             }
             else //External user, username & pass in driver message
             {
@@ -268,8 +283,12 @@ int UserPool::authenticate(string& session)
 
                 if ( !is.fail() )
                 {
-                    allocate(&user_id,GroupPool::USERS_ID,mad_name,mad_pass,
-                             true,error_str);
+                    allocate(&user_id,
+                             GroupPool::USERS_ID,
+                             mad_name,
+                             mad_pass,
+                             true,
+                             error_str);
                 }
 
                 if ( user_id == -1 )
@@ -280,12 +299,15 @@ int UserPool::authenticate(string& session)
                            ". Driver response: " << ar.message;
 
                     ar.message = oss.str();
-                    user_id    = -1;
+                }
+                else
+                {
+                    group_id = GroupPool::USERS_ID;
+                    result   = true;
                 }
             }
         }
-
-        if (user_id == -1)
+        else
         {
             ostringstream oss;
             oss << "Auth Error: " << ar.message;
@@ -294,7 +316,7 @@ int UserPool::authenticate(string& session)
         }
     }
 
-    return user_id;
+    return result;
 }
 
 /* -------------------------------------------------------------------------- */

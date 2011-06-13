@@ -26,7 +26,6 @@ module OpenNebula
             :info        => "image.info",
             :allocate    => "image.allocate",
             :update      => "image.update",
-            :rmattr      => "image.rmattr",
             :enable      => "image.enable",
             :publish     => "image.publish",
             :persistent  => "image.persistent",
@@ -93,20 +92,11 @@ module OpenNebula
             super(IMAGE_METHODS[:allocate],description)
         end
 
-        # Modifies an image attribute
+        # Replaces the template contents
         #
-        # +name+ Name of the attribute to be changed
-        #
-        # +value+ New value for the attribute
-        def update(name, value)
-            super(IMAGE_METHODS[:update], name, value)
-        end
-
-        # Deletes an Image attribute
-        #
-        # +name+ Name of the attribute to be deleted
-        def remove_attr(name)
-            do_rm_attr(name)
+        # +new_template+ New template contents
+        def update(new_template)
+            super(IMAGE_METHODS[:update], new_template)
         end
 
         # Enables an Image
@@ -220,15 +210,5 @@ module OpenNebula
 
             return rc
         end
-
-        def do_rm_attr(name)
-            return Error.new('ID not defined') if !@pe_id
-
-            rc = @client.call(IMAGE_METHODS[:rmattr], @pe_id, name)
-            rc = nil if !OpenNebula.is_error?(rc)
-
-            return rc
-        end
-
     end
 end

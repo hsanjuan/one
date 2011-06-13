@@ -29,10 +29,6 @@ using namespace std;
 class Group : public PoolObjectSQL, public ObjectCollection
 {
 public:
-    /**
-     *  Function to write a Group on an output stream
-     */
-     friend ostream& operator<<(ostream& os, Group& group);
 
     /**
      * Function to print the Group object into a string in XML format
@@ -50,6 +46,7 @@ public:
     int from_xml(const string &xml_str);
 
     /**
+<<<<<<< HEAD
      *  Adds this object's ID to the set. The object MUST be a User, locked.
      *  The group's ID is added to the User's set.
      *    @param object The new object
@@ -78,6 +75,26 @@ public:
     {
         return this;
     };
+=======
+     *  Adds this user's ID to the set. 
+     *    @param id of the user to be added to the group
+     *    @return 0 on success
+     */
+    int add_user(int id)
+    {
+        return add_collection_id(id);
+    }
+
+    /**
+     *  Deletes this users's ID from the set.
+     *    @param id of the user to be deleted from the group
+     *    @return 0 on success
+     */
+    int del_user(int id)
+    {
+        return del_collection_id(id);
+    }
+>>>>>>> master
 
 private:
 
@@ -91,8 +108,8 @@ private:
     // Constructor
     // *************************************************************************
 
-    Group(int id, int uid, const string& name):
-        PoolObjectSQL(id,name,uid,-1,table),
+    Group(int id, const string& name):
+        PoolObjectSQL(id,name,-1,-1,table),
         ObjectCollection("USERS"){};
 
     virtual ~Group(){};
@@ -153,12 +170,15 @@ private:
     {
         return insert_replace(db, true);
     }
+<<<<<<< HEAD
 
     // *************************************************************************
     // ID Set management
     // *************************************************************************
 
     int add_del_collection_id(User* object, bool add, string& error_str);
+=======
+>>>>>>> master
 };
 
 #endif /*GROUP_H_*/

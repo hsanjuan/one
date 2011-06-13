@@ -109,7 +109,10 @@ public class GroupTest
 
         assertTrue( group.id() >= 100 );
         assertTrue( group.getName().equals(group_name) );
+<<<<<<< HEAD
         assertTrue( group.uid() == 0 );
+=======
+>>>>>>> master
     }
 
     @Test
@@ -134,6 +137,7 @@ public class GroupTest
     }
 
     @Test
+<<<<<<< HEAD
     public void chown()
     {
         // Create a new user
@@ -156,6 +160,8 @@ public class GroupTest
     }
 
     @Test
+=======
+>>>>>>> master
     public void userGroupRelations()
     {
         Hashtable<String, User> users   = new Hashtable<String, User>();

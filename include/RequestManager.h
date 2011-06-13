@@ -23,7 +23,6 @@
 #include "UserPool.h"
 #include "VirtualNetworkPool.h"
 #include "ImagePool.h"
-#include "ClusterPool.h"
 #include "VMTemplatePool.h"
 #include "GroupPool.h"
 
@@ -43,27 +42,13 @@ class RequestManager : public ActionListener
 {
 public:
 
-    RequestManager(
-        VirtualMachinePool *    _vmpool,
-        HostPool *              _hpool,
-        VirtualNetworkPool *    _vnpool,
-        UserPool           *    _upool,
-        ImagePool          *    _ipool,
-        ClusterPool        *    _cpool,
-        VMTemplatePool     *    _tpool,
-        GroupPool          *    _gpool,
-        int                     _port,
-        string                  _xml_log_file)
-            :vmpool(_vmpool),hpool(_hpool),vnpool(_vnpool),upool(_upool),
-            ipool(_ipool),cpool(_cpool),tpool(_tpool),gpool(_gpool),port(_port),
-            socket_fd(-1),xml_log_file(_xml_log_file)
+    RequestManager(int _port, const string _xml_log_file)
+            :port(_port), socket_fd(-1), xml_log_file(_xml_log_file)
     {
         am.addListener(this);
     };
 
-    ~RequestManager()
-    {}
-    ;
+    ~RequestManager(){}; 
 
     /**
      *  This functions starts the associated listener thread (XML server), and
@@ -90,6 +75,7 @@ public:
         am.trigger(ACTION_FINALIZE,0);
     };
 
+
 private:
 
     //--------------------------------------------------------------------------
@@ -109,46 +95,6 @@ private:
      *  Thread id for the XML Server
      */
     pthread_t               rm_xml_server_thread;
-
-    /**
-     *  Pointer to the VM Pool, to access Virtual Machines
-     */
-    VirtualMachinePool *    vmpool;
-
-    /**
-     *  Pointer to the Host Pool, to access hosts
-     */
-    HostPool           *    hpool;
-
-    /**
-     *  Pointer to the VN Pool, to access Virtual Netowrks
-     */
-    VirtualNetworkPool *    vnpool;
-
-    /**
-     *  Pointer to the User Pool, to access users
-     */
-    UserPool           *    upool;
-
-    /**
-     *  Pointer to the Image Pool, to access images
-     */
-    ImagePool          *    ipool;
-
-    /**
-     *  Pointer to the Cluster Pool, to access clusters
-     */
-    ClusterPool        *    cpool;
-
-    /**
-     *  Pointer to the Template Pool, to access templates
-     */
-    VMTemplatePool     *    tpool;
-
-    /**
-     *  Pointer to the Group Pool, to access groups
-     */
-    GroupPool          *    gpool;
 
     /**
      *  Port number where the connection will be open
@@ -187,26 +133,10 @@ private:
      */
     void do_action(const string & action, void * arg);
 
-    void register_xml_methods();
-
-    int setup_socket();
-
-    // ----------------------------------------------------------------------
-    // ----------------------------------------------------------------------
-    //                          Error Messages
-    // ----------------------------------------------------------------------
-    // ----------------------------------------------------------------------
-
-
     /**
-     *  Logs authorization errors
-     *    @param method name of the RM method where the error arose
-     *    @param action authorization action
-     *    @param object object that needs to be authorized
-     *    @param uid user that is authorized
-     *    @param id id of the object, -1 for Pool
-     *    @returns string for logging
+     *  Register the XML-RPC API Calls
      */
+<<<<<<< HEAD
     static string authorization_error (const string& method,
                                        const string &action,
                                        const string &object,
@@ -1868,7 +1798,11 @@ private:
         ImagePool * ipool;
         UserPool  * upool;
     };
+=======
+    void register_xml_methods();
+>>>>>>> master
 
+    int setup_socket();
 };
 
 

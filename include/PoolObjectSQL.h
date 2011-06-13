@@ -42,7 +42,7 @@ public:
     PoolObjectSQL(int id, const string& _name, int _uid,
                   int _gid, const char *_table)
             :ObjectSQL(),ObjectXML(),oid(id),name(_name),uid(_uid),gid(_gid),
-             valid(true),obj_template(0),table(_table)
+             valid(true),public_obj(0),obj_template(0),table(_table)
     {
         pthread_mutex_init(&mutex,0);
     };
@@ -66,36 +66,41 @@ public:
         return name;
     };
 
+    /**
+     *  Returns true if the image is public
+     *     @return true if the image is public
+     */
+    bool isPublic()
+    {
+        return (public_obj == 1);
+    };
+
     int get_uid()
     {
         return uid;
     };
-
-    virtual int set_uid(int _uid)
-    {
-        if( uid == -1 )
-        {
-            return -1;
-        }
-
-        uid = _uid;
-        return 0;
-    }
 
     int get_gid()
     {
         return gid;
     };
 
-    virtual int set_gid(int _gid)
+    /**
+     * Changes the object's owner id
+     * @param _uid New User ID
+     */
+    void set_uid(int _uid)
     {
-        if( gid == -1 )
-        {
-            return -1;
-        }
+        uid = _uid;
+    }
 
+    /**
+     * Changes the object's group id
+     * @param _gid New Group ID
+     */
+    void set_gid(int _gid)
+    {
         gid = _gid;
-        return 0;
     };
 
     /* --------------------------------------------------------------------- */
@@ -262,6 +267,7 @@ public:
     void set_template_error_message(const string& message);
 
     /**
+<<<<<<< HEAD
      *  Some PoolObjectSQL sub-classes are also a sub-class of ObjectCollection.
      *
      *    @return a pointer to the object if it is an ObjectCollection,
@@ -271,6 +277,23 @@ public:
     {
         return 0;
     };
+=======
+     *  Factory method for templates, it should be implemented
+     *  by classes that uses templates
+     *    @return a new template
+     */
+    virtual Template * get_new_template()
+    {
+        return 0;
+    }
+
+    /**
+     *  Replace template for this object. Object should be updated
+     *  after calling this method
+     *    @param tmpl string representation of the template
+     */
+    int replace_template(const string& tmpl_str, string& error);
+>>>>>>> master
 
 protected:
 
@@ -355,6 +378,11 @@ protected:
      *  The contents of this object are valid
      */
     bool    valid;
+
+    /**
+     *  Set if the object is public
+     */
+    int     public_obj;
 
     /**
      *  Template for this object, will be allocated if needed

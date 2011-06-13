@@ -48,7 +48,7 @@ GroupPool::GroupPool(SqlDB * db):PoolSQL(db, Group::table)
         Group *     group;
 
         // Build the default oneadmins & users group
-        group = new Group(ONEADMIN_ID, 0, ONEADMIN_NAME);
+        group = new Group(ONEADMIN_ID, ONEADMIN_NAME);
 
         rc = PoolSQL::allocate(group, error_str);
 
@@ -57,7 +57,7 @@ GroupPool::GroupPool(SqlDB * db):PoolSQL(db, Group::table)
             goto error_groups;
         }
 
-        group = new Group(USERS_ID, 0, USERS_NAME);
+        group = new Group(USERS_ID, USERS_NAME);
 
         rc = PoolSQL::allocate(group, error_str);
 
@@ -81,7 +81,7 @@ error_groups:
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
-int GroupPool::allocate(int uid, string name, int * oid, string& error_str)
+int GroupPool::allocate(string name, int * oid, string& error_str)
 {
     Group *         group;
     ostringstream   oss;
@@ -92,7 +92,7 @@ int GroupPool::allocate(int uid, string name, int * oid, string& error_str)
     }
 
     // Check for duplicates
-    group = get(name, uid, false);
+    group = get(name, false);
 
     if( group != 0 )
     {
@@ -100,7 +100,7 @@ int GroupPool::allocate(int uid, string name, int * oid, string& error_str)
     }
 
     // Build a new Group object
-    group = new Group(-1, uid, name);
+    group = new Group(-1, name);
 
     // Insert the Object in the pool
     *oid = PoolSQL::allocate(group, error_str);
@@ -124,30 +124,37 @@ error_common:
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
-// TODO: add error string
-
-int GroupPool::drop(Group * group)
+int GroupPool::drop(PoolObjectSQL * objsql, string& error_msg)
 {
-    int         rc;
+    Group * group = static_cast<Group*>(objsql);
+
+    int rc;
 
     // Return error if the group is a default one.
     if( group->get_oid() < 100 )
     {
-        NebulaLog::log("GROUP",Log::ERROR,
-                       "System Groups (ID < 100) cannot be deleted.");
-        return -1;
+        error_msg = "System Groups (ID < 100) cannot be deleted.";
+        NebulaLog::log("GROUP", Log::ERROR, error_msg);
+        return -2;
     }
 
     if( group->get_collection_size() > 0 )
     {
         ostringstream oss;
         oss << "Group " << group->get_oid() << " is not empty.";
-        NebulaLog::log("GROUP",Log::ERROR, oss.str());
+        error_msg = oss.str();
+        NebulaLog::log("GROUP", Log::ERROR, error_msg);
 
-        return -1;
+        return -3;
     }
 
     rc = group->drop(db);
+
+    if( rc != 0 )
+    {
+        error_msg = "SQL DB error";
+        rc = -1;
+    }
 
     return rc;
 }

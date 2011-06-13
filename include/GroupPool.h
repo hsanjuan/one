@@ -61,15 +61,13 @@ public:
     /**
      *  Allocates a new group, writting it in the pool database. No memory is
      *  allocated for the object.
-     *    @param uid user id (the owner of the Object)
      *    @param name Group name
      *    @param oid the id assigned to the Group
      *    @param error_str Returns the error reason, if any
      *
      *    @return the oid assigned to the object, -1 in case of failure
      */
-    int allocate(int                      uid,
-                 string                   name,
+    int allocate(string                   name,
                  int *                    oid,
                  string&                  error_str);
 
@@ -89,14 +87,13 @@ public:
      *  Gets an object from the pool (if needed the object is loaded from the
      *  database).
      *   @param name of the object
-     *   @param uid id of owner
      *   @param lock locks the object if true
      *
      *   @return a pointer to the object, 0 in case of failure
      */
-    Group * get(const string& name, int uid, bool lock)
+    Group * get(const string& name, bool lock)
     {
-        return static_cast<Group *>(PoolSQL::get(name,uid,lock));
+        return static_cast<Group *>(PoolSQL::get(name,-1,lock));
     };
 
     /** Update a particular Group
@@ -111,10 +108,14 @@ public:
     /**
      *  Drops the Group from the data base. The object mutex SHOULD be
      *  locked.
-     *    @param group a pointer to the object
-     *    @return 0 on success.
+     * @param objsql a pointer to a Group object
+     * @param error_msg Error reason, if any
+     * @return  0 on success,
+     *          -1 DB error,
+     *          -2 object is a system group (ID < 100)
+     *          -3 Group's User IDs set is not empty
      */
-    int drop(Group * group);
+    int drop(PoolObjectSQL * objsql, string& error_msg);
 
     /**
      *  Bootstraps the database table(s) associated to the Group pool
@@ -145,7 +146,7 @@ private:
      */
     PoolObjectSQL * create()
     {
-        return new Group(-1,-1,"");
+        return new Group(-1,"");
     };
 };
 

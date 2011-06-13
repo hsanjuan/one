@@ -33,11 +33,6 @@ class User : public PoolObjectSQL, public ObjectCollection
 public:
 
     /**
-     *  Function to write a User on an output stream
-     */
-    friend ostream& operator<<(ostream& os, User& u);
-
-    /**
      * Function to print the User object into a string in XML format
      *  @param xml the resulting XML string
      *  @return a reference to the generated string
@@ -96,9 +91,45 @@ public:
     static int split_secret(const string secret, string& user, string& pass);
 
     /**
-     *  Sets the User's gid and add the User's oid to that group
+     *  Returns a copy of the groups for the user
      */
-    int set_gid(int _gid);
+    set<int> get_groups()
+    {
+        return get_collection_copy();
+    };
+
+    // *************************************************************************
+    // Group IDs set Management
+    // *************************************************************************
+
+    /**
+     *  Adds a group ID to the groups set.
+     *
+     *    @param id The new id
+     *    @return 0 on success, -1 if the ID was already in the set
+     */
+    int add_group(int group_id)
+    {
+        return add_collection_id(group_id);
+    }
+
+    /**
+     *  Deletes a group ID from the groups set.
+     *
+     *    @param id The id
+     *    @return   0 on success,
+     *              -1 if the ID was not in the set,
+     *              -2 if the group to delete is the main group
+     */
+    int del_group(int group_id)
+    {
+        if( group_id == gid )
+        {
+            return -2;
+        }
+
+        return del_collection_id(group_id);
+    }
 
     /**
      *  Deletes this group's ID from the set. Fails if the group is the main one
@@ -185,6 +216,7 @@ private:
      */
     int from_xml(const string &xml_str);
 
+
 protected:
 
     // *************************************************************************
@@ -194,27 +226,15 @@ protected:
     User(int id, int _gid, const string& _username, const string& _password, bool _enabled):
         PoolObjectSQL(id,_username,-1,_gid,table),
         ObjectCollection("GROUPS"),
+<<<<<<< HEAD
         password(_password), enabled(_enabled), cleaning(false)
         {};
+=======
+        password(_password), enabled(_enabled)
+        { };
+>>>>>>> master
 
     virtual ~User(){};
-
-    // *************************************************************************
-    // Group IDs set Management
-    // *************************************************************************
-
-    /**
-     *  Adds the User oid to the Main Group (gid), should be called after
-     *  the constructor.
-     */
-    int add_to_group();
-
-    /**
-     *  Deletes the User ID from all the groups it belongs to. Must be called
-     *  before the User is dropped.
-     */
-    int delete_from_groups();
-
 
     // *************************************************************************
     // DataBase implementation

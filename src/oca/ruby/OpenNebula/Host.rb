@@ -25,7 +25,8 @@ module OpenNebula
             :info     => "host.info",
             :allocate => "host.allocate",
             :delete   => "host.delete",
-            :enable   => "host.enable"
+            :enable   => "host.enable",
+            :update   => "host.update"
         }
 
         HOST_STATES=%w{INIT MONITORING MONITORED ERROR DISABLED}
@@ -102,6 +103,13 @@ module OpenNebula
             set_enabled(false)
         end
 
+        # Replaces the template contents
+        #
+        # +new_template+ New template contents
+        def update(new_template)
+            super(HOST_METHODS[:update], new_template)
+        end
+
         #######################################################################
         # Helpers to get Host information
         #######################################################################
@@ -121,12 +129,15 @@ module OpenNebula
             SHORT_HOST_STATES[state_str]
         end
 
+<<<<<<< HEAD
         # Returns the cluster ID of the Host
         def cluster_id
             self['CID'].to_i
         end
 
 
+=======
+>>>>>>> master
     private
         def set_enabled(enabled)
             return Error.new('ID not defined') if !@pe_id
