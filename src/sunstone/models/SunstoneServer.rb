@@ -105,41 +105,39 @@ class SunstoneServer
                 cert_array.unshift('-----BEGIN CERTIFICATE-----').push('-----END CERTIFICATE-----')
                 user_cert = cert_array.join("\n")
                 user_cert = OpenSSL::X509::Certificate.new(user_cert)
-                subject_name = user_cert.subject.to_s
+		subjectname = user_cert.subject.to_s
+                subjectname_nosp = subjectname.gsub(/\s/, '')
             rescue
                 return [401, failed + "Could not create X509 certificate from " + user_cert]
             end
 
 
-            # Password should be DN with whitespace removed.
-            password = subject_name.gsub(/\s/, '')
-
+            # Check that the DN corresponds to the password of a user
             begin
-                username = user_pool["USER[PASSWORD=\"#{password}\"]/NAME"]
-	    if (username == nil)
+                username = user_pool["USER[PASSWORD=\"#{subjectname_nosp}\"]/NAME"]
+	        if (username == nil)
 	 
-	        # Check if the DN is part of a |-separted multi-DN password
-	        user_elts = Array.new
-	        user_pool.each {|e| user_elts << e['PASSWORD']}
-	        multiple_users = user_elts.select {|e| e=~ /\|/ }
-	        matched = nil
-	        multiple_users.each do |e|
-	           e.to_s.split('|').each do |w|
-	               if (w == password)
-	                   matched=e
-		           break
+	            # Check if the DN is part of a |-separted multi-DN password
+	            user_elts = Array.new
+	            user_pool.each {|e| user_elts << e['PASSWORD']}
+	            multiple_users = user_elts.select {|e| e=~ /\|/ }
+	            matched = nil
+	            multiple_users.each do |e|
+	               e.to_s.split('|').each do |w|
+	                   if (w == subjectname_nosp)
+	                       matched=e
+		               break
+	                   end
 	               end
-	           end
-	           break if matched
-	        end
-	        if matched
-	            password = matched.to_s
-	        end
-                username = user_pool["USER[PASSWORD=\"#{password}\"]/NAME"]
-	    end
-	
+	               break if matched
+	            end
+	            if matched
+	                password = matched.to_s
+	            end
+                    username = user_pool["USER[PASSWORD=\"#{password}\"]/NAME"]
+	        end	
             rescue
-                return [401, failed + "User with DN " + password + " not found."]
+                return [401, failed + "User with DN " + subjectname + " not found."]
             end
 	    
 	    config = self.load_config
@@ -152,6 +150,7 @@ class SunstoneServer
             rescue
                 return [401, failed + "Could not read " + hostkey_path]
             end
+	    
             begin
                 host_cert_array=host_cert.split("\n")
                 begin_lines=host_cert_array.select{|l| l.match(/BEGIN RSA PRIVATE KEY/)}
@@ -176,16 +175,14 @@ class SunstoneServer
 
             # Sign with timestamp
             time=Time.now.to_i+7*24*3600
-	    passwd_digest = Digest::SHA1.hexdigest(password)
-            text_to_sign="#{username}:#{passwd_digest}:#{time}"
+            text_to_sign="#{username}:#{subjectname}:#{time}"
             begin
                 special_token=Base64::encode64(rsa.private_encrypt(text_to_sign)).gsub!(/\n/, '').strip
             rescue
-                return [401, failed + "Could not create host-signed token for " + password]
+                return [401, failed + "Could not create host-signed token for " + subjectname]
             end
 
             return [204, user_pool["USER[NAME=\"#{username}\"]/ID"], "#{username}", "host-signed:#{special_token}}"]
-            #return one_client_user(username, "host-signed:#{special_token}}")
         end
 
     end    

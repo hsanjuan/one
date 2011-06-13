@@ -276,7 +276,7 @@ class X509Auth
 	        public_key = extract_public_key(cert)				
 		# Decrypt the signed text with the public key
                 decrypted=decrypt(special_token, public_key)      
-                username, subjn_digest, time, last =decrypted.split(':')	
+                username, subjectname, time, last =decrypted.split(':')	
                 if last # There was a : in the subjectname, from kerberos X509 credential
                     subjectname = subjectname + ':' + time
                     time = last
@@ -293,16 +293,9 @@ class X509Auth
 		# Check the username
                 raise "Login name " + username + " did not match username " + user + "." if user!=username
 		
-		# The user is authorized if their subject name has been set as their password.
-		if  user_id.to_i == 0
-		    dn_digest = dn
-		else
-		    # Compare digests. A digest is used instead of a plain DN because
-		    # it may not be possible to encrypt many '|'-separated DNs
-		    dn_digest = Digest::SHA1.hexdigest(dn)
-		end
-
-	        raise "Login DN hash " + subjn_digest + " did not match hash of user DN " + dn + ", which was " + dn_digest if subjn_digest!=dn_digest
+		# The user is authorized if their subject name has been set as their password.		
+		dn_ok =  dn.split('|').include?(subjectname.gsub(/\s/, ''))
+	        raise "Login DN " + subjectname + " did not match user DN " + dn if !dn_ok
 		
 	        true    
 	    else
@@ -326,17 +319,10 @@ class X509Auth
                 subject_name = user_cert.subject.to_s
 	        failed = "Authentication failed for " + subject_name + "."
 
-	        dn_ok =  dn.split('|').include?(subject_name.gsub(/\s/, ''))
-	        if dn_ok
-	        ok = "true"
-	        else
-	        ok = "false"
-	        end
-                #raise ok
-
-	        # Check that the user's DN has been added to the users database
+                # Check that the user's DN has been added to the users database
+	        dn_ok =  dn.split('|').include?(subject_name.gsub(/\s/, ''))	        
                 unless dn_ok
-	            raise "User " + subject_name + " is not mapped in the user database. " +  dn
+	            raise "User " + subject_name + " is not mapped in the user database. Found " +  dn
                 end
 
                 # Extract the public key

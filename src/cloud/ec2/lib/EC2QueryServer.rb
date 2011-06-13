@@ -134,20 +134,19 @@ class EC2QueryServer < CloudServer
                 cert_array.unshift('-----BEGIN CERTIFICATE-----').push('-----END CERTIFICATE-----')
                 user_cert = cert_array.join("\n")
                 user_cert = OpenSSL::X509::Certificate.new(user_cert)
-                subject_name = user_cert.subject.to_s
-                puts(subject_name)
+                subjectname = user_cert.subject.to_s
+                subjectname_nosp = subjectname.gsub(/\s/, '')
+                puts(subjectname)
             rescue
 	        raise failed + "Could not create X509 certificate from " + user_cert
 	    end
 	
-	    # Password should be DN with whitespace removed.
-	    password = subject_name.gsub(/\s/, '')
+	    # Check that the DN corresponds to the password of a user
 	    begin
-	        username = get_username(password)
-	    puts("The username is " + username)
-	    password = get_user_password(username)
+	        username = get_username(subjectname_nosp)
+	        puts("The username is " + username)
 	    rescue
-	        raise failed + "User with DN " + password + " not found."
+	        raise failed + "User with DN " + subjectname + " not found."
 	    end
 	
 	    # Sign the message and compose the special login token
@@ -185,17 +184,13 @@ class EC2QueryServer < CloudServer
 	
 	    # Sign with timestamp
             time=Time.now.to_i+3600
-	    # If multiple DNs are authorized for the user, the '|'-separated
-	    # DN list may be very long, too long to encrypt with the host key
-	    # So encrypt a digest of the password instead
-	    passwd_digest = Digest::SHA1.hexdigest(password)
-            text_to_sign="#{username}:#{passwd_digest}:#{time}"	    	    
+            text_to_sign="#{username}:#{subjectname}:#{time}"	    	    
 	    puts "signing " + text_to_sign	
 	
 	    begin
                 special_token=Base64::encode64(rsa.private_encrypt(text_to_sign)).gsub!(/\n/, '').strip		
             rescue
-	        raise failed + "Could not create host-signed token for " + password
+	        raise failed + "Could not create host-signed token for " + subjectname
 	    end
 	    
 	    puts special_token
