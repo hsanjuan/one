@@ -197,7 +197,17 @@ end
 ##############################################################################
 # GET Resource information
 ##############################################################################
+get %r{/(zone|vdc)/(\d+)/(\w+)} do |kind, id, aggpool|
+#get '/:pool/:id/:aggpool' do
+    puts kind
+    puts id
+    puts aggpool
+    @OzonesServer.get_full_resource(kind,id,aggpool)
+end
+
 get %r{/(zone|vdc)/(\d+)} do |kind, id|
+        puts "oyeeeeeee"
+        puts id
     @OzonesServer.get_resource(kind,id)
 end
 
@@ -205,9 +215,7 @@ get '/:pool/:aggpool' do
     @OzonesServer.get_aggregated_pool(params[:pool], params[:aggpool])
 end
 
-get '/:pool/:id/:aggpool' do
-    @OzonesServer.get_full_resource(params[:pool], params[:id], params[:aggpool])
-end
+
 
 ##############################################################################
 # Delete Resource

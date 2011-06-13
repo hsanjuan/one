@@ -59,6 +59,42 @@ class OzonesServer
         return [200, aggpool.to_json]
     end
     
+    # Gets an aggreageted pool for a zone or vdc
+    # ie All the hosts in all the Zones    
+    def get_full_resource(kind, id, aggkind)
+        resource = retrieve_resource(kind, id)
+        
+        if OZones.is_error?(resource)
+            return [404, resource.to_json]
+        end
+        
+        # TODO build the vdc retrieval
+        
+        if kind == "zone"
+            client   = OpenNebula::Client.new(
+                                  resource.onename + ":" + resource.onepass,
+                                  resource.endpoint)                             
+
+            simple_pool = case aggkind
+                when "host"  then OpenNebulaJSON::HostPoolJSON.new(client)
+                when "image" then OpenNebulaJSON::ImagePoolJSON.new(client)
+                when "user"  then OpenNebulaJSON::UserPoolJSON.new(client)               
+                when "vm"    then OpenNebulaJSON::VirtualMachinePoolJSON.new(client)
+                when "vn"    then OpenNebulaJSON::VirtualNetworkPoolJSON.new(client)
+                else
+                    error = OZones::Error.new(
+                      "Error: #{aggkind} aggregated pool for #{kind} #{id}not supported")
+                    return [404, error.to_json]
+            end
+            
+            simple_pool.info
+            
+            return [200, simple_pool.to_json]
+        end
+        
+        
+    end
+    
     def get_resource(kind, id)
         resource = retrieve_resource(kind, id)
         if OZones.is_error?(resource)
