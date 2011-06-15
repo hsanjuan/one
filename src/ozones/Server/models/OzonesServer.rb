@@ -59,8 +59,8 @@ class OzonesServer
         return [200, aggpool.to_json]
     end
     
-    # Gets an aggreageted pool for a zone or vdc
-    # ie All the hosts in all the Zones    
+    # Gets an aggreageted pool for a zone or vdc in json
+    # ie All the hosts in all the Zones   
     def get_full_resource(kind, id, aggkind)
         resource = retrieve_resource(kind, id)
         
@@ -91,10 +91,9 @@ class OzonesServer
             
             return [200, simple_pool.to_json]
         end
-        
-        
     end
     
+    # Get a json representation resource with local (DB) info    
     def get_resource(kind, id)
         resource = retrieve_resource(kind, id)
         if OZones.is_error?(resource)
@@ -104,6 +103,7 @@ class OzonesServer
         end
     end  
 
+    # Get hold of a object of a particular kind
     def retrieve_resource(kind, id)
         resource = case kind
             when "vdc"  then OZones::Vdc.get(id)
@@ -125,6 +125,7 @@ class OzonesServer
     ############################################################################
     # Create resources
     ############################################################################
+    # Creates a resource of a kind, and updates the Proxy Rules
     def create_resource(kind, data, pr)
         resource = case kind
             when "vdc"  then 
@@ -174,6 +175,9 @@ class OzonesServer
                     zone_data[key.downcase.to_sym]=value if key!="pool"
                 }
                 
+                zone_data[:onepass] = 
+                                  Digest::SHA1.hexdigest(zone_data[:onepass])
+                
                 rc = @ocaInt.check_oneadmin(zone_data[:onename], 
                                             zone_data[:onepass], 
                                             zone_data[:endpoint])
@@ -204,6 +208,7 @@ class OzonesServer
     ############################################################################
     # Delete resources
     ############################################################################
+    # Deletes a resource of a kind, and updates the Proxy Rules
     def delete_resource(kind, id, pr)
         resource = retrieve_resource(kind, id)
         if OZones.is_error?(resource)
@@ -221,7 +226,7 @@ class OzonesServer
     end
 
     ############################################################################
-    #
+    # TODO
     ############################################################################
     def perform_action(kind, id, action_json)
         resource = retrieve_resource(kind, id)

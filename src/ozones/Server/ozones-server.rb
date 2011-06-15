@@ -84,7 +84,8 @@ if Auth.all.size == 0
              exit -1
          end
          credentials[1] = Digest::SHA1.hexdigest(credentials[1])
-         @auth=Auth.create({:name => credentials[0], :password => credentials[1]})
+         @auth=Auth.create({:name => credentials[0], 
+                            :password => credentials[1]})
          @auth.save
     else
         warn "oZones admin credentials not set, missing OZONES_AUTH file."
@@ -112,7 +113,6 @@ set :show_exceptions, false
 helpers do
     def authorized?        
         http_auth = Rack::Auth::Basic::Request.new(request.env)
-        pp http_auth.credentials
         if http_auth.provided? && http_auth.basic? && http_auth.credentials
             user      = http_auth.credentials[0]
             sha1_pass = Digest::SHA1.hexdigest(http_auth.credentials[1])

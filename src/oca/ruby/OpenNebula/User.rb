@@ -26,11 +26,7 @@ module OpenNebula
             :allocate => "user.allocate",
             :delete   => "user.delete",
             :passwd   => "user.passwd",
-<<<<<<< HEAD
-            :chown    => "user.chown",
-=======
             :chgrp    => "user.chgrp",
->>>>>>> master
             :addgroup => "user.addgroup",
             :delgroup => "user.delgroup"
         }
