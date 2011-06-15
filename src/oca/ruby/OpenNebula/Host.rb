@@ -129,15 +129,6 @@ module OpenNebula
             SHORT_HOST_STATES[state_str]
         end
 
-<<<<<<< HEAD
-        # Returns the cluster ID of the Host
-        def cluster_id
-            self['CID'].to_i
-        end
-
-
-=======
->>>>>>> master
     private
         def set_enabled(enabled)
             return Error.new('ID not defined') if !@pe_id

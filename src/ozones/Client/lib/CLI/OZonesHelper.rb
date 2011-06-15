@@ -1,4 +1,3 @@
-require 'CLI/CLIHelper'
 require 'OZonesClient'
 
 module OZonesHelper

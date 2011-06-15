@@ -9,13 +9,24 @@ OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Client"
 
 $: << OZONES_LOCATION + "/lib"
 
-require 'CLI/CommandParser'
+require 'CLI/command_parser'
 require 'CLI/OZonesHelper/VDCHelper.rb'
 
-cmd=CLI::CommandParser.new(ARGV) do
-    set :option, CLI::OPTIONS
+cmd=CommandParser::CmdParser.new(ARGV) do
+    usage "ovdcs COMMAND [args..] [options..]"	
+    version OpenNebulaHelper::ONE_VERSION
     
-    helper = VDCHelper.new "vdc"
+    ########################################################################
+    # Global Options
+    ######################################################################## 
+    set :option, CommandParser::OPTIONS
+    
+    begin
+        helper = VDCHelper.new "vdc"
+    rescue Exception => e  
+        warn e.message
+        exit -1
+    end
     
     command :create, 'Create a new VDC', :file do
         helper.create_resource(args[0])
@@ -25,7 +36,8 @@ cmd=CLI::CommandParser.new(ARGV) do
         helper.show_resource(args[0],options)
     end
     
-    command :list, 'Lists VDCs in the pool', :option=>CLIHelper::OPTIONS do
+    command :list, 'Lists VDCs in the pool', 
+            :options=>CLIHelper::OPTIONS+OpenNebulaHelper::OPTIONS do
         helper.list_pool(options)
     end
 

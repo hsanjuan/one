@@ -1,4 +1,5 @@
 require 'CLI/OZonesHelper'
+require 'CLI/OZonesHelper/one_helper'
 
 class ZonesHelper < OZonesHelper::OZHelper
     def initialize(kind)
@@ -50,12 +51,8 @@ class ZonesHelper < OZonesHelper::OZHelper
             column :NAME, "Name of the VDC", :right, :size=>15 do |d,e|
                 d["name"]
             end
-
-            column :HOSTS, "Hosts belonging to the VDC", :right, :size=>40 do |d,e|
-                d["hosts"]
-            end
         
-            default :ID, :NAME, :HOSTS
+            default :ID, :NAME
         end
 
         st.show(zone["vdcs"], options)

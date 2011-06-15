@@ -36,30 +36,6 @@ protected:
     ~ObjectCollection(){};
 
     /**
-<<<<<<< HEAD
-     *  Adds this object's ID to the set.
-     *    @param object The new object
-     *    @param error_str Error reason, if any
-     *
-     *    @return 0 on success, -1 if the ID was already in the set
-     */
-    virtual int add_collection_id(PoolObjectSQL* object, string& error_str)
-    {
-        return add_collection_id(object->get_oid(), error_str);
-    };
-
-    /**
-     *  Deletes this object's ID from the set.
-     *    @param object The object
-     *    @param error_str Error reason, if any
-     *
-     *    @return 0 on success, -1 if the ID was not in the set
-     */
-    virtual int del_collection_id(PoolObjectSQL* object, string& error_str)
-    {
-        return del_collection_id(object->get_oid(), error_str);
-    };
-=======
      *  Adds an ID to the set.
      *    @param id The new id
      *
@@ -74,7 +50,6 @@ protected:
      *    @return 0 on success, -1 if the ID was not in the set
      */
     int del_collection_id(int id);
->>>>>>> master
 
     /**
      *  Returns how many IDs are there in the set.
@@ -99,69 +74,8 @@ protected:
      *  @param xml the resulting XML string
      *  @return a reference to the generated string
      */
-<<<<<<< HEAD
-    string& to_xml(string& xml) const
-    {
-        ostringstream       oss;
-        set<int>::iterator  it;
-
-        oss << "<" << collection_name << ">";
-
-        for ( it = collection_set.begin(); it != collection_set.end(); it++ )
-        {
-            oss << "<ID>" << *it << "</ID>";
-        }
-
-        oss << "</" << collection_name << ">";
-
-        xml = oss.str();
-
-        return xml;
-    };
-
-    /**
-     *  Adds an ID to the set.
-     *    @param id The new id
-     *    @param error_str Error reason, if any
-     *
-     *    @return 0 on success, -1 if the ID was already in the set
-     */
-    int add_collection_id(int id, string& error_str)
-    {
-        pair<set<int>::iterator,bool> ret;
-
-        ret = collection_set.insert(id);
-
-        if( !ret.second )
-        {
-            error_str = "ID is already in the set";
-            return -1;
-        }
-
-        return 0;
-    };
-
-    /**
-     *  Deletes an ID from the set.
-     *    @param id The id
-     *    @param error_str Error reason, if any
-     *
-     *    @return 0 on success, -1 if the ID was not in the set
-     */
-    int del_collection_id(int id, string& error_str)
-    {
-        if( collection_set.erase(id) != 1 )
-        {
-            error_str = "ID is not in the set";
-            return -1;
-        }
-
-        return 0;
-    };
-=======
     string& to_xml(string& xml) const;
 
->>>>>>> master
 
     /**
      *  Returns a copy of the IDs set

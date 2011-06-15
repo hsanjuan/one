@@ -46,36 +46,6 @@ public:
     int from_xml(const string &xml_str);
 
     /**
-<<<<<<< HEAD
-     *  Adds this object's ID to the set. The object MUST be a User, locked.
-     *  The group's ID is added to the User's set.
-     *    @param object The new object
-     *    @param error_str Error reason, if any
-     *
-     *    @return 0 on success, -1 if the ID was already in the set
-     */
-    int add_collection_id(PoolObjectSQL* object, string& error_str);
-
-    /**
-     *  Deletes this object's ID from the set. The object MUST be a User,
-     *  locked. The group's ID is deleted form the User's set.
-     *    @param object The object
-     *    @param error_str Error reason, if any
-     *
-     *    @return 0 on success, -1 if the ID was not in the set
-     */
-    int del_collection_id(PoolObjectSQL* object, string& error_str);
-
-    /**
-     *  Some PoolObjectSQL sub-classes are also a sub-class of ObjectCollection.
-     *
-     *    @return a pointer to the object.
-     */
-    ObjectCollection * get_collection()
-    {
-        return this;
-    };
-=======
      *  Adds this user's ID to the set. 
      *    @param id of the user to be added to the group
      *    @return 0 on success
@@ -94,7 +64,6 @@ public:
     {
         return del_collection_id(id);
     }
->>>>>>> master
 
 private:
 
@@ -170,15 +139,6 @@ private:
     {
         return insert_replace(db, true);
     }
-<<<<<<< HEAD
-
-    // *************************************************************************
-    // ID Set management
-    // *************************************************************************
-
-    int add_del_collection_id(User* object, bool add, string& error_str);
-=======
->>>>>>> master
 };
 
 #endif /*GROUP_H_*/

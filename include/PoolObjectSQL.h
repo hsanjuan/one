@@ -267,17 +267,6 @@ public:
     void set_template_error_message(const string& message);
 
     /**
-<<<<<<< HEAD
-     *  Some PoolObjectSQL sub-classes are also a sub-class of ObjectCollection.
-     *
-     *    @return a pointer to the object if it is an ObjectCollection,
-     *            NULL otherwise.
-     */
-    virtual ObjectCollection * get_collection()
-    {
-        return 0;
-    };
-=======
      *  Factory method for templates, it should be implemented
      *  by classes that uses templates
      *    @return a new template
@@ -293,7 +282,6 @@ public:
      *    @param tmpl string representation of the template
      */
     int replace_template(const string& tmpl_str, string& error);
->>>>>>> master
 
 protected:
 

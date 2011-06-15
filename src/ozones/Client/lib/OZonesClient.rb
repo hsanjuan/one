@@ -34,7 +34,7 @@ EOT
         ######################################################################
         # Initialize client library
         ######################################################################
-        def initialize(endpoint_str=nil, user=nil, pass=nil,
+        def initialize(user=nil, pass=nil, endpoint_str=nil,
                        timeout=nil, debug_flag=true)
             @debug   = debug_flag
             @timeout = timeout
@@ -51,12 +51,17 @@ EOT
             # Autentication
             if user && pass
                 @ozonesauth = [user, pass]
+            else
+                @ozonesauth=File.read(ENV['OZONES_AUTH']).strip.split(':')
             end
-
-            # TODO add auth
-            #if !@ozonesauth
-            #    raise "No authorization data present"
-            #end
+            
+            if !@ozonesauth 
+                raise "No authorization data present"
+            end
+            
+            if @ozonesauth.size != 2
+                raise "Authorization data malformed"
+            end
         end
         
         #####################################
@@ -71,7 +76,7 @@ EOT
             url = URI.parse(@endpoint+"/" + kind)
             req = Net::HTTP::Get.new(url.path)
 
-            #req.basic_auth @occiauth[0], @occiauth[1]
+            req.basic_auth @ozonesauth[0], @ozonesauth[1]
 
             res = OZonesClient::http_start(url, @timeout) {|http|
                 http.request(req)
@@ -102,7 +107,7 @@ EOT
             req = Net::HTTP::Post.new(url.path)
             req.body=body_str
 
-            #req.basic_auth @occiauth[0], @occiauth[1]
+            req.basic_auth @ozonesauth[0], @ozonesauth[1]
 
             res = OZonesClient::http_start(url, @timeout) do |http|
                 http.request(req)
@@ -116,8 +121,7 @@ EOT
             url = URI.parse(@endpoint+"/#{kind}/" + id.to_s)
             req = Net::HTTP::Get.new(url.path)
             
-            # TODO    
-            #req.basic_auth @occiauth[0], @occiauth[1]
+            req.basic_auth @ozonesauth[0], @ozonesauth[1]
 
             res = OZonesClient::http_start(url, @timeout) {|http|
                 http.request(req)
@@ -129,9 +133,8 @@ EOT
         def delete_resource(kind, id)
             url = URI.parse(@endpoint+"/#{kind}/" + id.to_s)
             req = Net::HTTP::Delete.new(url.path)
-            
-            # TODO    
-            #req.basic_auth @occiauth[0], @occiauth[1]
+ 
+            req.basic_auth @ozonesauth[0], @ozonesauth[1]
 
             res = OZonesClient::http_start(url, @timeout) {|http|
                 http.request(req)
@@ -168,7 +171,8 @@ EOT
     def self.is_http_error?(value)
         value.class == Net::HTTPInternalServerError ||
         value.class == Net::HTTPBadRequest ||
-        value.class == Net::HTTPNotFound
+        value.class == Net::HTTPNotFound ||
+        value.class == Net::HTTPUnauthorized
     end
     
     def self.parse_error(value, kind)

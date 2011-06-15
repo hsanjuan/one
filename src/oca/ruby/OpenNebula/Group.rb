@@ -74,16 +74,7 @@ module OpenNebula
             super(GROUP_METHODS[:delete])
         end
 
-<<<<<<< HEAD
-        # Changes the owner
-        # uid:: _Integer_ the new owner id. Set to -1 to leave the current one
-        # [return] nil in case of success or an Error object
-        def chown(uid)
-            super(GROUP_METHODS[:chown], uid, -1)
-        end
 
-=======
->>>>>>> master
         # ---------------------------------------------------------------------
         # Helpers to get information
         # ---------------------------------------------------------------------
@@ -93,14 +84,7 @@ module OpenNebula
             return self["USERS/ID[.=#{uid}]"] != nil
         end
 
-<<<<<<< HEAD
-        # Returns whether or not the user with id 'uid' is part of this group
-        def contains(uid)
-            return self["USERS/ID[.=#{uid}]"] != nil
-        end
 
-=======
->>>>>>> master
         # Returns an array with the numeric user ids
         def user_ids
             array = Array.new

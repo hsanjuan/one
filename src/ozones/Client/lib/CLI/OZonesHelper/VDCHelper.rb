@@ -1,4 +1,6 @@
 require 'CLI/OZonesHelper'
+require 'CLI/OZonesHelper/one_helper'
+
 
 class VDCHelper < OZonesHelper::OZHelper
     def initialize(kind)
@@ -25,14 +27,14 @@ class VDCHelper < OZonesHelper::OZHelper
     private
 
     def format_resource(vdc, options)
-        str_h1="%-80s"
+        str_h1="%-60s"
         str="%-10s: %-20s"
         
         CLIHelper.print_header(str_h1 % ["VDC #{vdc['name']} INFORMATION"])
     
         puts str % ["ID ",       vdc['id'].to_s]
         puts str % ["NAME ",     vdc['name'].to_s]
-        puts str % ["HOSTS ",    vdc['hosts'].to_s]
+        puts str % ["ZONEID ",   vdc['zones_id'].to_s]
         puts
         
         return 0
@@ -48,12 +50,14 @@ class VDCHelper < OZonesHelper::OZHelper
                 d["name"]
             end
 
-            column :ENDPOINT, "Hosts of the VDC", :right, :size=>40 do |d,e|
-                d["hosts"]
+            column :ZONEID, "Id of the Zone where it belongs", 
+                             :right, :size=>40 do |d,e|
+                d["zones_id"]
             end
         
-            default :ID, :NAME, :ENDPOINT
+            default :ID, :NAME, :ZONEID
         end
+        
         st.show(pool[@vdc_str], options)
         
         return 0
