@@ -47,6 +47,7 @@ require 'sinatra'
 require 'yaml'
 require 'rubygems'
 require 'data_mapper'
+require 'digest/sha1'
 require 'OzonesServer'
 
 ##############################################################################
@@ -69,81 +70,73 @@ end
 DataMapper.setup(:default, db_url)
 
 require 'OZones'
+require 'Auth'
 
 DataMapper.finalize
 DataMapper.auto_upgrade!
 
+if Auth.all.size == 0
+    if ENV['OZONES_AUTH'] && File.exist?(ENV['OZONES_AUTH'])
+         credentials = IO.read(ENV['OZONES_AUTH']).strip.split(':')
+
+         if credentials.length < 2
+             warn "Authorization data malformed"
+             exit -1
+         end
+         credentials[1] = Digest::SHA1.hexdigest(credentials[1])
+         @auth=Auth.create({:name => credentials[0], :password => credentials[1]})
+         @auth.save
+    else
+        warn "oZones admin credentials not set, missing OZONES_AUTH file."
+        exit -1
+    end
+else
+   @auth=Auth.all.first
+end
+
+ADMIN_NAME = @auth.name
+ADMIN_PASS = @auth.password
+
+
 ##############################################################################
 # Sinatra Configuration
 ##############################################################################
-use Rack::Session::Pool
+#use Rack::Session::Pool
 set :host, config[:host]
 set :port, config[:port]
+set :show_exceptions, false
 
 ##############################################################################
 # Helpers
 ##############################################################################
 helpers do
-    def authorized?
-        #session[:ip] && session[:ip]==request.ip ? true : false
-        true
-    end
-
-    def build_session
-        auth = Rack::Auth::Basic::Request.new(request.env)
-        if auth.provided? && auth.basic? && auth.credentials
-            user = auth.credentials[0]
-            sha1_pass = Digest::SHA1.hexdigest(auth.credentials[1])
-
-            # TODO hacer autorizacion
-            rc = 1 # SunstoneServer.authorize(user, sha1_pass)
-            if rc[1]
-                session[:user]     = user
-                session[:user_id]  = rc[1]
-                session[:password] = sha1_pass
-                session[:ip]       = request.ip
-                session[:remember] = params[:remember]
-
-                if params[:remember]
-                    env['rack.session.options'][:expire_after] = 30*60*60*24
-                end
-
-                return [204, ""]
-            else
-                return [rc.first, ""]
+    def authorized?        
+        http_auth = Rack::Auth::Basic::Request.new(request.env)
+        pp http_auth.credentials
+        if http_auth.provided? && http_auth.basic? && http_auth.credentials
+            user      = http_auth.credentials[0]
+            sha1_pass = Digest::SHA1.hexdigest(http_auth.credentials[1])
+            if user == ADMIN_NAME && sha1_pass == ADMIN_PASS
+                return true
             end
         end
-
-        return [401, ""]
+        
+        false
     end
 
-    def destroy_session
-        session.clear
-        return [204, ""]
-    end
 end
 
 before do
     unless request.path=='/login' || request.path=='/'
         halt 401 unless authorized?
         
-        @OzonesServer = OzonesServer.new
-        
+        @OzonesServer = OzonesServer.new  
         @pr = OZones::ProxyRules.new("apache",config[:htaccess])
-        @pr.update # Write proxy configuration file
     end
 end
 
 after do
-    unless request.path=='/login' || request.path=='/'
-        unless session[:remember]
-            if params[:timeout] == true
-                env['rack.session.options'][:defer] = true
-            else
-                env['rack.session.options'][:expire_after] = 60*10
-            end
-        end
-    end
+
 end
 
 ##############################################################################
@@ -152,16 +145,6 @@ end
 get '/' do
     # TODO auth framework
     # redirect '/login' unless authorized?
-
-    time = Time.now + 60
-    response.set_cookie("one-user",
-                        :value=>"#{session[:user]}",
-                        :expires=>time)
-    response.set_cookie("one-user_id",
-                        :value=>"#{session[:user_id]}",
-                        :expires=>time)
-
-    #File.read(File.dirname(__FILE__)+'/templates/index.html')
     "Nothing YET TODO TODO"
 end
 
@@ -173,11 +156,9 @@ end
 # Login
 ##############################################################################
 post '/login' do
-    build_session
 end
 
 post '/logout' do
-    destroy_session
 end
 
 ##############################################################################
@@ -198,16 +179,10 @@ end
 # GET Resource information
 ##############################################################################
 get %r{/(zone|vdc)/(\d+)/(\w+)} do |kind, id, aggpool|
-#get '/:pool/:id/:aggpool' do
-    puts kind
-    puts id
-    puts aggpool
     @OzonesServer.get_full_resource(kind,id,aggpool)
 end
 
 get %r{/(zone|vdc)/(\d+)} do |kind, id|
-        puts "oyeeeeeee"
-        puts id
     @OzonesServer.get_resource(kind,id)
 end
 
