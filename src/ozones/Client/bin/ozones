@@ -7,6 +7,7 @@ end
 
 OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Client"
 
+$: << ENV['ONE_LOCATION'] + "/lib/ruby"
 $: << OZONES_LOCATION + "/lib"
 
 require 'CLI/command_parser'
@@ -32,8 +33,36 @@ cmd=CommandParser::CmdParser.new(ARGV) do
         helper.create_resource(args[0])
     end
     
-    command :show, 'Show information of a particular Zone', :text do
-        helper.show_resource(args[0],options)
+    command :show, 'Show information of a particular Zone', :text, [:text, nil] do
+        zone=helper.show_resource(args[0],options)[1]
+
+        case args[1]
+            when "host"
+                aux_helper  = OneHostHelper.new(
+                                zone['onename'] + ":plain:" + zone['onepass'],
+                                zone['endpoint'])
+
+                aux_helper.list_pool(options)  
+            when "vm"
+                aux_helper  = OneVMHelper.new(
+                                zone['onename'] + ":plain:" + zone['onepass'],
+                                zone['endpoint'])
+
+                aux_helper.list_pool(options)  
+            when "image"
+                aux_helper  = OneImageHelper.new(
+                                zone['onename'] + ":plain:" + zone['onepass'],
+                                zone['endpoint'])
+
+                aux_helper.list_pool(options)  
+            when "vn"
+                aux_helper  = OneVNetHelper.new(
+                                zone['onename'] + ":plain:" + zone['onepass'],
+                                zone['endpoint'])
+
+                aux_helper.list_pool(options)                                                  
+        end
+        0
     end
     
     command :list, 'Lists Zones in the pool', 

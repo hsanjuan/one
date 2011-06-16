@@ -1,5 +1,9 @@
 require 'CLI/OZonesHelper'
-require 'CLI/OZonesHelper/one_helper'
+require 'CLI/OZonesHelper/onehost_helper'
+require 'CLI/OZonesHelper/onevm_helper'
+require 'CLI/OZonesHelper/oneimage_helper'
+require 'CLI/OZonesHelper/onevnet_helper'
+
 
 class ZonesHelper < OZonesHelper::OZHelper
     def initialize(kind)
@@ -27,18 +31,21 @@ class ZonesHelper < OZonesHelper::OZHelper
 
     def format_resource(zone, options)
         str_h1="%-61s"
-        str="%-10s: %-20s"
+        str="%-15s: %-20s"
         
         CLIHelper.print_header(str_h1 % ["ZONE #{zone['name']} INFORMATION"])
     
-        puts str % ["ID ",       zone['id'].to_s]
-        puts str % ["NAME ",     zone['name'].to_s]
-        puts str % ["ENDPOINT ", zone['endpoint'].to_s]
-        puts str % ["# VDCS ",   zone['vdcs'].size.to_s]
+        puts str % ["ID ",        zone['id'].to_s]
+        puts str % ["NAME ",      zone['name'].to_s]
+        puts str % ["ZONE ADMIN ",zone['onename'].to_s]
+        puts str % ["ZONE PASS ", zone['onepass'].to_s]        
+        puts str % ["NAME ",      zone['name'].to_s]
+        puts str % ["ENDPOINT ",  zone['endpoint'].to_s]
+        puts str % ["# VDCS ",    zone['vdcs'].size.to_s]
         puts
         
         if zone['vdcs'].size == 0
-            return 0
+            return [0, zone]
         end
     
         CLIHelper.print_header(str_h1 % ["VDCS INFORMATION"])
@@ -57,7 +64,7 @@ class ZonesHelper < OZonesHelper::OZHelper
 
         st.show(zone["vdcs"], options)
         
-        return 0
+        return [0, zone]
     end
 
     def format_pool(pool, options)    
