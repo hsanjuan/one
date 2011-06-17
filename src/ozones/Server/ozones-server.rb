@@ -143,9 +143,7 @@ end
 # HTML Requests
 ##############################################################################
 get '/' do
-    # TODO auth framework
-    # redirect '/login' unless authorized?
-    "Nothing YET TODO TODO"
+    File.read(File.dirname(__FILE__)+'/templates/index.html')
 end
 
 get '/login' do
