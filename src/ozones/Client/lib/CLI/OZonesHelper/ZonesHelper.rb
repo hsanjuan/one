@@ -39,7 +39,6 @@ class ZonesHelper < OZonesHelper::OZHelper
         puts str % ["NAME ",      zone['name'].to_s]
         puts str % ["ZONE ADMIN ",zone['onename'].to_s]
         puts str % ["ZONE PASS ", zone['onepass'].to_s]        
-        puts str % ["NAME ",      zone['name'].to_s]
         puts str % ["ENDPOINT ",  zone['endpoint'].to_s]
         puts str % ["# VDCS ",    zone['vdcs'].size.to_s]
         puts
