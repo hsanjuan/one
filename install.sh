@@ -246,7 +246,8 @@ OZONES_DIRS="$OZONES_LOCATION/Server \
              $OZONES_LOCATION/Server/templates \
              $OZONES_LOCATION/Server/public \
              $OZONES_LOCATION/Server/public/vendor \
-             $OZONES_LOCATION/Server/public/vendor/jQuery"
+             $OZONES_LOCATION/Server/public/vendor/jQuery \
+             $OZONES_LOCATION/Server/public/js"
 
 OZONES_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula \
@@ -390,6 +391,7 @@ INSTALL_OZONES_FILES=(
     OZONES_LIB_FILES:$OZONES_LOCATION/Server/lib
     OZONES_LIB_ZONE_FILES:$OZONES_LOCATION/Server/lib/OZones
     OZONES_PUBLIC_VENDOR_JQUERY:$OZONES_LOCATION/Server/public/vendor/jQuery
+    OZONES_PUBLIC_JS_FILES:$OZONES_LOCATION/Server/public/js
     OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
     OZONES_LIB_CLIENT_CLI_FILES:$OZONES_LOCATION/Client/lib/CLI
     OZONES_LIB_CLIENT_CLI_HELPER_FILES:$OZONES_LOCATION/Client/lib/CLI/OZonesHelper    
@@ -978,6 +980,8 @@ OZONES_PUBLIC_VENDOR_JQUERY="\
                         src/sunstone/public/vendor/jQuery/jquery-1.4.4.min.js \
                         src/sunstone/public/vendor/jQuery/MIT-LICENSE.txt \
                         src/sunstone/public/vendor/jQuery/NOTICE"
+                        
+OZONES_PUBLIC_JS_FILES="src/ozones/public/js/ozones.js"
                 
 OZONES_LIB_CLIENT_FILES="src/ozones/Client/lib/OZonesClient.rb"
                                 
