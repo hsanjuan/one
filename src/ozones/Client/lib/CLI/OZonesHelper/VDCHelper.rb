@@ -1,6 +1,5 @@
 require 'CLI/OZonesHelper'
-require 'CLI/OZonesHelper/one_helper'
-
+require 'cli/one_helper'
 
 class VDCHelper < OZonesHelper::OZHelper
     def initialize(kind)

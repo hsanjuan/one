@@ -51,7 +51,7 @@ EOT
             # Autentication
             if user && pass
                 @ozonesauth = [user, pass]
-            else
+            elsif ENV['OZONES_AUTH']
                 @ozonesauth=File.read(ENV['OZONES_AUTH']).strip.split(':')
             end
             

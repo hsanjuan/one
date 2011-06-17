@@ -6,10 +6,13 @@ if !ENV['ONE_LOCATION']
 end
 
 OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Client"
+ONE_LOCATION    = ENV['ONE_LOCATION']
 
+$: << ONE_LOCATION + "/lib/ruby"
+$: << ONE_LOCATION + "/lib/ruby/cli"
 $: << OZONES_LOCATION + "/lib"
 
-require 'CLI/command_parser'
+require 'cli/command_parser'
 require 'CLI/OZonesHelper/VDCHelper.rb'
 
 cmd=CommandParser::CmdParser.new(ARGV) do

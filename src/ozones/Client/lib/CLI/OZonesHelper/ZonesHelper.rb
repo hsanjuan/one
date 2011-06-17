@@ -1,8 +1,8 @@
 require 'CLI/OZonesHelper'
-require 'CLI/OZonesHelper/onehost_helper'
-require 'CLI/OZonesHelper/onevm_helper'
-require 'CLI/OZonesHelper/oneimage_helper'
-require 'CLI/OZonesHelper/onevnet_helper'
+require 'cli/one_helper/onehost_helper'
+require 'cli/one_helper/onevm_helper'
+require 'cli/one_helper/oneimage_helper'
+require 'cli/one_helper/onevnet_helper'
 
 
 class ZonesHelper < OZonesHelper::OZHelper
