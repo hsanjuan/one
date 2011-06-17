@@ -22,5 +22,6 @@ module OpenNebulaJSON
     class VirtualNetworkPoolJSON < OpenNebula::VirtualNetworkPool; include JSONUtils; end
     class ImagePoolJSON < OpenNebula::ImagePool; include JSONUtils; end
     class TemplatePoolJSON < OpenNebula::TemplatePool; include JSONUtils; end
+    class GroupPoolJSON < OpenNebula::GroupPool; include JSONUtils; end
     class UserPoolJSON < OpenNebula::UserPool; include JSONUtils; end
 end
