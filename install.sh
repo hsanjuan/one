@@ -89,6 +89,8 @@ done
 # Definition of locations
 #-------------------------------------------------------------------------------
 
+CONF_LOCATION="$HOME/.one"
+
 if [ -z "$ROOT" ] ; then
     BIN_LOCATION="/usr/bin"
     LIB_LOCATION="/usr/lib/one"
@@ -111,7 +113,8 @@ if [ -z "$ROOT" ] ; then
 
         CHOWN_DIRS=""
     elif [ "$SUNSTONE" = "yes" ]; then
-        MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $VAR_LOCATION $SUNSTONE_LOCATION"
+        MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $VAR_LOCATION \
+                   $SUNSTONE_LOCATION $ETC_LOCATION"
 
         DELETE_DIRS="$MAKE_DIRS"
 
@@ -147,11 +150,12 @@ else
     MAN_LOCATION="$ROOT/share/man/man1"
 
     if [ "$CLIENT" = "yes" ]; then
-        MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION"
+        MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $CONF_LOCATION"
 
         DELETE_DIRS="$MAKE_DIRS"
     elif [ "$SUNSTONE" = "yes" ]; then
-        MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $VAR_LOCATION $SUNSTONE_LOCATION"
+        MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $VAR_LOCATION \
+                   $SUNSTONE_LOCATION $ETC_LOCATION"
 
         DELETE_DIRS="$MAKE_DIRS"
     elif [ "$OZONES" = "yes" ]; then
@@ -179,8 +183,7 @@ ETC_DIRS="$ETC_LOCATION/im_kvm \
           $ETC_LOCATION/im_xen \
           $ETC_LOCATION/im_ec2 \
           $ETC_LOCATION/vmm_ec2 \
-          $ETC_LOCATION/vmm_ssh \
-          $ETC_LOCATION/vmm_sh \
+          $ETC_LOCATION/vmm_exec \
           $ETC_LOCATION/tm_nfs \
           $ETC_LOCATION/tm_ssh \
           $ETC_LOCATION/tm_dummy \
@@ -188,7 +191,8 @@ ETC_DIRS="$ETC_LOCATION/im_kvm \
           $ETC_LOCATION/hm \
           $ETC_LOCATION/auth \
           $ETC_LOCATION/ec2query_templates \
-          $ETC_LOCATION/occi_templates"
+          $ETC_LOCATION/occi_templates \
+          $ETC_LOCATION/cli"
 
 LIB_DIRS="$LIB_LOCATION/ruby \
           $LIB_LOCATION/ruby/OpenNebula \
@@ -203,7 +207,9 @@ LIB_DIRS="$LIB_LOCATION/ruby \
           $LIB_LOCATION/tm_commands/dummy \
           $LIB_LOCATION/tm_commands/lvm \
           $LIB_LOCATION/mads \
-          $LIB_LOCATION/sh"
+          $LIB_LOCATION/sh \
+          $LIB_LOCATION/ruby/cli \
+          $LIB_LOCATION/ruby/cli/one_helper"
 
 VAR_DIRS="$VAR_LOCATION/remotes \
           $VAR_LOCATION/remotes/im \
@@ -227,6 +233,9 @@ SUNSTONE_DIRS="$SUNSTONE_LOCATION/models \
                $SUNSTONE_LOCATION/public/vendor/jQueryUI \
                $SUNSTONE_LOCATION/public/vendor/jQuery \
                $SUNSTONE_LOCATION/public/vendor/jGrowl \
+               $SUNSTONE_LOCATION/public/vendor/flot \
+               $SUNSTONE_LOCATION/share \
+               $SUNSTONE_LOCATION/share/OneMonitor \
                $SUNSTONE_LOCATION/public/images \
                $SUNSTONE_LOCATION/templates"
                
@@ -254,12 +263,14 @@ LIB_OCCI_CLIENT_DIRS="$LIB_LOCATION/ruby \
 LIB_OCA_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula"
 
-LIB_CLI_DIRS="$LIB_LOCATION/ruby \
-              $LIB_LOCATION/ruby/OpenNebula"
+LIB_CLI_CLIENT_DIRS="$LIB_LOCATION/ruby/cli \
+                     $LIB_LOCATION/ruby/cli/one_helper"
+
+CONF_CLI_DIRS="$CONF_LOCATION/cli"
 
 if [ "$CLIENT" = "yes" ]; then
     MAKE_DIRS="$MAKE_DIRS $LIB_ECO_CLIENT_DIRS $LIB_OCCI_CLIENT_DIRS \
-               $LIB_CLI_DIRS $OZONES_CLIENT_DIRS"
+               $LIB_OCA_CLIENT_DIRS $LIB_CLI_CLIENT_DIRS $CONF_CLI_DIRS $OZONES_CLIENT_DIRS"
 elif [ "$SUNSTONE" = "yes" ]; then
     MAKE_DIRS="$MAKE_DIRS $SUNSTONE_DIRS $LIB_OCA_CLIENT_DIRS"
 elif [ "$OZONES" = "yes" ]; then
@@ -284,18 +295,18 @@ INSTALL_FILES=(
     MAD_RUBY_LIB_FILES:$VAR_LOCATION/remotes
     MAD_SH_LIB_FILES:$LIB_LOCATION/sh
     MAD_SH_LIB_FILES:$VAR_LOCATION/remotes
-    ONEDB_MIGRATOR_FILES:$LIB_LOCATION/onedb
+    ONEDB_MIGRATOR_FILES:$LIB_LOCATION/ruby/onedb
     MADS_LIB_FILES:$LIB_LOCATION/mads
     IM_PROBES_FILES:$VAR_LOCATION/remotes/im
     IM_PROBES_KVM_FILES:$VAR_LOCATION/remotes/im/kvm.d
     IM_PROBES_XEN_FILES:$VAR_LOCATION/remotes/im/xen.d
     IM_PROBES_GANGLIA_FILES:$VAR_LOCATION/remotes/im/ganglia.d
-    VMM_SSH_KVM_SCRIPTS:$VAR_LOCATION/remotes/vmm/kvm
-    VMM_SSH_XEN_SCRIPTS:$VAR_LOCATION/remotes/vmm/xen
-    VMM_SSH_XEN_KVM_POLL:$VAR_LOCATION/remotes/vmm/kvm/poll
-    VMM_SSH_XEN_KVM_POLL:$VAR_LOCATION/remotes/vmm/xen/poll
-    VMM_SSH_GANGLIA_POLL:$VAR_LOCATION/remotes/vmm/kvm/poll_local
-    VMM_SSH_GANGLIA_POLL:$VAR_LOCATION/remotes/vmm/xen/poll_local
+    VMM_EXEC_KVM_SCRIPTS:$VAR_LOCATION/remotes/vmm/kvm
+    VMM_EXEC_XEN_SCRIPTS:$VAR_LOCATION/remotes/vmm/xen
+    VMM_EXEC_XEN_KVM_POLL:$VAR_LOCATION/remotes/vmm/kvm/poll
+    VMM_EXEC_XEN_KVM_POLL:$VAR_LOCATION/remotes/vmm/xen/poll
+    VMM_EXEC_GANGLIA_POLL:$VAR_LOCATION/remotes/vmm/kvm/poll_local
+    VMM_EXEC_GANGLIA_POLL:$VAR_LOCATION/remotes/vmm/xen/poll_local
     NFS_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/nfs
     SSH_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/ssh
     DUMMY_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/dummy
@@ -312,6 +323,8 @@ INSTALL_FILES=(
     OCCI_LIB_FILES:$LIB_LOCATION/ruby/cloud/occi
     OCCI_BIN_FILES:$BIN_LOCATION
     MAN_FILES:$MAN_LOCATION
+    CLI_LIB_FILES:$LIB_LOCATION/ruby/cli
+    ONE_CLI_LIB_FILES:$LIB_LOCATION/ruby/cli/one_helper
 )
 
 INSTALL_CLIENT_FILES=(
@@ -324,7 +337,10 @@ INSTALL_CLIENT_FILES=(
     OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
     OZONES_BIN_CLIENT_FILES:$BIN_LOCATION
     CLI_BIN_FILES:$BIN_LOCATION
-    CLI_LIB_FILES:$LIB_LOCATION/ruby
+    CLI_LIB_FILES:$LIB_LOCATION/ruby/cli
+    ONE_CLI_LIB_FILES:$LIB_LOCATION/ruby/cli/one_helper
+    CLI_CONF_FILES:$CONF_LOCATION/cli
+    OCA_LIB_FILES:$LIB_LOCATION/ruby
     RUBY_OPENNEBULA_LIB_FILES:$LIB_LOCATION/ruby/OpenNebula
     OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
     OZONES_LIB_CLIENT_CLI_FILES:$OZONES_LOCATION/Client/lib/CLI
@@ -333,13 +349,14 @@ INSTALL_CLIENT_FILES=(
 )
 
 INSTALL_SUNSTONE_RUBY_FILES=(
-    SUNSTONE_RUBY_LIB_FILES:$LIB_LOCATION/ruby
     RUBY_OPENNEBULA_LIB_FILES:$LIB_LOCATION/ruby/OpenNebula
+    OCA_LIB_FILES:$LIB_LOCATION/ruby
 )
 
 INSTALL_SUNSTONE_FILES=(
     SUNSTONE_FILES:$SUNSTONE_LOCATION
     SUNSTONE_BIN_FILES:$BIN_LOCATION
+    SUNSTONE_ETC_FILES:$ETC_LOCATION
     SUNSTONE_MODELS_FILES:$SUNSTONE_LOCATION/models
     SUNSTONE_MODELS_JSON_FILES:$SUNSTONE_LOCATION/models/OpenNebulaJSON
     SUNSTONE_TEMPLATE_FILES:$SUNSTONE_LOCATION/templates
@@ -351,6 +368,8 @@ INSTALL_SUNSTONE_FILES=(
     SUNSTONE_PUBLIC_VENDOR_JQUERY:$SUNSTONE_LOCATION/public/vendor/jQuery
     SUNSTONE_PUBLIC_VENDOR_JQUERYUI:$SUNSTONE_LOCATION/public/vendor/jQueryUI
     SUNSTONE_PUBLIC_VENDOR_JQUERYLAYOUT:$SUNSTONE_LOCATION/public/vendor/jQueryLayout
+    SUNSTONE_PUBLIC_VENDOR_FLOT:$SUNSTONE_LOCATION/public/vendor/flot
+    SUNSTONE_SHARE_ONEMONITOR:$SUNSTONE_LOCATION/share/OneMonitor
     SUNSTONE_PUBLIC_IMAGES_FILES:$SUNSTONE_LOCATION/public/images
 )
 
@@ -374,8 +393,7 @@ INSTALL_OZONES_FILES=(
 INSTALL_ETC_FILES=(
     ETC_FILES:$ETC_LOCATION
     VMM_EC2_ETC_FILES:$ETC_LOCATION/vmm_ec2
-    VMM_SSH_ETC_FILES:$ETC_LOCATION/vmm_ssh
-    VMM_SH_ETC_FILES:$ETC_LOCATION/vmm_sh
+    VMM_EXEC_ETC_FILES:$ETC_LOCATION/vmm_exec
     IM_EC2_ETC_FILES:$ETC_LOCATION/im_ec2
     TM_NFS_ETC_FILES:$ETC_LOCATION/tm_nfs
     TM_SSH_ETC_FILES:$ETC_LOCATION/tm_ssh
@@ -389,6 +407,7 @@ INSTALL_ETC_FILES=(
     OCCI_ETC_TEMPLATE_FILES:$ETC_LOCATION/occi_templates
     SUNSTONE_ETC_FILES:$ETC_LOCATION
     OZONES_ETC_FILES:$ETC_LOCATION
+    CLI_CONF_FILES:$ETC_LOCATION/cli
 )
 
 #-------------------------------------------------------------------------------
@@ -402,9 +421,9 @@ BIN_FILES="src/nebula/oned \
            src/cli/onevnet \
            src/cli/oneuser \
            src/cli/oneimage \
-           src/cli/onetemplate \
            src/cli/onegroup \
-           src/cli/onedb \
+           src/cli/onetemplate \
+           src/onedb/onedb \
            share/scripts/one \
            src/authm_mad/oneauth"
 
@@ -426,8 +445,6 @@ RUBY_LIB_FILES="src/mad/ruby/ActionManager.rb \
                 src/mad/ruby/OpenNebulaDriver.rb \
                 src/mad/ruby/VirtualMachineDriver.rb \
                 src/mad/ruby/Ganglia.rb \
-                src/cli/client_utilities.rb \
-                src/cli/command_parse.rb \
                 src/oca/ruby/OpenNebula.rb \
                 src/tm_mad/TMScript.rb \
                 src/authm_mad/one_usage.rb \
@@ -435,24 +452,6 @@ RUBY_LIB_FILES="src/mad/ruby/ActionManager.rb \
                 src/authm_mad/simple_auth.rb \
                 src/authm_mad/simple_permissions.rb \
                 src/authm_mad/ssh_auth.rb"
-
-RUBY_OPENNEBULA_LIB_FILES="src/oca/ruby/OpenNebula/Host.rb \
-                           src/oca/ruby/OpenNebula/HostPool.rb \
-                           src/oca/ruby/OpenNebula/Pool.rb \
-                           src/oca/ruby/OpenNebula/User.rb \
-                           src/oca/ruby/OpenNebula/UserPool.rb \
-                           src/oca/ruby/OpenNebula/VirtualMachine.rb \
-                           src/oca/ruby/OpenNebula/VirtualMachinePool.rb \
-                           src/oca/ruby/OpenNebula/VirtualNetwork.rb \
-                           src/oca/ruby/OpenNebula/VirtualNetworkPool.rb \
-                           src/oca/ruby/OpenNebula/Image.rb \
-                           src/oca/ruby/OpenNebula/ImagePool.rb \
-                           src/oca/ruby/OpenNebula/Template.rb \
-                           src/oca/ruby/OpenNebula/TemplatePool.rb \
-                           src/oca/ruby/OpenNebula/Group.rb \
-                           src/oca/ruby/OpenNebula/GroupPool.rb \
-                           src/oca/ruby/OpenNebula/XMLUtils.rb"
-
 
 #-----------------------------------------------------------------------------
 # MAD Script library files, to be installed under $LIB_LOCATION/<script lang>
@@ -468,18 +467,18 @@ MAD_RUBY_LIB_FILES="src/mad/ruby/scripts_common.rb"
 
 MADS_LIB_FILES="src/mad/sh/madcommon.sh \
               src/tm_mad/tm_common.sh \
-              src/vmm_mad/ssh/one_vmm_ssh.rb \
-              src/vmm_mad/ssh/one_vmm_ssh \
-              src/vmm_mad/sh/one_vmm_sh.rb \
-              src/vmm_mad/sh/one_vmm_sh \
+              src/vmm_mad/exec/one_vmm_exec.rb \
+              src/vmm_mad/exec/one_vmm_exec \
+              src/vmm_mad/exec/one_vmm_sh \
+              src/vmm_mad/exec/one_vmm_ssh \
               src/vmm_mad/ec2/one_vmm_ec2.rb \
               src/vmm_mad/ec2/one_vmm_ec2 \
               src/vmm_mad/dummy/one_vmm_dummy.rb \
               src/vmm_mad/dummy/one_vmm_dummy \
-              src/im_mad/im_ssh/one_im_ssh.rb \
-              src/im_mad/im_ssh/one_im_ssh \
-              src/im_mad/im_sh/one_im_sh.rb \
-              src/im_mad/im_sh/one_im_sh \
+              src/im_mad/im_exec/one_im_exec.rb \
+              src/im_mad/im_exec/one_im_exec \
+              src/im_mad/im_exec/one_im_ssh \
+              src/im_mad/im_exec/one_im_sh \
               src/im_mad/ec2/one_im_ec2.rb \
               src/im_mad/ec2/one_im_ec2 \
               src/im_mad/dummy/one_im_dummy.rb \
@@ -497,7 +496,7 @@ MADS_LIB_FILES="src/mad/sh/madcommon.sh \
 # VMM SH Driver KVM scripts, to be installed under $REMOTES_LOCATION/vmm/kvm
 #-------------------------------------------------------------------------------
 
-VMM_SSH_KVM_SCRIPTS="src/vmm_mad/remotes/kvm/cancel \
+VMM_EXEC_KVM_SCRIPTS="src/vmm_mad/remotes/kvm/cancel \
                     src/vmm_mad/remotes/kvm/deploy \
                     src/vmm_mad/remotes/kvm/kvmrc \
                     src/vmm_mad/remotes/kvm/migrate \
@@ -509,7 +508,7 @@ VMM_SSH_KVM_SCRIPTS="src/vmm_mad/remotes/kvm/cancel \
 # VMM SH Driver Xen scripts, to be installed under $REMOTES_LOCATION/vmm/xen
 #-------------------------------------------------------------------------------
 
-VMM_SSH_XEN_SCRIPTS="src/vmm_mad/remotes/xen/cancel \
+VMM_EXEC_XEN_SCRIPTS="src/vmm_mad/remotes/xen/cancel \
                     src/vmm_mad/remotes/xen/deploy \
                     src/vmm_mad/remotes/xen/xenrc \
                     src/vmm_mad/remotes/xen/migrate \
@@ -521,8 +520,8 @@ VMM_SSH_XEN_SCRIPTS="src/vmm_mad/remotes/xen/cancel \
 # VMM SH Driver xen/kvm scripts, to be installed under $REMOTES_LOCATION/vmm/*
 #-----------------------------------------------------------------------------
 
-VMM_SSH_XEN_KVM_POLL="src/vmm_mad/remotes/poll_xen_kvm.rb"
-VMM_SSH_GANGLIA_POLL="src/vmm_mad/remotes/poll_ganglia.rb"
+VMM_EXEC_XEN_KVM_POLL="src/vmm_mad/remotes/poll_xen_kvm.rb"
+VMM_EXEC_GANGLIA_POLL="src/vmm_mad/remotes/poll_ganglia.rb"
 
 #-------------------------------------------------------------------------------
 # Information Manager Probes, to be installed under $LIB_LOCATION/remotes
@@ -590,7 +589,9 @@ IMAGE_DRIVER_FS_SCRIPTS="src/image_mad/remotes/fs/cp \
 #-------------------------------------------------------------------------------
 # Migration scripts for onedb command, to be installed under $LIB_LOCATION
 #-------------------------------------------------------------------------------
-ONEDB_MIGRATOR_FILES="src/onedb/1.rb"
+ONEDB_MIGRATOR_FILES="src/onedb/1.rb \
+                      src/onedb/onedb.rb \
+                      src/onedb/onedb_backend.rb"
 
 #-------------------------------------------------------------------------------
 # Configuration files for OpenNebula, to be installed under $ETC_LOCATION
@@ -602,18 +603,15 @@ ETC_FILES="share/etc/oned.conf \
 #-------------------------------------------------------------------------------
 # Virtualization drivers config. files, to be installed under $ETC_LOCATION
 #   - ec2, $ETC_LOCATION/vmm_ec2
-#   - sh, $ETC_LOCATION/vmm_sh
-#   - ssh, $ETC_LOCATION/vmm_ssh
+#   - ssh, $ETC_LOCATION/vmm_exec
 #-------------------------------------------------------------------------------
 
 VMM_EC2_ETC_FILES="src/vmm_mad/ec2/vmm_ec2rc \
                    src/vmm_mad/ec2/vmm_ec2.conf"
 
-VMM_SSH_ETC_FILES="src/vmm_mad/ssh/vmm_sshrc \
-                  src/vmm_mad/ssh/vmm_ssh_kvm.conf \
-                  src/vmm_mad/ssh/vmm_ssh_xen.conf"
-
-VMM_SH_ETC_FILES="src/vmm_mad/sh/vmm_shrc"
+VMM_EXEC_ETC_FILES="src/vmm_mad/exec/vmm_execrc \
+                  src/vmm_mad/exec/vmm_exec_kvm.conf \
+                  src/vmm_mad/exec/vmm_exec_xen.conf"
 
 #-------------------------------------------------------------------------------
 # Information drivers config. files, to be installed under $ETC_LOCATION
@@ -686,6 +684,28 @@ HOOK_SHARE_FILES="share/hooks/ebtables-xen \
                   share/hooks/image.rb"
 
 INSTALL_NOVNC_SHARE_FILE="share/install_novnc.sh"
+
+#-------------------------------------------------------------------------------
+# OCA Files
+#-------------------------------------------------------------------------------
+OCA_LIB_FILES="src/oca/ruby/OpenNebula.rb"
+
+RUBY_OPENNEBULA_LIB_FILES="src/oca/ruby/OpenNebula/Host.rb \
+                           src/oca/ruby/OpenNebula/HostPool.rb \
+                           src/oca/ruby/OpenNebula/Pool.rb \
+                           src/oca/ruby/OpenNebula/User.rb \
+                           src/oca/ruby/OpenNebula/UserPool.rb \
+                           src/oca/ruby/OpenNebula/VirtualMachine.rb \
+                           src/oca/ruby/OpenNebula/VirtualMachinePool.rb \
+                           src/oca/ruby/OpenNebula/VirtualNetwork.rb \
+                           src/oca/ruby/OpenNebula/VirtualNetworkPool.rb \
+                           src/oca/ruby/OpenNebula/Image.rb \
+                           src/oca/ruby/OpenNebula/ImagePool.rb \
+                           src/oca/ruby/OpenNebula/Template.rb \
+                           src/oca/ruby/OpenNebula/TemplatePool.rb \
+                           src/oca/ruby/OpenNebula/Group.rb \
+                           src/oca/ruby/OpenNebula/GroupPool.rb \
+                           src/oca/ruby/OpenNebula/XMLUtils.rb"
 
 #-------------------------------------------------------------------------------
 # Common Cloud Files
@@ -770,10 +790,17 @@ OCCI_ETC_TEMPLATE_FILES="src/cloud/occi/etc/templates/common.erb \
 # CLI files
 #-----------------------------------------------------------------------------
 
-CLI_LIB_FILES="src/mad/ruby/CommandManager.rb \
-               src/cli/client_utilities.rb \
-               src/cli/command_parse.rb \
-               src/oca/ruby/OpenNebula.rb"
+CLI_LIB_FILES="src/cli/cli_helper.rb \
+               src/cli/command_parser.rb \
+               src/cli/one_helper.rb"
+
+ONE_CLI_LIB_FILES="src/cli/one_helper/onegroup_helper.rb \
+                   src/cli/one_helper/onehost_helper.rb \
+                   src/cli/one_helper/oneimage_helper.rb \
+                   src/cli/one_helper/onetemplate_helper.rb \
+                   src/cli/one_helper/oneuser_helper.rb \
+                   src/cli/one_helper/onevm_helper.rb \
+                   src/cli/one_helper/onevnet_helper.rb"
 
 CLI_BIN_FILES="src/cli/onevm \
                src/cli/onehost \
@@ -782,6 +809,14 @@ CLI_BIN_FILES="src/cli/onevm \
                src/cli/oneimage \
                src/cli/onetemplate \
                src/cli/onegroup"
+
+CLI_CONF_FILES="src/cli/etc/onegroup.yaml \
+                src/cli/etc/onehost.yaml \
+                src/cli/etc/oneimage.yaml \
+                src/cli/etc/onetemplate.yaml \
+                src/cli/etc/oneuser.yaml \
+                src/cli/etc/onevm.yaml \
+                src/cli/etc/onevnet.yaml"
 
 #-----------------------------------------------------------------------------
 # Sunstone files
@@ -819,6 +854,7 @@ SUNSTONE_PUBLIC_JS_FILES="src/sunstone/public/js/layout.js \
 SUNSTONE_PUBLIC_JS_PLUGINS_FILES="\
                             src/sunstone/public/js/plugins/dashboard-tab.js \
                             src/sunstone/public/js/plugins/hosts-tab.js \
+                            src/sunstone/public/js/plugins/groups-tab.js \
                             src/sunstone/public/js/plugins/images-tab.js \
                             src/sunstone/public/js/plugins/templates-tab.js \
                             src/sunstone/public/js/plugins/users-tab.js \
@@ -871,6 +907,22 @@ SUNSTONE_PUBLIC_VENDOR_JQUERYLAYOUT="\
             src/sunstone/public/vendor/jQueryLayout/jquery.layout.min-1.2.0.js \
             src/sunstone/public/vendor/jQueryLayout/NOTICE"
 
+SUNSTONE_PUBLIC_VENDOR_FLOT="\
+src/sunstone/public/vendor/flot/jquery.flot.min.js \
+src/sunstone/public/vendor/flot/jquery.flot.navigate.min.js \
+src/sunstone/public/vendor/flot/LICENSE.txt \
+src/sunstone/public/vendor/flot/NOTICE \
+src/sunstone/public/vendor/flot/README.txt"
+
+SUNSTONE_SHARE_ONEMONITOR="\
+src/sunstone/share/OneMonitor/HostMonitor.rb \
+src/sunstone/share/OneMonitor/OneMonitorClient.rb \
+src/sunstone/share/OneMonitor/OneMonitorClientUtils.rb \
+src/sunstone/share/OneMonitor/OneMonitor.rb \
+src/sunstone/share/OneMonitor/OneMonitorUtils.rb \
+src/sunstone/share/OneMonitor/runOneMonitor.rb \
+src/sunstone/share/OneMonitor/VMMonitor.rb"
+
 SUNSTONE_PUBLIC_IMAGES_FILES="src/sunstone/public/images/ajax-loader.gif \
                         src/sunstone/public/images/login_over.png \
                         src/sunstone/public/images/login.png \
@@ -912,7 +964,7 @@ OZONES_LIB_ZONE_FILES="src/ozones/Server/lib/OZones/Zones.rb \
                 src/ozones/Server/lib/OZones/AggregatedVirtualMachines.rb \
                 src/ozones/Server/lib/OZones/AggregatedVirtualNetworks.rb \
                 src/ozones/Server/lib/OZones/AggregatedPool.rb \
-                src/ozones/Server/lib/OZones/AggregatedImages.rb"                                                                                                                
+                src/ozones/Server/lib/OZones/AggregatedImages.rb"
                 
 OZONES_LIB_CLIENT_FILES="src/ozones/Client/lib/OZonesClient.rb"
                                 
