@@ -1,0 +1,4 @@
+NAME=vdc0
+VDCADMINNAME=vdcadmin
+VDCADMINPASS=vdcpass
+ZONEID=1

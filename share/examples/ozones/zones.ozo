@@ -1,0 +1,4 @@
+NAME=zone0
+ONENAME=oneadmin
+ONEPASS=opennebula
+ENDPOINT=http://domain.with.one.running:2633/RPC2
