@@ -74,7 +74,7 @@ module OZones
             pr = OZones::ProxyRules.new("apache",File.dirname(__FILE__) + "/htaccess")
             pr.update
             
-            generated = IO.read("htaccess")
+            generated = IO.read("spec/htaccess")
             golden    = IO.read("htaccess.golden")
             
             generated.should eql(golden)
