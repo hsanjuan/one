@@ -51,7 +51,7 @@ var OZonesGUI = {
     //Adds several actions encapsulated in an js object.
     "addActions" : function(actions) {
         for (action in actions){
-            OZonesCfg.addAction(action,actions[action]);
+            OZonesGUI.addAction(action,actions[action]);
         }
     },
 
@@ -310,10 +310,10 @@ $(document).ready(function(){
         switch (action.type){
         case "multiple": //find the datatable
             var nodes = action.elements();
-            error = OZonesCfg.runAction(value,nodes);
+            error = OZonesGUI.runAction(value,nodes);
             break;
         default:
-            error = OZonesCfg.runAction(value);
+            error = OZonesGUI.runAction(value);
         }
 
         if (!error){

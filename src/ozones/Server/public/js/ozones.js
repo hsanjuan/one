@@ -289,7 +289,7 @@ var oZones = {
             var timeout        = params.timeout || false;
 
             var resource = oZones.Zone.resource;
-            var request  = oZones.Zone.request(resource,"list");
+            var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
                 url:  "/" + resource,
@@ -300,8 +300,8 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var host_pool = oZones.Zone.pool(resource,response);
-                        callback(request, host_pool);
+                        var host_pool = oZones.Helper.pool(resource,response);
+                        callback(request, zone_pool);
                     }
                 },
                 error: function(response)
@@ -322,7 +322,7 @@ var oZones = {
             var id             = params.data.id;
 
             var resource = oZones.Zone.resource;
-            var request  = oZones.Zone.request(resource,"show", id);
+            var request  = oZones.Helper.request(resource,"show", id);
 
             $.ajax({
                 url: "/" + resource +"/" + id,
@@ -354,7 +354,7 @@ var oZones = {
             var callback       = params.success;
             var callback_error = params.error;
             var data           = params.data;
-            var resource       = oZones.Zone.resource;
+            var resource       = oZones.VDC.resource;
 
             var request = oZones.Helper.request(resource,"create", data);
 
@@ -385,7 +385,7 @@ var oZones = {
             var callback       = params.success;
             var callback_error = params.error;
             var id             = params.data.id;
-            var resource       = oZones.Zone.resource;
+            var resource       = oZones.VDC.resource;
 
 
             var request = oZones.Helper.request(resource,"delete", id);
@@ -416,8 +416,8 @@ var oZones = {
             var callback_error = params.error;
             var timeout        = params.timeout || false;
 
-            var resource = oZones.Zone.resource;
-            var request  = oZones.Zone.request(resource,"list");
+            var resource = oZones.VDC.resource;
+            var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
                 url:  "/" + resource,
@@ -428,8 +428,8 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var host_pool = oZones.Zone.pool(resource,response);
-                        callback(request, host_pool);
+                        var host_pool = oZones.VDC.pool(resource,response);
+                        callback(request, vdc_pool);
                     }
                 },
                 error: function(response)
@@ -449,8 +449,8 @@ var oZones = {
             var callback_error = params.error;
             var id             = params.data.id;
 
-            var resource = oZones.Zone.resource;
-            var request  = oZones.Zone.request(resource,"show", id);
+            var resource = oZones.VDC.resource;
+            var request  = oZones.Helper.request(resource,"show", id);
 
             $.ajax({
                 url: "/" + resource +"/" + id,

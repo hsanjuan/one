@@ -30,7 +30,7 @@ var zones_tab_content =
       <th>Name</th>\
       <th>Oneadmin Name</th>\
       <th>Oneadmin Password</th>\
-      <th>Endpoint</th>\      
+      <th>Endpoint</th>\
       <th>Number of VDCs</th>\
     </tr>\
   </thead>\
@@ -45,8 +45,8 @@ var create_zone_tmpl =
   <legend style="display:none;">Zone parameters</legend>\
   <label for="name">Name: </label><input type="text" name="name" id="name" />\
   <label for="name">Oneadmin name: </label><input type="text" name="onename" id="onename" />\
-  <label for="name">Oneadmin password: </label><input type="text" name="onepass" id="onepass" />\    
-  <label for="name">Endpoint: </label><input type="text" name="endpoint" id="endpoint" />\      
+  <label for="name">Oneadmin password: </label><input type="text" name="onepass" id="onepass" />\
+  <label for="name">Endpoint: </label><input type="text" name="endpoint" id="endpoint" />\
   </fieldset>\
     <fieldset>\
     <div class="form_buttons">\
@@ -112,7 +112,7 @@ var zone_actions = {
     "Zone.delete" : {
         type: "multiple",
         call : oZones.Zone.delete,
-        callback : deleteZonetElement,
+        callback : deleteZoneElement,
         elements: function() { return getSelectedNodes(dataTable_zones); },
         error : onError,
         notify:true
@@ -151,7 +151,7 @@ var zone_info_panel = {
 };
 
 
-var vdc_tab = {
+var zones_tab = {
     title: 'Zones',
     content: zones_tab_content,
     buttons: zone_buttons,
