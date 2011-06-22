@@ -19,7 +19,7 @@ module OZones
     class AggregatedHosts < AggregatedPool 
         
         def initialize
-            super("AGGREGATED_HOST_POOL")
+            super("ZONE_HOST_POOL")
         end
         
         def factory(client) 

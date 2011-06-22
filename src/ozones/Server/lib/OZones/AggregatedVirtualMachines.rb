@@ -19,7 +19,7 @@ module OZones
     class AggregatedVirtualMachines < AggregatedPool 
         
         def initialize
-            super("AGGREGATED_VM_POOL")
+            super("ZONE_VM_POOL")
         end
         
         def factory(client) 

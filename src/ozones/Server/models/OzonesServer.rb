@@ -72,8 +72,8 @@ class OzonesServer
         
         if kind == "zone"
             client   = OpenNebula::Client.new(
-                                  resource.onename + ":" + resource.onepass,
-                                  resource.endpoint)                             
+                             resource.onename + ":plain:" + resource.onepass,
+                             resource.endpoint)                             
 
             simple_pool = case aggkind
                 when "host"  then OpenNebulaJSON::HostPoolJSON.new(client)
@@ -83,7 +83,7 @@ class OzonesServer
                 when "vn"    then OpenNebulaJSON::VirtualNetworkPoolJSON.new(client)
                 else
                     error = OZones::Error.new(
-                      "Error: #{aggkind} aggregated pool for #{kind} #{id}not supported")
+                      "Error: #{aggkind} aggregated pool for #{kind} #{id} not supported")
                     return [404, error.to_json]
             end
             

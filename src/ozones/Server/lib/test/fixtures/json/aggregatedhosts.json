@@ -1,7 +1,8 @@
 {
-  "AGGREGATED_HOST_POOL": {
-    "1": {
-      "HOST_POOL": {
+  "AGGREGATED_HOST_POOL": [
+    {"ZONE" : [
+        "ID" : 1,
+        "HOST_POOL: {
         "HOST": [
           {
             "LAST_MON_TIME": "1277912461",

@@ -31,10 +31,10 @@ module OZones
         
         def self.to_hash
             zonePoolHash = Hash.new
-            zonePoolHash["zonepool"] = Hash.new
-            zonePoolHash["zonepool"]["zone"] = Array.new
+            zonePoolHash["ZONE_POOL"] = Hash.new
+            zonePoolHash["ZONE_POOL"]["ZONE"] = Array.new
             self.all.each{|zone|
-                  zonePoolHash["zonepool"]["zone"] <<  
+                  zonePoolHash["ZONE_POOL"]["ZONE"] <<  
                      zone.attributes.merge({:numbervdcs => zone.vdcs.all.size})              
             }
             return zonePoolHash
@@ -42,10 +42,10 @@ module OZones
         
         def to_hash
             zone_attributes = Hash.new
-            zone_attributes[:zone] = attributes
-            zone_attributes[:zone][:vdcs] = Array.new
+            zone_attributes["ZONE"] = attributes
+            zone_attributes["ZONE"][:vdcs] = Array.new
             self.vdcs.all.each{|vdc|
-                zone_attributes[:zone][:vdcs]<<vdc.attributes
+                zone_attributes["ZONE"][:vdcs]<<vdc.attributes
             }
             return zone_attributes
         end

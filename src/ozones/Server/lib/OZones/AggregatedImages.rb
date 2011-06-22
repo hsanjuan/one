@@ -19,7 +19,7 @@ module OZones
     class AggregatedImages < AggregatedPool 
         
         def initialize
-            super("AGGREGATED_IMAGES_POOL")
+            super("ZONE_IMAGE_POOL")
         end
         
         def factory(client)

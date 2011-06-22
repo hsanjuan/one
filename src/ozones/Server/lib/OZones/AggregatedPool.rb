@@ -24,29 +24,36 @@ module OZones
         end
     
         def info
-            @sup_aggregated_pool          = Hash.new
-            @sup_aggregated_pool[@tag]    = Hash.new
+            @sup_aggregated_pool               = Hash.new
+            @sup_aggregated_pool[@tag]         = Hash.new
+            @sup_aggregated_pool[@tag]["ZONE"] = Array.new
         
             OZones::Zones.all.each{|zone|
+                
+                zone_pool_hash = Hash.new
+                
+                zone_pool_hash = zone.to_hash["ZONE"]
+                
                 client   = OpenNebula::Client.new(
-                                      zone.onename + ":" + zone.onepass,
+                                      zone.onename + ":plain:" + zone.onepass,
                                       zone.endpoint)
-
-                zone_tag = zone[:id].to_s                        
+                                                         
                 pool = factory(client)  
                 
                 if OpenNebula.is_error?(pool)
-                    @sup_aggregated_pool[@tag][zone_tag] = pool.to_hash
+                    zone_pool_hash.merge!(pool.to_hash)
                     next
                 end
                      
                 rc = pool.info
 
                 if !rc  
-                    @sup_aggregated_pool[@tag][zone_tag] = pool.to_hash        
+                    zone_pool_hash.merge!(pool.to_hash)       
                 else
-                    @sup_aggregated_pool[@tag][zone_tag] = rc.to_hash 
+                    zone_pool_hash.merge!(rc.to_hash)
                 end
+                
+                @sup_aggregated_pool[@tag]["ZONE"] << zone_pool_hash
 
             }
         end    
