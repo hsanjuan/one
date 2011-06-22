@@ -76,7 +76,7 @@ module OZones
                 
         it "should be able to retrieve an aggregated host pool" do
             ahp      = AggregatedHosts.new
-            ahp_json = ahp.to_json
+            ahp_json = ahp.to_json 
             
             ahp_json.should eql(File.read(
                                  @fixtures_path+"/json/aggregatedhosts.json"))
@@ -111,7 +111,7 @@ module OZones
         it "should be able to retrieve an aggregated user pool" do
             aup        = AggregatedUsers.new
             aup_json   = aup.to_json
-            
+
             aup_json.should eql(File.read(
                                 @fixtures_path+"/json/aggregatedusers.json"))                
         end       
