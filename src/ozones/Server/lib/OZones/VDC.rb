@@ -28,17 +28,17 @@ module OZones
         
         def self.to_hash
             zonePoolHash = Hash.new
-            zonePoolHash["vdcpool"] = Hash.new
-            zonePoolHash["vdcpool"]["vdc"] = Array.new
+            zonePoolHash["VDC_POOL"] = Hash.new
+            zonePoolHash["VDC_POOL"]["VDC"] = Array.new
             self.all.each{|vdc|
-                  zonePoolHash["vdcpool"]["vdc"] << vdc.attributes              
+                  zonePoolHash["VDC_POOL"]["VDC"] << vdc.attributes              
             }
             return zonePoolHash
         end
         
         def to_hash
             vdc_attributes = Hash.new
-            vdc_attributes[:vdc] = attributes
+            vdc_attributes["VDC"] = attributes
             return vdc_attributes
         end
     end

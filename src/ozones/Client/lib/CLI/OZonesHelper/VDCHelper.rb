@@ -55,9 +55,8 @@ class VDCHelper < OZonesHelper::OZHelper
             end
         
             default :ID, :NAME, :ZONEID
-        end
-        
-        st.show(pool[@vdc_str], options)
+        end      
+        st.show(pool[@vdc_str.upcase], options)
         
         return 0
     end

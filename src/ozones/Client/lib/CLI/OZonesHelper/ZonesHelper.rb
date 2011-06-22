@@ -66,7 +66,7 @@ class ZonesHelper < OZonesHelper::OZHelper
         return [0, zone]
     end
 
-    def format_pool(pool, options)    
+    def format_pool(pool, options)   
         st=CLIHelper::ShowTable.new(nil) do
             column :ID, "Identifier for Zone", :size=>4 do |d,e|
                 d["id"]
@@ -82,7 +82,7 @@ class ZonesHelper < OZonesHelper::OZHelper
         
             default :ID, :NAME, :ENDPOINT
         end
-        st.show(pool[@zone_str], options)
+        st.show(pool[@zone_str.upcase], options)
         
         return 0
     end

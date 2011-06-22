@@ -24,7 +24,7 @@ module OZonesHelper
             if OZonesClient::is_error?(rc) 
                [-1, rc.message] 
             else
-               pool=OZonesClient::parse_json(rc.body, kind + "pool")
+               pool=OZonesClient::parse_json(rc.body, kind.upcase + "_POOL")
                format_pool(pool, options)
             end
         end
@@ -35,7 +35,7 @@ module OZonesHelper
             if OZonesClient::is_error?(rc) 
                [-1, rc.message] 
             else
-               resource=OZonesClient::parse_json(rc.body, kind)
+               resource=OZonesClient::parse_json(rc.body, kind.upcase)
                format_resource(resource, options)
             end
         end
