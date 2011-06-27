@@ -983,8 +983,7 @@ OZONES_PUBLIC_VENDOR_JQUERY="\
                         src/sunstone/public/vendor/jQuery/MIT-LICENSE.txt \
                         src/sunstone/public/vendor/jQuery/NOTICE"
                         
-OZONES_PUBLIC_JS_FILES="src/ozones/Server/public/js/ozones.js \
-                        src/ozones/Server/public/js/ozonesgui.js"
+OZONES_PUBLIC_JS_FILES="src/ozones/Server/public/js/ozones.js"
 
 OZONES_PUBLIC_JS_PLUGIN_FILES="src/ozones/public/js/plugins/zones-tab.js"
                 

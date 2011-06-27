@@ -62,6 +62,13 @@ cmd=CommandParser::CmdParser.new(ARGV) do
                                 zone['onename'] + ":plain:" + zone['onepass'],
                                 zone['endpoint'])
 
+                aux_helper.list_pool(options)    
+                
+            when "template"
+                aux_helper  = OneTemplateHelper.new(
+                                zone['onename'] + ":plain:" + zone['onepass'],
+                                zone['endpoint'])
+
                 aux_helper.list_pool(options)                                                  
         end
         0

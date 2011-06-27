@@ -3,6 +3,8 @@ require 'cli/one_helper/onehost_helper'
 require 'cli/one_helper/onevm_helper'
 require 'cli/one_helper/oneimage_helper'
 require 'cli/one_helper/onevnet_helper'
+require 'cli/one_helper/onetemplate_helper'
+require 'cli/one_helper/oneuser_helper'
 
 
 class ZonesHelper < OZonesHelper::OZHelper

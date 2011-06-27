@@ -44,11 +44,12 @@ class OzonesServer
         aggpool = case kind
             when "zone"     then 
                 case aggkind
-                    when "host"  then OZones::AggregatedHosts.new
-                    when "image" then OZones::AggregatedImages.new
-                    when "user"  then OZones::AggregatedUsers.new                        
-                    when "vm"    then OZones::AggregatedVirtualMachines.new
-                    when "vn"    then OZones::AggregatedVirtualNetworks.new
+                    when "host"     then OZones::AggregatedHosts.new
+                    when "image"    then OZones::AggregatedImages.new
+                    when "user"     then OZones::AggregatedUsers.new                        
+                    when "vm"       then OZones::AggregatedVirtualMachines.new
+                    when "vn"       then OZones::AggregatedVirtualNetworks.new
+                    when "template" then OZones::AggregatedTemplates.new
                 end
             else
                 error = OZones::Error.new(
@@ -76,11 +77,12 @@ class OzonesServer
                              resource.endpoint)                             
 
             simple_pool = case aggkind
-                when "host"  then OpenNebulaJSON::HostPoolJSON.new(client)
-                when "image" then OpenNebulaJSON::ImagePoolJSON.new(client)
-                when "user"  then OpenNebulaJSON::UserPoolJSON.new(client)               
-                when "vm"    then OpenNebulaJSON::VirtualMachinePoolJSON.new(client)
-                when "vn"    then OpenNebulaJSON::VirtualNetworkPoolJSON.new(client)
+                when "host"     then OpenNebulaJSON::HostPoolJSON.new(client)
+                when "image"    then OpenNebulaJSON::ImagePoolJSON.new(client)
+                when "user"     then OpenNebulaJSON::UserPoolJSON.new(client)               
+                when "vm"       then OpenNebulaJSON::VirtualMachinePoolJSON.new(client)
+                when "vn"       then OpenNebulaJSON::VirtualNetworkPoolJSON.new(client)
+                when "template" then OpenNebulaJSON::TemplatePoolJSON.new(client)
                 else
                     error = OZones::Error.new(
                       "Error: #{aggkind} aggregated pool for #{kind} #{id} not supported")
