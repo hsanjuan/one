@@ -114,6 +114,15 @@ module OZones
 
             aup_json.should eql(File.read(
                                 @fixtures_path+"/json/aggregatedusers.json"))                
+        end 
+        
+        it "should be able to retrieve an aggregated template pool" do
+            atp        = AggregatedTemplates.new
+            atp_json   = atp.to_json
+
+            atp_json.should eql(File.read(
+                                @fixtures_path+
+                                "/json/aggregatedtemplates.json"))                
         end       
     end
 end

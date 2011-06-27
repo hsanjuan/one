@@ -26,6 +26,7 @@ require 'OZones/AggregatedVirtualMachines'
 require 'OZones/AggregatedVirtualNetworks'
 require 'OZones/AggregatedImages'
 require 'OZones/AggregatedUsers'
+require 'OZones/AggregatedTemplates'
 
 module OZones
     # -------------------------------------------------------------------------

@@ -141,6 +141,8 @@ module OpenNebula
                     return File.read("fixtures/xml/userpool-#{@zone}.xml")
                 when "one.imagepool.info"
                     return File.read("fixtures/xml/imagepool-#{@zone}.xml")
+                when "one.templatepool.info"
+                    return File.read("fixtures/xml/templatepool-#{@zone}.xml")                    
             end
         end
     end
