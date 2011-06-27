@@ -77,6 +77,7 @@ while true ; do
         -c) CLIENT="yes"; INSTALL_ETC="no" ; shift ;;
         -s) SUNSTONE="yes"; INSTALL_ETC="no" ; shift ;;
         -o) OZONES="yes"; INSTALL_ETC="no" ; shift ;;
+        -s) SUNSTONE="yes"; shift ;;
         -u) ONEADMIN_USER="$2" ; shift 2;;
         -g) ONEADMIN_GROUP="$2"; shift 2;;
         -d) ROOT="$2" ; shift 2 ;;
@@ -362,7 +363,6 @@ INSTALL_SUNSTONE_RUBY_FILES=(
 INSTALL_SUNSTONE_FILES=(
     SUNSTONE_FILES:$SUNSTONE_LOCATION
     SUNSTONE_BIN_FILES:$BIN_LOCATION
-    SUNSTONE_ETC_FILES:$ETC_LOCATION
     SUNSTONE_MODELS_FILES:$SUNSTONE_LOCATION/models
     SUNSTONE_MODELS_JSON_FILES:$SUNSTONE_LOCATION/models/OpenNebulaJSON
     SUNSTONE_TEMPLATE_FILES:$SUNSTONE_LOCATION/templates
@@ -433,6 +433,7 @@ BIN_FILES="src/nebula/oned \
            src/cli/oneimage \
            src/cli/onegroup \
            src/cli/onetemplate \
+           src/cli/oneacl \
            src/onedb/onedb \
            share/scripts/one \
            src/authm_mad/oneauth"
@@ -715,6 +716,7 @@ RUBY_OPENNEBULA_LIB_FILES="src/oca/ruby/OpenNebula/Host.rb \
                            src/oca/ruby/OpenNebula/TemplatePool.rb \
                            src/oca/ruby/OpenNebula/Group.rb \
                            src/oca/ruby/OpenNebula/GroupPool.rb \
+                           src/oca/ruby/OpenNebula/Acl.rb \
                            src/oca/ruby/OpenNebula/XMLUtils.rb"
 
 #-------------------------------------------------------------------------------
@@ -818,7 +820,8 @@ CLI_BIN_FILES="src/cli/onevm \
                src/cli/oneuser \
                src/cli/oneimage \
                src/cli/onetemplate \
-               src/cli/onegroup"
+               src/cli/onegroup \
+               src/cli/oneacl"
 
 CLI_CONF_FILES="src/cli/etc/onegroup.yaml \
                 src/cli/etc/onehost.yaml \
@@ -1072,7 +1075,14 @@ for i in ${INSTALL_SET[@]}; do
 done
 
 if [ "$INSTALL_ETC" = "yes" ] ; then
-    for i in ${INSTALL_ETC_FILES[@]}; do
+    if [ "$SUNSTONE" = "yes" ]; then
+        INSTALL_ETC_SET="${INSTALL_SUNSTONE_ETC_FILES[@]}"
+    else
+        INSTALL_ETC_SET="${INSTALL_ETC_FILES[@]} \
+                         ${INSTALL_SUNSTONE_ETC_FILES[@]}"
+    fi
+
+    for i in ${INSTALL_ETC_SET[@]}; do
         SRC=$`echo $i | cut -d: -f1`
         DST=`echo $i | cut -d: -f2`
 
