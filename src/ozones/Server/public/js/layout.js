@@ -27,7 +27,7 @@ function popDialog(content){
 }
 
 function popDialogLoading(){
-    var loading = '<div style="margin-top:'+Math.round($("#dialog").height()/6)+'px; text-align: center; width: 100%"><img src="/images/pbar.gif" alt="loading..."/></div>';
+    var loading = '<div style="margin-top:'+Math.round($("#dialog").height()/6)+'px; text-align: center; width: 100%"><img src="images/pbar.gif" alt="loading..." /></div>';
     popDialog(loading);
 }
 
@@ -57,8 +57,15 @@ function showTab(tabname){
 $(document).ready(function () {
     $(".tab").hide();
 
-    $(".outer-west ul li a").live("click",function(){
+    $(".outer-west ul li.subTab a").live("click",function(){
         var tab = $(this).attr('href');
+        showTab(tab);
+        return false;
+    })
+
+    $(".outer-west ul li.topTab a").live("click",function(){
+        var tab = $(this).attr('href');
+        $('li.'+tab.substr(1)).toggle();
         showTab(tab);
         return false;
     })

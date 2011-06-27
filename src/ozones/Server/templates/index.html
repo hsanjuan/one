@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>OpenNebula Zones Admin Console</title>
-        <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<head>
+    <title>OpenNebula Admin Console</title>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
     
-        <!-- Vendor Libraries     -->
-        <script type="text/javascript" src="/vendor/jQuery/jquery-1.4.4.min.js"></script>
-    <script type="text/javascript" src="/vendor/jGrowl/jquery.jgrowl_minimized.js"></script>
-        <script type="text/javascript" src="/vendor/jQueryUI/jquery-ui-1.8.7.custom.min.js"></script>
-        <script type="text/javascript" src="/vendor/jQueryLayout/jquery.layout.min-1.2.0.js"></script>
-        <script type="text/javascript" src="/vendor/dataTables/jquery.dataTables.min.js"></script>
-        <script language="javascript" type="text/javascript" src="/vendor/flot/jquery.flot.min.js"></script>    
+    <!-- Vendor Libraries -->
+    <link rel="stylesheet" type="text/css" href="vendor/dataTables/demo_table_jui.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/jQueryUI/jquery-ui-1.8.7.custom.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/jGrowl/jquery.jgrowl.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/jQueryLayout/layout-default-latest.css" />
+    <link rel="stylesheet" href="vendor/noVNC/include/plain.css">
 
-   
-        <!-- End Vendor Libraries -->
-        
-        <!-- Custom Libraries     -->
-        <script type="text/javascript" src="/js/ozones.js"></script>
-        <script type="text/javascript" src="/js/ozonesgui.js"></script>  
-        <script type="text/javascript" src="/js/sunstone-util.js"></script>          
-        <script type="text/javascript" src="/js/layout.js"></script>                
-        <!-- End Custom Libraries -->
-        
-        <!-- Base plugins         -->
-        <script type="text/javascript" src="/js/plugins/zones-tab.js"></script>        
-        <!-- End Base plugins     -->
+    <script type="text/javascript" src="vendor/jQuery/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="vendor/jGrowl/jquery.jgrowl_minimized.js"></script>
+    <script type="text/javascript" src="vendor/jQueryUI/jquery-ui-1.8.7.custom.min.js"></script>
+    <script type="text/javascript" src="vendor/jQueryLayout/jquery.layout.min-1.2.0.js"></script>
+    <script type="text/javascript" src="vendor/dataTables/jquery.dataTables.min.js"></script>
+
+    <!-- End Vendor Libraries -->
+
+    <link rel="stylesheet" type="text/css" href="css/application.css" />
+    <link rel="stylesheet" type="text/css" href="css/layout.css" />
+    <script type="text/javascript" src="js/ozones.js"></script>
+    <script type="text/javascript" src="js/layout.js"></script>
+    <script type="text/javascript" src="js/sunstone.js"></script>
+    <script type="text/javascript" src="js/sunstone-util.js"></script>
+
+    <!--Base plugins-->
+    <script type="text/javascript" src="js/plugins/dummy-plugin.js"></script>
     
-    </head>
-    <body>
+</head>
+<body>
 <div class="outer-center">
     <div class="inner-center">
     </div>
@@ -35,8 +38,8 @@
 </div>
 
 <div id="menu" class="outer-west">
-    <ul id="navigation">
-    </ul>
+  <ul id="navigation" class="navigation">
+  </ul>
 </div>
 
 <div id="header" class="ui-layout-north">
@@ -65,5 +68,4 @@
 </div>
 <div id="info_panels"></div>
 </body>
-    </body>
 </html>

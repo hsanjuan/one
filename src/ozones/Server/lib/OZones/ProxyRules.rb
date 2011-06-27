@@ -28,7 +28,7 @@ module OZones
         
         def update
             case @type
-                when "apache":
+                when "apache"
                     apWritter = OZones::ApacheWritter.new @file_path
                     apWritter.update
             end

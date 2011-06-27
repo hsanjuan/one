@@ -309,7 +309,7 @@ function onError(request,error_json) {
 
     //redirect to login if unauthenticated
     if (error_json.error.http_status=="401") {
-        window.location.href = "/login";
+        window.location.href = "login";
     };
 
     if (!message){
@@ -600,17 +600,25 @@ function setupTemplateUpdateDialog(){
         var id = $(this).val();
         var resource = $('#template_update_dialog #template_update_button').val();
         $('#template_update_dialog #template_update_textarea').val("Loading...");
-        OZonesGUI.runAction(resource+".fetch_template",id);
+        Sunstone.runAction(resource+".fetch_template",id);
     });
 
     $('#template_update_dialog #template_update_button').click(function(){
         var new_template = $('#template_update_dialog #template_update_textarea').val();
         var id = $('#template_update_dialog #template_update_select').val();
         var resource = $(this).val();
-        OZonesGUI.runAction(resource+".update",id,new_template);
+        Sunstone.runAction(resource+".update",id,new_template);
         $('#template_update_dialog').dialog('close');
         return false;
     });
+}
+
+function popUpTemplateUpdateDialog(elem_str,select_items){
+    $('#template_update_dialog #template_update_button').val(elem_str);
+    $('#template_update_dialog #template_update_select').html(select_items);
+    $('#template_update_dialog #template_update_textarea').val("");
+    $('#template_update_dialog').dialog('open');
+    return false;
 }
 
 //functions that used as true and false conditions for testing mainly
@@ -619,4 +627,8 @@ function True(){
 }
 function False(){
     return false;
+}
+
+function Empty(){
+    
 }

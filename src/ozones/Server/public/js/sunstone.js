@@ -17,13 +17,13 @@
 var cookie = {};
 var username = '';
 var uid = '';
-var spinner = '<img src="/images/ajax-loader.gif" alt="retrieving" class="loading_img" />';
+var spinner = '<img src="images/ajax-loader.gif" alt="retrieving" class="loading_img" />';
 
 
-//Ozones configuration is formed by predifined "actions", main tabs
+//Sunstone configuration is formed by predifined "actions", main tabs
 //and "info_panels". Each tab has "content" and "buttons". Each
 //"info_panel" has "tabs" with "content".
-var OZonesCfg = {
+var SunstoneCfg = {
     "actions" : {},
      "tabs" : {},
      "info_panels" : {}
@@ -31,33 +31,33 @@ var OZonesCfg = {
 
 /* Public plugin interface */
 
-var OZonesGUI = {
+var Sunstone = {
 
     //Adds a predifined action
     "addAction" : function (action_name,action_obj) {
-        OZonesCfg["actions"][action_name] = action_obj;
+        SunstoneCfg["actions"][action_name] = action_obj;
     },
 
     //Replaces a predefined action
     "updateAction" : function(action_name,action_obj) {
-         OZonesCfg["actions"][action_name] = action_obj;
+         SunstoneCfg["actions"][action_name] = action_obj;
     },
 
     //Deletes a predefined action.
     "removeAction" : function(action_name) {
-         delete OZonesCfg["actions"][action_name];
+         delete SunstoneCfg["actions"][action_name];
     },
 
     //Adds several actions encapsulated in an js object.
     "addActions" : function(actions) {
         for (action in actions){
-            OZonesGUI.addAction(action,actions[action]);
+            Sunstone.addAction(action,actions[action]);
         }
     },
 
     //Adds a new main tab. Refreshes the dom if wanted.
     "addMainTab" : function(tab_id,tab_obj,refresh) {
-        OZonesCfg["tabs"][tab_id] = tab_obj;
+        SunstoneCfg["tabs"][tab_id] = tab_obj;
         if (refresh){
             insertTab(tab_id);
         }
@@ -65,7 +65,7 @@ var OZonesGUI = {
 
     //Updates the content of an info tab and refreshes the DOM if wanted.
     "updateMainTabContent" : function(tab_id,content_arg,refresh){
-        OZonesCfg["tabs"][tab_id]["content"]=content_arg;
+        SunstoneCfg["tabs"][tab_id]["content"]=content_arg;
         if (refresh){ //if not present it won't be updated
             $('div#'+tab_id).html(content_arg);
         }
@@ -73,7 +73,7 @@ var OZonesGUI = {
 
     //Replaces the buttons of an info tab and regenerates them if wanted.
     "updateMainTabButtons" : function(tab_id,buttons_arg,refresh){
-        OZonesCfg["tabs"][tab_id]["buttons"]=buttons_arg;
+        SunstoneCfg["tabs"][tab_id]["buttons"]=buttons_arg;
         if (refresh){
             $('div#'+tab_id+' .action_blocks').empty();
             insertButtonsInTab(tab_id);
@@ -82,7 +82,7 @@ var OZonesGUI = {
 
     //Removes a tab and refreshes the DOM
     "removeMainTab" : function(tab_id,refresh) {
-         delete OZonesCfg["tabs"][tab_id];
+         delete SunstoneCfg["tabs"][tab_id];
          if (refresh) {
              $('div#'+tab_id).remove();
               $('ul#navigation li#li_'+tab_id).remove();
@@ -91,29 +91,29 @@ var OZonesGUI = {
 
     //Adds a new info panel
     "addInfoPanel" : function(panel_name, panel_obj){
-        OZonesCfg["info_panels"][panel_name]=panel_obj;
+        SunstoneCfg["info_panels"][panel_name]=panel_obj;
     },
 
     //Replaces an existing info panel
     "updateInfoPanel" : function(panel_name,panel_obj){
-        OZonesCfg["info_panels"][panel_name]=panel_obj;
+        SunstoneCfg["info_panels"][panel_name]=panel_obj;
     },
 
     //Removes an info panel
     "removeInfoPanel" : function(panel_name){
-        delete OZonesCfg["info_panels"][panel_name];
+        delete SunstoneCfg["info_panels"][panel_name];
     },
 
     //Makes an info panel content pop up in the screen.
     "popUpInfoPanel" : function(panel_name, selected_tab){
-        popDialog(OZonesCfg.getInfoPanelHTML(panel_name, selected_tab));
+        popDialog(Sunstone.getInfoPanelHTML(panel_name, selected_tab));
     },
 
     //Generates and returns the HTML div element for an info panel, with
     //Jquery tabs.
     "getInfoPanelHTML" : function(panel_name,selected_tab){
         var info_panel = $('<div id="'+panel_name+'"><ul></ul></div>');
-        var tabs = OZonesCfg["info_panels"][panel_name];
+        var tabs = SunstoneCfg["info_panels"][panel_name];
         var tab=null;
         for (tab_name in tabs){
             tab=tabs[tab_name];
@@ -129,13 +129,13 @@ var OZonesGUI = {
 
     //adds a tab to an info panel.
     "addInfoPanelTab" : function(panel_name, panel_tab_id, panel_tab_obj){
-        OZonesCfg["info_panels"][panel_name][panel_tab_id] = panel_tab_obj;
+        SunstoneCfg["info_panels"][panel_name][panel_tab_id] = panel_tab_obj;
     },
 
     //Replaces a tab from an info panel. Refreshes the DOM if wanted.
     "updateInfoPanelTab" : function(panel_name, panel_tab_id,
                                     panel_tab_obj, refresh){
-        OZonesCfg["info_panels"][panel_name][panel_tab_id] = panel_tab_obj;
+        SunstoneCfg["info_panels"][panel_name][panel_tab_id] = panel_tab_obj;
         if (refresh){
             var tab_content = panel_tab_obj.content;
             $('div#'+panel_name+' div#'+panel_tab_id).html(tab_content);
@@ -144,7 +144,7 @@ var OZonesGUI = {
 
     //Removes a tab from an info panel configuration.
     "removeInfoPanelTab" : function(panel_name,panel_tab_id){
-        delete OZonesCfg["info_panels"][panel_name][panel_tab_id];
+        delete SunstoneCfg["info_panels"][panel_name][panel_tab_id];
     },
 
     //Runs a predefined action. Wraps the calls to opennebula.js and
@@ -153,7 +153,7 @@ var OZonesGUI = {
     //the condition to run the action is not met, the action is not found
     "runAction" : function(action, data_arg, extra_param){
 
-        var actions = OZonesCfg["actions"];
+        var actions = SunstoneCfg["actions"];
         if (!actions[action]){
             notifyError("Action "+action+" not defined");
             return 1;
@@ -261,7 +261,7 @@ var OZonesGUI = {
     //returns a button object from the desired tab
     "getButton" : function(tab_id,button_name){
         var button = null;
-        var buttons = OZonesCfg["tabs"][tab_id]["buttons"];
+        var buttons = SunstoneCfg["tabs"][tab_id]["buttons"];
         button = buttons[button_name];
         //not found, is it in the list then?
         if (!button && buttons["action_list"])
@@ -269,7 +269,7 @@ var OZonesGUI = {
             button = buttons["action_list"]["actions"][button_name];
         }
         return button;
-    } //end OZonesGUI methods
+    } //end sunstone methods
 
 };
 
@@ -283,6 +283,7 @@ $(document).ready(function(){
 
     //Insert the tabs in the DOM and their buttons.
     insertTabs();
+    hideSubTabs();
     insertButtons();
 
     //Enhace the look of select buttons
@@ -302,7 +303,7 @@ $(document).ready(function(){
         var error = 0;
         var table = null;
         var value = $(this).attr("value");
-        var action = OZonesCfg["actions"][value];
+        var action = SunstoneCfg["actions"][value];
         if (!action) {
             notifyError("Action "+value+" not defined.");
             return false;
@@ -310,10 +311,10 @@ $(document).ready(function(){
         switch (action.type){
         case "multiple": //find the datatable
             var nodes = action.elements();
-            error = OZonesGUI.runAction(value,nodes);
+            error = Sunstone.runAction(value,nodes);
             break;
         default:
-            error = OZonesGUI.runAction(value);
+            error = Sunstone.runAction(value);
         }
 
         if (!error){
@@ -380,9 +381,9 @@ function setLogin(){
 
     $("#user").html(username);
     $("#logout").click(function(){
-        oZones.Auth.logout({
+        OpenNebula.Auth.logout({
             success:function(){
-                window.location.href = "/login";
+                window.location.href = "login";
             }
         });
         return false;
@@ -392,7 +393,7 @@ function setLogin(){
 //Inserts all main tabs in the DOM
 function insertTabs(){
     var tab_info;
-    for (tab in OZonesCfg["tabs"]){
+    for (tab in SunstoneCfg["tabs"]){
         insertTab(tab);
     }
 }
@@ -402,20 +403,39 @@ function insertTabs(){
 //adding the content to the proper div and by adding a list item
 //link to the navigation menu
 function insertTab(tab_name){
-    var tab_info = OZonesCfg["tabs"][tab_name];
+    var tab_info = SunstoneCfg["tabs"][tab_name];
     var condition = tab_info["condition"];
+    var tabClass= tab_info["tabClass"];
+    var parent="";
+
+    if (!tabClass) {
+        tabClass="topTab";
+    } else if (tabClass=="subTab") {
+        parent=tab_info["parentTab"];
+    };
+
     //skip this tab if we do not meet the condition
     if (condition && !condition()) {return;}
     $("div.inner-center").append('<div id="'+tab_name+'" class="tab"></div>');
     $('div#'+tab_name).html(tab_info.content);
 
-    $('ul#navigation').append('<li id="li_'+tab_name+'"><a href="#'+tab_name+'">'+tab_info.title+'</a></li>');
+    $('ul#navigation').append('<li id="li_'+tab_name+'" class="'+tabClass+' '+parent+'"><a href="#'+tab_name+'">'+tab_info.title+'</a></li>');
+}
+
+function hideSubTabs(){
+    for (tab in SunstoneCfg["tabs"]){
+        var tab_info = SunstoneCfg["tabs"][tab];
+        var tabClass = tab_info["tabClass"];
+        if (tabClass=="subTab"){
+            $('#li_'+tab).hide();
+        }
+    }
 }
 
 
 //Inserts the buttons of all tabs.
 function insertButtons(){
-     for (tab in OZonesCfg["tabs"]){
+     for (tab in SunstoneCfg["tabs"]){
         insertButtonsInTab(tab)
     }
 }
@@ -423,7 +443,7 @@ function insertButtons(){
 //If we have defined a block of action buttons in a tab,
 //this function takes care of inserting them in the DOM.
 function insertButtonsInTab(tab_name){
-    var buttons = OZonesCfg["tabs"][tab_name]["buttons"];
+    var buttons = SunstoneCfg["tabs"][tab_name]["buttons"];
     var button_code="";
     var sel_obj=null;
     var condition=null;
@@ -625,16 +645,16 @@ function setupConfirmDialogs(){
     $('button#confirm_with_select_proceed').click(function(){
         var error = 0;
         var value = $(this).val();
-        var action = OZonesCfg["actions"][value];
+        var action = SunstoneCfg["actions"][value];
         var param = $('select#confirm_select').val();
         if (!action) { notifyError("Action "+value+" not defined."); return false;};
         switch (action.type){
         case "multiple": //find the datatable
             var nodes = action.elements();
-            error = OZonesGUI.runAction(value,nodes,param);
+            error = Sunstone.runAction(value,nodes,param);
             break;
         default:
-            error = OZonesGUI.runAction(value,param);
+            error = Sunstone.runAction(value,param);
             break;
         }
 
@@ -654,7 +674,7 @@ function setupConfirmDialogs(){
 function popUpConfirmDialog(target_elem){
     var value = $(target_elem).val();
     var tab_id = $(target_elem).parents('.tab').attr('id');
-    var button = OZonesGUI.getButton(tab_id,value);
+    var button = Sunstone.getButton(tab_id,value);
     var tip = button.tip;
     $('button#confirm_proceed').val(value);
     $('div#confirm_tip').text(tip);
@@ -667,7 +687,7 @@ function popUpConfirmDialog(target_elem){
 function popUpConfirmWithSelectDialog(target_elem){
     var value = $(target_elem).val();
     var tab_id = $(target_elem).parents('.tab').attr('id');
-    var button = OZonesGUI.getButton(tab_id,value);
+    var button = Sunstone.getButton(tab_id,value);
     var tip = button.tip;
     var select_var = button.select();
     $('select#confirm_select').html(select_var);

@@ -16,7 +16,7 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-$: << File.dirname(ENV['ONE_LOCATION'] + "/lib/ozones/Server/ozones-server.rb")
+$: << File.dirname(__FILE__)
 
 require 'ozones-server.rb'
 

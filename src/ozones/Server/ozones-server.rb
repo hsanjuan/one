@@ -29,13 +29,15 @@ else
     RUBY_LIB_LOCATION=ONE_LOCATION+"/lib/ruby"
 end
 
+
 OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Server"
 ENV['OZONES_LOCATION']=OZONES_LOCATION
 
-$: << RUBY_LIB_LOCATION
-$: << OZONES_LOCATION + "/lib"
-$: << OZONES_LOCATION + "/models"
 $: << ENV['ONE_LOCATION'] + "/lib/sunstone/models"
+$: << File.dirname(__FILE__) + "../sunstone/models"
+$: << RUBY_LIB_LOCATION
+$: << File.dirname(__FILE__)+'/models'
+$: << File.dirname(__FILE__)+'/lib'
 
 
 ##############################################################################
@@ -53,7 +55,12 @@ require 'OzonesServer'
 ##############################################################################
 # Read configuration
 ##############################################################################
-config_data=File.read(ONE_LOCATION+'/etc/ozones-server.conf')
+begin
+    config_data=File.read(ONE_LOCATION+'/etc/ozones-server.conf')
+rescue 
+    config_data=File.read(File.dirname(__FILE__)+'/etc/ozones-server.conf')
+end
+
 config=YAML::load(config_data)
 
 db_type = config[:databasetype]
