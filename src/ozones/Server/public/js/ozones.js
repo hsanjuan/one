@@ -343,6 +343,223 @@ var oZones = {
                     }
                 }
             });
+        },
+        
+        "host": function(params)
+        {
+
+            var callback       = params.success;
+            var callback_error = params.error;
+            var id             = params.data.id;
+
+            var resource = oZones.Zone.resource;
+            var request  = oZones.Helper.request(resource,"host", id);
+
+            $.ajax({
+                url: "/" + resource +"/" + id + "/host",
+                type: "GET",
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        callback(request, response);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        },
+        
+        "image": function(params)
+        {
+
+            var callback       = params.success;
+            var callback_error = params.error;
+            var id             = params.data.id;
+
+            var resource = oZones.Zone.resource;
+            var request  = oZones.Helper.request(resource,"image", id);
+
+            $.ajax({
+                url: "/" + resource +"/" + id + "/image",
+                type: "GET",
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        callback(request, response);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        },
+        
+        "template": function(params)
+        {
+
+            var callback       = params.success;
+            var callback_error = params.error;
+            var id             = params.data.id;
+
+            var resource = oZones.Zone.resource;
+            var request  = oZones.Helper.request(resource,"template", id);
+
+            $.ajax({
+                url: "/" + resource +"/" + id + "/template",
+                type: "GET",
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        callback(request, response);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        },
+        
+        "user": function(params)
+        {
+
+            var callback       = params.success;
+            var callback_error = params.error;
+            var id             = params.data.id;
+
+            var resource = oZones.Zone.resource;
+            var request  = oZones.Helper.request(resource,"user", id);
+
+            $.ajax({
+                url: "/" + resource +"/" + id + "/user",
+                type: "GET",
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        callback(request, response);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        },
+        
+        "vm": function(params)
+        {
+
+            var callback       = params.success;
+            var callback_error = params.error;
+            var id             = params.data.id;
+
+            var resource = oZones.Zone.resource;
+            var request  = oZones.Helper.request(resource,"vm", id);
+
+            $.ajax({
+                url: "/" + resource +"/" + id + "/vm",
+                type: "GET",
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        callback(request, response);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        },
+        
+        "vn": function(params)
+        {
+
+            var callback       = params.success;
+            var callback_error = params.error;
+            var id             = params.data.id;
+
+            var resource = oZones.Zone.resource;
+            var request  = oZones.Helper.request(resource,"vn", id);
+
+            $.ajax({
+                url: "/" + resource +"/" + id + "/vn",
+                type: "GET",
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        callback(request, response);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        },
+        
+        "user": function(params)
+        {
+
+            var callback       = params.success;
+            var callback_error = params.error;
+            var id             = params.data.id;
+
+            var resource = oZones.Zone.resource;
+            var request  = oZones.Helper.request(resource,"user", id);
+
+            $.ajax({
+                url: "/" + resource +"/" + id + "/user",
+                type: "GET",
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        callback(request, response);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
         }
     },
 
