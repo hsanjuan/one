@@ -645,7 +645,7 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var host_pool = oZones.VDC.pool(resource,response);
+                        var vdc_pool = oZones.Helper.pool(resource,response);
                         callback(request, vdc_pool);
                     }
                 },
@@ -678,6 +678,222 @@ var oZones = {
                     if (callback)
                     {
                         callback(request, response);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        }
+    },
+    
+    "ZoneHosts": {
+        "resource": "zonehost",
+
+        "list": function(params)
+        {
+            var callback       = params.success;
+            var callback_error = params.error;
+            var timeout        = params.timeout || false;
+
+            var resource = oZones.ZoneHosts.resource;
+            var request  = oZones.Helper.request(resource,"list");
+
+            $.ajax({
+                url:  "/zone/host",
+                type: "GET",
+                data: {timeout: timeout},
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        var zonehosts_pool = oZones.Helper.pool(resource,response);
+                        callback(request, zonehosts_pool);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        }
+    },    
+    
+    "ZoneVMs": {
+        "resource": "zonevms",
+
+        "list": function(params)
+        {
+            var callback       = params.success;
+            var callback_error = params.error;
+            var timeout        = params.timeout || false;
+
+            var resource = oZones.ZoneVMs.resource;
+            var request  = oZones.Helper.request(resource,"list");
+
+            $.ajax({
+                url:  "/zone/vm",
+                type: "GET",
+                data: {timeout: timeout},
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        var zonevms_pool = oZones.Helper.pool(resource,response);
+                        callback(request, zonevms_pool);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        }
+    },   
+    
+    "ZoneVNs": {
+        "resource": "zonevns",
+
+        "list": function(params)
+        {
+            var callback       = params.success;
+            var callback_error = params.error;
+            var timeout        = params.timeout || false;
+
+            var resource = oZones.ZoneVMs.resource;
+            var request  = oZones.Helper.request(resource,"list");
+
+            $.ajax({
+                url:  "/zone/vn",
+                type: "GET",
+                data: {timeout: timeout},
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        var zonevns_pool = oZones.Helper.pool(resource,response);
+                        callback(request, zonevns_pool);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        }
+    },  
+    
+    "ZoneImages": {
+        "resource": "zonevns",
+
+        "list": function(params)
+        {
+            var callback       = params.success;
+            var callback_error = params.error;
+            var timeout        = params.timeout || false;
+
+            var resource = oZones.ZoneImages.resource;
+            var request  = oZones.Helper.request(resource,"list");
+
+            $.ajax({
+                url:  "/zone/image",
+                type: "GET",
+                data: {timeout: timeout},
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        var zoneimages_pool = oZones.Helper.pool(resource,response);
+                        callback(request, zoneimages_pool);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        }
+    }, 
+    
+    "ZoneUsers": {
+        "resource": "zoneusers",
+
+        "list": function(params)
+        {
+            var callback       = params.success;
+            var callback_error = params.error;
+            var timeout        = params.timeout || false;
+
+            var resource = oZones.ZoneUsers.resource;
+            var request  = oZones.Helper.request(resource,"list");
+
+            $.ajax({
+                url:  "/zone/user",
+                type: "GET",
+                data: {timeout: timeout},
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        var zoneusers_pool = oZones.Helper.pool(resource,response);
+                        callback(request, zoneusers_pool);
+                    }
+                },
+                error: function(response)
+                {
+                    if (callback_error)
+                    {
+                        callback_error(request, oZones.Error(response));
+                    }
+                }
+            });
+        }
+    },  
+    
+    "ZoneTemplates": {
+        "resource": "zoneusers",
+
+        "list": function(params)
+        {
+            var callback       = params.success;
+            var callback_error = params.error;
+            var timeout        = params.timeout || false;
+
+            var resource = oZones.ZoneTemplates.resource;
+            var request  = oZones.Helper.request(resource,"list");
+
+            $.ajax({
+                url:  "/zone/template",
+                type: "GET",
+                data: {timeout: timeout},
+                dataType: "json",
+                success: function(response)
+                {
+                    if (callback)
+                    {
+                        var zonetemplates_pool = oZones.Helper.pool(resource,response);
+                        callback(request, zonetemplates_pool);
                     }
                 },
                 error: function(response)
