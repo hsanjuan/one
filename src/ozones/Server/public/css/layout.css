@@ -30,7 +30,7 @@ body {
    padding: 0;
 }
 
-#dialog div {
+#dialog > div {
     border: 0;
 }
 

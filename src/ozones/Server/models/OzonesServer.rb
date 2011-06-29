@@ -15,8 +15,12 @@
 #--------------------------------------------------------------------------- #
 
 require 'OCAInteraction'
+require 'JSONUtils'
+
 
 class OzonesServer
+
+    include JSONUtils
     
     def initialize
         @ocaInt = OCAInteraction.new
@@ -128,7 +132,12 @@ class OzonesServer
     # Create resources
     ############################################################################
     # Creates a resource of a kind, and updates the Proxy Rules
-    def create_resource(kind, data, pr)
+    def create_resource(kind, data, body, pr)
+
+        if body.size > 0
+            data = parse_json(body,kind)
+        end
+
         resource = case kind
             when "vdc"  then 
                 vdc_data=Hash.new
@@ -194,8 +203,9 @@ class OzonesServer
                 rc = zone.save
                 if rc
                     pr.update # Rewrite proxy conf file
-                    return [200, OZones.str_to_json("Resource " + 
-                     "#{kind.upcase} successfuly created with ID #{zone.id}")]
+                    return [200, zone.to_json]
+                    #return [200, OZones.str_to_json("Resource " + 
+                    ## "#{kind.upcase} successfuly created with ID #{zone.id}")]
                 else
                     return [400, OZones::Error.new(
                     "Error: Couldn't create resource #{kind.upcase}").to_json]

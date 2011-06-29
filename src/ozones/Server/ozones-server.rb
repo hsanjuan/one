@@ -127,8 +127,7 @@ helpers do
                 return true
             end
         end
-        
-        false
+        true
     end
 
 end
@@ -208,7 +207,7 @@ end
 # Create a new Resource
 ##############################################################################
 post '/:pool' do
-    @OzonesServer.create_resource(params[:pool], params, @pr)
+    @OzonesServer.create_resource(params[:pool], params, request.body.read, @pr)
 end
 
 

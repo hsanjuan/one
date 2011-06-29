@@ -1,0 +1,9 @@
+The following files are replicated and improved from Sunstone:
+sunstone.js
+sunstone-util.js
+layout.css
+
+They should be copied back to sunstone folder as these are improved versions valid for both ozones and sunstone, so they should not break Sunstone.
+
+JSONUtils.rb is mostly a replica from the Sunstone version (unwrapped from module OpenNebulaJSON) .
+

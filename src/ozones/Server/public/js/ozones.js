@@ -44,6 +44,70 @@ var oZones = {
     },
 
     "Helper": {
+        "resource_state": function(type, value)
+        {
+            switch(type)
+            {
+                case "HOST","host":
+                    return ["INIT",
+                            "MONITORING",
+                            "MONITORED",
+                            "ERROR",
+                            "DISABLED"][value];
+                    break;
+                case "HOST_SIMPLE","host_simple":
+                    return ["ON",
+                            "ON",
+                            "ON",
+                            "ERROR",
+                            "OFF"][value];
+                    break;
+                case "VM","vm":
+                    return ["INIT",
+                            "PENDING",
+                            "HOLD",
+                            "ACTIVE",
+                            "STOPPED",
+                            "SUSPENDED",
+                            "DONE",
+                            "FAILED"][value];
+                    break;
+                case "VM_LCM","vm_lcm":
+                    return ["LCM_INIT",
+                            "PROLOG",
+                            "BOOT",
+                            "RUNNING",
+                            "MIGRATE",
+                            "SAVE_STOP",
+                            "SAVE_SUSPEND",
+                            "SAVE_MIGRATE",
+                            "PROLOG_MIGRATE",
+                            "PROLOG_RESUME",
+                            "EPILOG_STOP",
+                            "EPILOG",
+                            "SHUTDOWN",
+                            "CANCEL",
+                            "FAILURE",
+                            "CLEANUP",
+                            "UNKNOWN"][value];
+                    break;
+                case "IMAGE","image":
+                    return ["INIT",
+                            "READY",
+                            "USED",
+                            "DISABLED",
+                            "LOCKED",
+                            "ERROR"][value];
+                    break;
+                default:
+                    return;
+            }
+        },
+
+        "image_type": function(value)
+        {
+            return ["OS", "CDROM", "DATABLOCK"][value];
+        },
 // TODO Are we going to use this ?? 
         "action": function(action, params)
         {
@@ -78,9 +142,10 @@ var oZones = {
             return r;
         },
 
-        "pool": function(kind, response)
+        "pool": function(resource, response)
         {
-            var pool_name = resource + "pool";
+            var pool_name = resource + "_POOL";
+            var type = resource;
             var pool;
 
             if (typeof(pool_name) == "undefined")
@@ -219,7 +284,7 @@ var oZones = {
     },
 
     "Zone": {
-        "resource": "zone",
+        "resource": "ZONE",
 
         "create": function(params)
         {
@@ -231,7 +296,7 @@ var oZones = {
             var request = oZones.Helper.request(resource,"create", data);
 
             $.ajax({
-                url:  "/" + resource,
+                url:  "zone",
                 type: "POST",
                 dataType: "json",
                 data: JSON.stringify(data),
@@ -263,7 +328,7 @@ var oZones = {
             var request = oZones.Helper.request(resource,"delete", id);
 
             $.ajax({
-                url:  "/" + resource +"/" + id,
+                url:  "zone/" + id,
                 type: "DELETE",
                 success: function()
                 {
@@ -292,7 +357,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
-                url:  "/" + resource,
+                url:  "zone",
                 type: "GET",
                 data: {timeout: timeout},
                 dataType: "json",
@@ -300,7 +365,7 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var host_pool = oZones.Helper.pool(resource,response);
+                        var zone_pool = oZones.Helper.pool(resource,response);
                         callback(request, zone_pool);
                     }
                 },
@@ -325,7 +390,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"show", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id,
+                url: "zone/" + id,
                 type: "GET",
                 dataType: "json",
                 success: function(response)
@@ -356,14 +421,15 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"host", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id + "/host",
+                url: "zone/" + id + "/host",
                 type: "GET",
                 dataType: "json",
                 success: function(response)
                 {
                     if (callback)
                     {
-                        callback(request, response);
+                        var host_pool = oZones.Helper.pool("HOST",response);
+                        callback(request, host_pool);
                     }
                 },
                 error: function(response)
@@ -387,14 +453,15 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"image", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id + "/image",
+                url: "zone/" + id + "/image",
                 type: "GET",
                 dataType: "json",
                 success: function(response)
                 {
                     if (callback)
                     {
-                        callback(request, response);
+                        var pool = oZones.Helper.pool("IMAGE",response); 
+                        callback(request, pool);
                     }
                 },
                 error: function(response)
@@ -418,14 +485,15 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"template", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id + "/template",
+                url: "zone/" + id + "/template",
                 type: "GET",
                 dataType: "json",
                 success: function(response)
                 {
                     if (callback)
                     {
-                        callback(request, response);
+                        var pool = oZones.Helper.pool("VMTEMPLATE",response); 
+                        callback(request, pool);
                     }
                 },
                 error: function(response)
@@ -449,14 +517,15 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"user", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id + "/user",
+                url: "zone/" + id + "/user",
                 type: "GET",
                 dataType: "json",
                 success: function(response)
                 {
                     if (callback)
                     {
-                        callback(request, response);
+                        var pool = oZones.Helper.pool("USER",response); 
+                        callback(request, pool);
                     }
                 },
                 error: function(response)
@@ -480,14 +549,15 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"vm", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id + "/vm",
+                url: "zone/" + id + "/vm",
                 type: "GET",
                 dataType: "json",
                 success: function(response)
                 {
                     if (callback)
                     {
-                        callback(request, response);
+                        var pool = oZones.Helper.pool("VM",response); 
+                        callback(request, pool);
                     }
                 },
                 error: function(response)
@@ -511,14 +581,15 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"vn", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id + "/vn",
+                url: "zone/" + id + "/vn",
                 type: "GET",
                 dataType: "json",
                 success: function(response)
                 {
                     if (callback)
                     {
-                        callback(request, response);
+                        var pool = oZones.Helper.pool("VNET",response); 
+                        callback(request, pool);
                     }
                 },
                 error: function(response)
@@ -531,7 +602,7 @@ var oZones = {
             });
         },
         
-        "user": function(params)
+        "group": function(params)
         {
 
             var callback       = params.success;
@@ -539,17 +610,18 @@ var oZones = {
             var id             = params.data.id;
 
             var resource = oZones.Zone.resource;
-            var request  = oZones.Helper.request(resource,"user", id);
+            var request  = oZones.Helper.request(resource,"group", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id + "/user",
+                url: "zone/" + id + "/group",
                 type: "GET",
                 dataType: "json",
                 success: function(response)
                 {
                     if (callback)
                     {
-                        callback(request, response);
+                        var pool = oZones.Helper.pool("GROUP",response); 
+                        callback(request, pool);
                     }
                 },
                 error: function(response)
@@ -564,7 +636,7 @@ var oZones = {
     },
 
     "VDC": {
-        "resource": "vdc",
+        "resource": "VDC",
 
         "create": function(params)
         {
@@ -576,7 +648,7 @@ var oZones = {
             var request = oZones.Helper.request(resource,"create", data);
 
             $.ajax({
-                url:  "/" + resource,
+                url:  "vdc",
                 type: "POST",
                 dataType: "json",
                 data: JSON.stringify(data),
@@ -608,7 +680,7 @@ var oZones = {
             var request = oZones.Helper.request(resource,"delete", id);
 
             $.ajax({
-                url:  "/" + resource +"/" + id,
+                url:  "vdc/" + id,
                 type: "DELETE",
                 success: function()
                 {
@@ -637,7 +709,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
-                url:  "/" + resource,
+                url:  "vdc",
                 type: "GET",
                 data: {timeout: timeout},
                 dataType: "json",
@@ -670,7 +742,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"show", id);
 
             $.ajax({
-                url: "/" + resource +"/" + id,
+                url: "vdc/" + id,
                 type: "GET",
                 dataType: "json",
                 success: function(response)
@@ -692,7 +764,7 @@ var oZones = {
     },
     
     "ZoneHosts": {
-        "resource": "zonehost",
+        "resource": "ZONEHOST",
 
         "list": function(params)
         {
@@ -704,7 +776,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
-                url:  "/zone/host",
+                url:  "zone/host",
                 type: "GET",
                 data: {timeout: timeout},
                 dataType: "json",
@@ -728,7 +800,7 @@ var oZones = {
     },    
     
     "ZoneVMs": {
-        "resource": "zonevms",
+        "resource": "ZONEVMS",
 
         "list": function(params)
         {
@@ -740,7 +812,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
-                url:  "/zone/vm",
+                url:  "zone/vm",
                 type: "GET",
                 data: {timeout: timeout},
                 dataType: "json",
@@ -764,7 +836,7 @@ var oZones = {
     },   
     
     "ZoneVNs": {
-        "resource": "zonevns",
+        "resource": "ZONEVNS",
 
         "list": function(params)
         {
@@ -776,7 +848,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
-                url:  "/zone/vn",
+                url:  "zone/vn",
                 type: "GET",
                 data: {timeout: timeout},
                 dataType: "json",
@@ -800,7 +872,7 @@ var oZones = {
     },  
     
     "ZoneImages": {
-        "resource": "zonevns",
+        "resource": "ZONEIMAGES",
 
         "list": function(params)
         {
@@ -812,7 +884,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
-                url:  "/zone/image",
+                url:  "zone/image",
                 type: "GET",
                 data: {timeout: timeout},
                 dataType: "json",
@@ -836,7 +908,7 @@ var oZones = {
     }, 
     
     "ZoneUsers": {
-        "resource": "zoneusers",
+        "resource": "ZONEUSERS",
 
         "list": function(params)
         {
@@ -848,7 +920,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
-                url:  "/zone/user",
+                url:  "zone/user",
                 type: "GET",
                 data: {timeout: timeout},
                 dataType: "json",
@@ -872,7 +944,7 @@ var oZones = {
     },  
     
     "ZoneTemplates": {
-        "resource": "zoneusers",
+        "resource": "ZONETEMPLATES",
 
         "list": function(params)
         {
@@ -884,7 +956,7 @@ var oZones = {
             var request  = oZones.Helper.request(resource,"list");
 
             $.ajax({
-                url:  "/zone/template",
+                url:  "zone/template",
                 type: "GET",
                 data: {timeout: timeout},
                 dataType: "json",
