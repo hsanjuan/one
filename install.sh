@@ -240,8 +240,8 @@ SUNSTONE_DIRS="$SUNSTONE_LOCATION/models \
                $SUNSTONE_LOCATION/share \
                $SUNSTONE_LOCATION/share/OneMonitor \
                $SUNSTONE_LOCATION/public/images \
-<<<<<<< HEAD
-               $SUNSTONE_LOCATION/templates"
+               $SUNSTONE_LOCATION/templates \
+               $SUNSTONE_LOCATION/views"
                
 OZONES_DIRS="$OZONES_LOCATION/Server \
              $OZONES_LOCATION/Server/lib \
@@ -260,10 +260,6 @@ OZONES_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $OZONES_LOCATION/Client/lib \
                  $OZONES_LOCATION/Client/lib/CLI \
                  $OZONES_LOCATION/Client/lib/CLI/OZonesHelper"
-=======
-               $SUNSTONE_LOCATION/templates \
-               $SUNSTONE_LOCATION/views"
->>>>>>> feature-687
 
 LIB_ECO_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula \
