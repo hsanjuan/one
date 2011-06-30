@@ -133,9 +133,10 @@ class OzonesServer
     ############################################################################
     # Creates a resource of a kind, and updates the Proxy Rules
     def create_resource(kind, data, body, pr)
-
-        if body.size > 0
-            data = parse_json(body,kind)
+        
+        if body.size > 0 
+            result = parse_json(body,kind)
+            data = result if !OpenNebula.is_error?(result)
         end
 
         resource = case kind
@@ -186,29 +187,39 @@ class OzonesServer
                     zone_data[key.downcase.to_sym]=value if key!="pool"
                 }
                 
+                # Check parameters
+                if !zone_data[:onename] || !zone_data[:onepass] ||
+                   !zone_data[:endpoint] || !zone_data[:name]               
+                    return [400, OZones::Error.new(
+                                "Error: Couldn't create resource #{kind}." +  
+                              "Not enough information on the template").to_json]
+                end
+                
+                # Digest and check credentials
                 zone_data[:onepass] = 
                                   Digest::SHA1.hexdigest(zone_data[:onepass])
                 
                 rc = @ocaInt.check_oneadmin(zone_data[:onename], 
                                             zone_data[:onepass], 
                                             zone_data[:endpoint])
-                
+
                 if OpenNebula.is_error?(rc)
                     return [400, OZones::Error.new(
                             "Error: Couldn't create resource #{kind}. Reason: "+
                             rc.message).to_json]
                 end
                 
+                # Create the zone
                 zone = OZones::Zones.create(zone_data)
                 rc = zone.save
+                
                 if rc
                     pr.update # Rewrite proxy conf file
                     return [200, zone.to_json]
-                    #return [200, OZones.str_to_json("Resource " + 
-                    ## "#{kind.upcase} successfuly created with ID #{zone.id}")]
                 else
                     return [400, OZones::Error.new(
-                    "Error: Couldn't create resource #{kind.upcase}").to_json]
+                    "Error: Couldn't create resource #{kind.upcase}." + 
+                    " Maybe duplicated name?").to_json]
                 end               
             else
                 error = OZones::Error.new(

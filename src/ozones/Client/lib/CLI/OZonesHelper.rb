@@ -13,8 +13,8 @@ module OZonesHelper
             if OZonesClient::is_error?(rc) 
                [-1, rc.message] 
             else
-               message=OZonesClient::parse_json(rc.body, "message")
-               [0, "#{message}"]
+               id=rc.body.match('id\":(.*)$')[1].strip
+               [0, "Zone #{id} created successfully"]
             end
         end
         

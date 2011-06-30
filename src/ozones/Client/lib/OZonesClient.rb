@@ -99,7 +99,7 @@ EOT
                 key,value = line.split("=")
                 body_str = body_str + key + "=" + URI.escape(value) + "&"
             }
-            
+
             body_str = body_str[0..-1]
             
             url = URI.parse(@endpoint+"/"+kind)
@@ -112,7 +112,7 @@ EOT
             res = OZonesClient::http_start(url, @timeout) do |http|
                 http.request(req)
             end
-            
+
             return  OZonesClient::parse_error(res, kind)
         end
 
