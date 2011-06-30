@@ -13,8 +13,8 @@ module OZonesHelper
             if OZonesClient::is_error?(rc) 
                [-1, rc.message] 
             else
-               id=rc.body.match('id\":(.*)$')[1].strip
-               [0, "Zone #{id} created successfully"]
+               id=rc.body.match('\"id\":(.*)$')[1].strip
+               [0, "#{kind.upcase} #{id} created successfully"]
             end
         end
         

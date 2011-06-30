@@ -140,11 +140,21 @@ class OzonesServer
         end
 
         resource = case kind
-            when "vdc"  then 
+            when "vdc"  then             
                 vdc_data=Hash.new
                 data.each{|key,value|
                     vdc_data[key.downcase.to_sym]=value if key!="pool"
                 }
+                
+                # Check parameters
+                if !vdc_data[:vdcadminname] || !vdc_data[:vdcadminpass] ||
+                   !vdc_data[:zoneid] || !vdc_data[:name] || !vdc_data[:hosts]               
+                    return [400, OZones::Error.new(
+                                "Error: Couldn't create resource #{kind}. " +  
+                              "Not enough information on the template").to_json]
+                end
+                
+                # Check if the referenced zone exists 
                 zone=OZones::Zones.get(vdc_data[:zoneid])
                 if !zone
                     error = OZones::Error.new("Error: Zone " + 
@@ -155,7 +165,6 @@ class OzonesServer
                 vdcadminname = vdc_data[:vdcadminname]
                 vdcadminpass = vdc_data[:vdcadminpass]
                 vdc_data.delete(:zoneid) 
-                vdc_data.delete(:vdcadminname)
                 vdc_data.delete(:vdcadminpass)
                 
                 vdc = OZones::Vdc.create(vdc_data)
@@ -174,12 +183,12 @@ class OzonesServer
                              rc.message).to_json]
                     else
                         pr.update # Rewrite proxy conf file
-                        return [200, OZones.str_to_json("Resource " + 
-                        "#{kind.upcase} successfuly created with ID #{vdc.id}")]
+                        return [200, vdc.to_json]
                     end
                 else
                     return [400, OZones::Error.new(
-                            "Error: Couldn't create resource #{kind}").to_json]
+                            "Error: Couldn't create resource #{kind}." +
+                            " Maybe duplicated name?").to_json]
                 end
             when "zone" then 
                 zone_data=Hash.new
@@ -191,7 +200,7 @@ class OzonesServer
                 if !zone_data[:onename] || !zone_data[:onepass] ||
                    !zone_data[:endpoint] || !zone_data[:name]               
                     return [400, OZones::Error.new(
-                                "Error: Couldn't create resource #{kind}." +  
+                              "Error: Couldn't create resource #{kind}. " +  
                               "Not enough information on the template").to_json]
                 end
                 

@@ -21,9 +21,10 @@ module OZones
         include OpenNebulaJSON::JSONUtils
         extend OpenNebulaJSON::JSONUtils
 
-        property :id,         Serial
-        property :name,       String, :required => true, :unique => true
-        property :hosts,      String
+        property :id,            Serial
+        property :name,          String, :required => true, :unique => true
+        property :vdcadminname,  String, :required => true
+        property :hosts,         String
 
         belongs_to :zones
         
