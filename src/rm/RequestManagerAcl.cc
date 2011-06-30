@@ -21,7 +21,7 @@ using namespace std;
 /* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
 
-void RequestManagerAcl::request_execute(xmlrpc_c::paramList const& paramList)
+void AclAddRule::request_execute(xmlrpc_c::paramList const& paramList)
 {
 /*
     xmlrpc-c version 1.07 can manage 64 bit numbers, but not all distros. ship
@@ -31,6 +31,10 @@ void RequestManagerAcl::request_execute(xmlrpc_c::paramList const& paramList)
     resource  = xmlrpc_c::value_i8(paramList.getI8(2));
     rights    = xmlrpc_c::value_i8(paramList.getI8(3));
 */
+
+    long long user;
+    long long resource;
+    long long rights;
 
     istringstream iss;
 
@@ -46,53 +50,50 @@ void RequestManagerAcl::request_execute(xmlrpc_c::paramList const& paramList)
     iss >> hex >> rights;
 
 
+    Nebula& nd  = Nebula::instance();
+    aclm        = nd.get_aclm();
 
-    // TODO, debug
-/*
-    int iu, id, it;
+    string error_msg;
 
-    iss.clear();
-    iss.str( xmlrpc_c::value_string(paramList.getString(1)) );
-    iss >> iu;
+    if ( basic_authorization(-1) == false )
+    {
+        return;
+    }
 
-    iss.clear();
-    iss.str( xmlrpc_c::value_string(paramList.getString(2)) );
-    iss >> id;
-
-    iss.clear();
-    iss.str( xmlrpc_c::value_string(paramList.getString(3)) );
-    iss >> it;
+    int rc = aclm->add_rule(user, resource, rights, error_msg);
 
 
+    if ( rc < 0 )
+    {
+        failure_response(INTERNAL, request_error(error_msg, ""));
+        return;
+    }
 
-    ostringstream oss;
-    string u = xmlrpc_c::value_string(paramList.getString(1));
-    string d = xmlrpc_c::value_string(paramList.getString(2));
-    string t = xmlrpc_c::value_string(paramList.getString(3));
+    success_response(rc);
 
-    oss << "\n";
-    oss << "User :     " << u << ", " << iu << ", dec: " << dec  << user     << "\n";
-    oss << "Resource : " << d << ", " << id << ", dec: "  << dec << resource << "\n";
-    oss << "Rights :   " << t << ", " << it << ", dec: "  << dec << rights   << "\n";
-    NebulaLog::log("ACL-RM",Log::DEBUG,oss);
-*/
+    return;
+}
+
+/* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
+
+void AclDelRule::request_execute(xmlrpc_c::paramList const& paramList)
+{
+    int oid = xmlrpc_c::value_int(paramList.getInt(1));
 
     Nebula& nd  = Nebula::instance();
     aclm        = nd.get_aclm();
 
     string error_msg;
 
-    // TODO: Only oneadmin can manage ACL
-    if ( uid != 0 )
+    if ( basic_authorization(-1) == false )
     {
-        failure_response(AUTHORIZATION,
-                authorization_error("Only oneadmin can manage ACL rules"));
         return;
     }
 
-    int rc = perform_operation(error_msg);
+    int rc = aclm->del_rule(oid, error_msg);
 
-    if ( rc != 0 )
+    if ( rc < 0 )
     {
         failure_response(INTERNAL, request_error(error_msg, ""));
         return;
@@ -101,20 +102,6 @@ void RequestManagerAcl::request_execute(xmlrpc_c::paramList const& paramList)
     success_response("");
 
     return;
-}
-
-/* ------------------------------------------------------------------------- */
-
-int AclAddRule::perform_operation(string& error_msg)
-{
-    return aclm->add_rule(user, resource, rights, error_msg);
-}
-
-/* ------------------------------------------------------------------------- */
-
-int AclDelRule::perform_operation(string& error_msg)
-{
-    return aclm->del_rule(user, resource, rights, error_msg);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -128,11 +115,8 @@ void AclInfo::request_execute(xmlrpc_c::paramList const& paramList)
     ostringstream oss;
     int rc;
 
-    // TODO: Only oneadmin can manage ACL
-    if ( uid != 0 )
+    if ( basic_authorization(-1) == false )
     {
-        failure_response(AUTHORIZATION,
-                authorization_error("Only oneadmin can manage ACL rules"));
         return;
     }
 

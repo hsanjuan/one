@@ -32,12 +32,15 @@ const char * AuthManager::auth_driver_name = "auth_exe";
 
 void AuthRequest::add_auth(Object        ob,
                            const string& ob_id,
+                           int           ob_gid,
                            Operation     op,
                            int           owner,
                            bool          pub)
 {
     ostringstream oss;
     bool          auth;
+
+    int ob_id_int = -1;
 
     oss << Object_to_str(ob) << ":";
 
@@ -58,6 +61,9 @@ void AuthRequest::add_auth(Object        ob,
     else
     {
         oss << ob_id << ":";
+
+        istringstream iss(ob_id);
+        iss >> ob_id_int;
     }
 
     oss << Operation_to_str(op) << ":";
@@ -74,20 +80,10 @@ void AuthRequest::add_auth(Object        ob,
     }
     else
     {
-        // TODO, the set of object ids is needed
-        set<int> emtpy_set;
-
-        int         ob_gid = 0;
-
-        istringstream iss(ob_id);
-        int ob_id_int;
-
-        iss >> ob_id_int;
-
         Nebula&     nd   = Nebula::instance();
         AclManager* aclm = nd.get_aclm();
 
-        auth = aclm->authorize(uid, emtpy_set, ob, ob_id_int, ob_gid, op);
+        auth = aclm->authorize(uid, gids, ob, ob_id_int, ob_gid, op);
     }
 
     self_authorize = self_authorize && auth;

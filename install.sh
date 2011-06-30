@@ -177,8 +177,7 @@ else
 fi
 
 SHARE_DIRS="$SHARE_LOCATION/examples \
-            $SHARE_LOCATION/examples/tm \
-            $SHARE_LOCATION/hooks"
+            $SHARE_LOCATION/examples/tm"
 
 ETC_DIRS="$ETC_LOCATION/im_kvm \
           $ETC_LOCATION/im_xen \
@@ -219,6 +218,8 @@ VAR_DIRS="$VAR_LOCATION/remotes \
           $VAR_LOCATION/remotes/im/ganglia.d \
           $VAR_LOCATION/remotes/vmm/xen \
           $VAR_LOCATION/remotes/vmm/kvm \
+          $VAR_LOCATION/remotes/hooks \
+          $VAR_LOCATION/remotes/hooks/vnm \
           $VAR_LOCATION/remotes/image \
           $VAR_LOCATION/remotes/image/fs"
 
@@ -227,6 +228,7 @@ SUNSTONE_DIRS="$SUNSTONE_LOCATION/models \
                $SUNSTONE_LOCATION/public \
                $SUNSTONE_LOCATION/public/js \
                $SUNSTONE_LOCATION/public/js/plugins \
+               $SUNSTONE_LOCATION/public/js/user-plugins \
                $SUNSTONE_LOCATION/public/css \
                $SUNSTONE_LOCATION/public/vendor \
                $SUNSTONE_LOCATION/public/vendor/jQueryLayout \
@@ -238,6 +240,7 @@ SUNSTONE_DIRS="$SUNSTONE_LOCATION/models \
                $SUNSTONE_LOCATION/share \
                $SUNSTONE_LOCATION/share/OneMonitor \
                $SUNSTONE_LOCATION/public/images \
+<<<<<<< HEAD
                $SUNSTONE_LOCATION/templates"
                
 OZONES_DIRS="$OZONES_LOCATION/Server \
@@ -257,6 +260,10 @@ OZONES_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $OZONES_LOCATION/Client/lib \
                  $OZONES_LOCATION/Client/lib/CLI \
                  $OZONES_LOCATION/Client/lib/CLI/OZonesHelper"
+=======
+               $SUNSTONE_LOCATION/templates \
+               $SUNSTONE_LOCATION/views"
+>>>>>>> feature-687
 
 LIB_ECO_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula \
@@ -319,10 +326,12 @@ INSTALL_FILES=(
     DUMMY_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/dummy
     LVM_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/lvm
     IMAGE_DRIVER_FS_SCRIPTS:$VAR_LOCATION/remotes/image/fs
+    NETWORK_HOOK_SCRIPTS:$VAR_LOCATION/remotes/vnm
     EXAMPLE_SHARE_FILES:$SHARE_LOCATION/examples
     INSTALL_NOVNC_SHARE_FILE:$SHARE_LOCATION
     TM_EXAMPLE_SHARE_FILES:$SHARE_LOCATION/examples/tm
-    HOOK_SHARE_FILES:$SHARE_LOCATION/hooks
+    HOOK_FILES:$VAR_LOCATION/remotes/hooks
+    HOOK_NETWORK_FILES:$VAR_LOCATION/remotes/hooks/vnm
     COMMON_CLOUD_LIB_FILES:$LIB_LOCATION/ruby/cloud
     ECO_LIB_FILES:$LIB_LOCATION/ruby/cloud/econe
     ECO_LIB_VIEW_FILES:$LIB_LOCATION/ruby/cloud/econe/views
@@ -366,6 +375,7 @@ INSTALL_SUNSTONE_FILES=(
     SUNSTONE_MODELS_FILES:$SUNSTONE_LOCATION/models
     SUNSTONE_MODELS_JSON_FILES:$SUNSTONE_LOCATION/models/OpenNebulaJSON
     SUNSTONE_TEMPLATE_FILES:$SUNSTONE_LOCATION/templates
+    SUNSTONE_VIEWS_FILES:$SUNSTONE_LOCATION/views
     SUNSTONE_PUBLIC_JS_FILES:$SUNSTONE_LOCATION/public/js
     SUNSTONE_PUBLIC_JS_PLUGINS_FILES:$SUNSTONE_LOCATION/public/js/plugins
     SUNSTONE_PUBLIC_CSS_FILES:$SUNSTONE_LOCATION/public/css
@@ -597,6 +607,7 @@ IMAGE_DRIVER_FS_SCRIPTS="src/image_mad/remotes/fs/cp \
                          src/image_mad/remotes/fs/fsrc \
                          src/image_mad/remotes/fs/rm"
 
+
 #-------------------------------------------------------------------------------
 # Migration scripts for onedb command, to be installed under $LIB_LOCATION
 #-------------------------------------------------------------------------------
@@ -685,14 +696,26 @@ TM_EXAMPLE_SHARE_FILES="share/examples/tm/tm_clone.sh \
                         share/examples/tm/tm_mv.sh"
 
 #-------------------------------------------------------------------------------
-# HOOK scripts, to be installed under $SHARE_LOCATION/hooks
+# HOOK scripts, to be installed under $VAR_LOCATION/remotes/hooks
 #-------------------------------------------------------------------------------
 
-HOOK_SHARE_FILES="share/hooks/ebtables-xen \
-                  share/hooks/ebtables-kvm \
-                  share/hooks/ebtables-flush \
-                  share/hooks/host_error.rb \
-                  share/hooks/image.rb"
+HOOK_FILES="share/hooks/host_error.rb \
+            share/hooks/image.rb"
+
+#-------------------------------------------------------------------------------
+# Network Hook scripts, to be installed under $VAR_LOCATION/remotes/hooks
+#-------------------------------------------------------------------------------
+
+HOOK_NETWORK_FILES="src/vnm_mad/hm-vlan \
+                    src/vnm_mad/ebtables-vlan \
+                    src/vnm_mad/firewall \
+                    src/vnm_mad/HostManaged.rb \
+                    src/vnm_mad/OpenNebulaNetwork.rb \
+                    src/vnm_mad/OpenNebulaNic.rb \
+                    src/vnm_mad/OpenvSwitch.rb \
+                    src/vnm_mad/openvswitch-vlan \
+                    src/vnm_mad/Firewall.rb \
+                    src/vnm_mad/Ebtables.rb"
 
 INSTALL_NOVNC_SHARE_FILE="share/install_novnc.sh"
 
@@ -717,6 +740,7 @@ RUBY_OPENNEBULA_LIB_FILES="src/oca/ruby/OpenNebula/Host.rb \
                            src/oca/ruby/OpenNebula/Group.rb \
                            src/oca/ruby/OpenNebula/GroupPool.rb \
                            src/oca/ruby/OpenNebula/Acl.rb \
+                           src/oca/ruby/OpenNebula/AclPool.rb \
                            src/oca/ruby/OpenNebula/XMLUtils.rb"
 
 #-------------------------------------------------------------------------------
@@ -812,7 +836,8 @@ ONE_CLI_LIB_FILES="src/cli/one_helper/onegroup_helper.rb \
                    src/cli/one_helper/onetemplate_helper.rb \
                    src/cli/one_helper/oneuser_helper.rb \
                    src/cli/one_helper/onevm_helper.rb \
-                   src/cli/one_helper/onevnet_helper.rb"
+                   src/cli/one_helper/onevnet_helper.rb \
+                   src/cli/one_helper/oneacl_helper.rb"
 
 CLI_BIN_FILES="src/cli/onevm \
                src/cli/onehost \
@@ -829,7 +854,8 @@ CLI_CONF_FILES="src/cli/etc/onegroup.yaml \
                 src/cli/etc/onetemplate.yaml \
                 src/cli/etc/oneuser.yaml \
                 src/cli/etc/onevm.yaml \
-                src/cli/etc/onevnet.yaml"
+                src/cli/etc/onevnet.yaml \
+                src/cli/etc/oneacl.yaml"
 
 #-----------------------------------------------------------------------------
 # Sunstone files
@@ -840,10 +866,12 @@ SUNSTONE_FILES="src/sunstone/config.ru \
 
 SUNSTONE_BIN_FILES="src/sunstone/bin/sunstone-server"
 
-SUNSTONE_ETC_FILES="src/sunstone/etc/sunstone-server.conf"
+SUNSTONE_ETC_FILES="src/sunstone/etc/sunstone-server.conf \
+                    src/sunstone/etc/sunstone-plugins.yaml"
 
 SUNSTONE_MODELS_FILES="src/sunstone/models/OpenNebulaJSON.rb \
-                       src/sunstone/models/SunstoneServer.rb"
+                       src/sunstone/models/SunstoneServer.rb \
+                       src/sunstone/models/SunstonePlugins.rb"
 
 SUNSTONE_MODELS_JSON_FILES="src/sunstone/models/OpenNebulaJSON/HostJSON.rb \
                     src/sunstone/models/OpenNebulaJSON/ImageJSON.rb \
@@ -855,8 +883,9 @@ SUNSTONE_MODELS_JSON_FILES="src/sunstone/models/OpenNebulaJSON/HostJSON.rb \
                     src/sunstone/models/OpenNebulaJSON/TemplateJSON.rb \
                     src/sunstone/models/OpenNebulaJSON/VirtualNetworkJSON.rb"
 
-SUNSTONE_TEMPLATE_FILES="src/sunstone/templates/index.html \
-                         src/sunstone/templates/login.html"
+SUNSTONE_TEMPLATE_FILES="src/sunstone/templates/login.html"
+
+SUNSTONE_VIEWS_FILES="src/sunstone/views/index.erb"
 
 SUNSTONE_PUBLIC_JS_FILES="src/sunstone/public/js/layout.js \
                         src/sunstone/public/js/login.js \

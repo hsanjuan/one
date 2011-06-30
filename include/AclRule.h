@@ -35,17 +35,10 @@ public:
     static const long long GROUP_ID;
     static const long long ALL_ID;
 
-    AclRule(long long _user, long long _resource, long long _rights):
-        user(_user), resource(_resource), rights(_rights)
-    {};
-
-    AclRule& operator=(AclRule const& o)
+    AclRule(int _oid, long long _user, long long _resource, long long _rights):
+        oid(_oid), user(_user), resource(_resource), rights(_rights)
     {
-        user = o.user;
-        resource = o.resource;
-        rights = o.rights;
-
-        return *this;
+        build_str();
     };
 
     bool operator ==(const AclRule& other) const
@@ -55,23 +48,23 @@ public:
                 rights == other.rights);
     };
 
-    bool operator!=(const AclRule& other) const
-    {
-        return !(*this == other);
-    };
-
-    bool operator <(const AclRule& other) const
-    {
-        return user < other.user;
-    };
-
     /**
      *  Returns a human readable string for this rule
      *
      *    @return a human readable string for this rule
      */
-    string to_str() const;
+    const string& to_str() const
+    {
+        return str;
+    };
 
+    /**
+     *  Returns whether or not the rule is malformed.
+     *
+     *    @param error_str Returns the error message, if any
+     *    @return true if the rule is wrong
+     */
+    bool malformed(string& error_str) const;
 
     /**
      *  Function to print the object into a string in XML format
@@ -128,6 +121,11 @@ private:
     friend class AclManager;
 
     /**
+     *  Rule unique identifier
+     */
+    int oid;
+
+    /**
      *  64 bit integer holding a user ID in the 32 less significant bits,
      *  and a flag indicating the kind of ID in the other 32
      */
@@ -143,6 +141,13 @@ private:
      *  64 bit integer containing the rights flags
      */
     long long rights;
+
+    /**
+     *  Human readable representation
+     */
+    string str;
+
+    void build_str();
 };
 
 #endif /*ACL_RULE_H*/

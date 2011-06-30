@@ -18,6 +18,7 @@
 #define AUTH_MANAGER_H_
 
 #include <time.h>
+#include <set>
 
 #include "MadManager.h"
 #include "ActionManager.h"
@@ -259,10 +260,11 @@ private:
 class AuthRequest : public ActionListener
 {
 public:
-    AuthRequest(int _uid):
+    AuthRequest(int _uid, set<int> _gids):
         result(false),
         timeout(false),
         uid(_uid),
+        gids(_gids),
         time_out(0),
         self_authorize(true)
     {
@@ -361,6 +363,7 @@ public:
      */
     void add_auth(Object        ob,
                   const string& ob_id,
+                  int           ob_gid,
                   Operation     op,
                   int           owner,
                   bool          pub);
@@ -370,6 +373,7 @@ public:
      */
     void add_auth(Object        ob,
                   int           ob_id,
+                  int           ob_gid,
                   Operation     op,
                   int           owner,
                   bool          pub)
@@ -377,7 +381,7 @@ public:
         ostringstream oss;
         oss << ob_id;
 
-        add_auth(ob,oss.str(),op,owner,pub);
+        add_auth(ob,oss.str(),ob_gid,op,owner,pub);
     };
 
     /**
@@ -457,6 +461,11 @@ private:
      *  The user id for this request
      */
     int uid;
+
+    /**
+     *  The user groups ID set
+     */
+    set<int> gids;
 
     /**
      *  Timeout for this request

@@ -27,11 +27,181 @@ const long long AclRule::ALL_ID         = 0x400000000LL;
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
-string AclRule::to_str() const
+bool AclRule::malformed(string& error_str) const
+{
+    ostringstream oss;
+    bool error = false;
+
+    // Check user
+
+    if ( (user & INDIVIDUAL_ID) != 0 && (user & GROUP_ID) != 0 )
+    {
+        error = true;
+        oss << "[user] INDIVIDUAL (#) and GROUP (@) bits are exclusive";
+    }
+
+    if ( (user & INDIVIDUAL_ID) != 0 && (user & ALL_ID) != 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "[user] INDIVIDUAL (#) and ALL (*) bits are exclusive";
+    }
+
+    if ( (user & GROUP_ID) != 0 && (user & ALL_ID) != 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "[user] GROUP (@) and ALL (*) bits are exclusive";
+    }
+
+    if ( user_id() < 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "[user] ID cannot be negative";
+    }
+
+    if ( (user & ALL_ID) != 0 && user_id() != 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "when using the ALL bit, [user] ID must be 0";
+    }
+
+    // Check resource
+
+    if ( (resource & INDIVIDUAL_ID) != 0 && (resource & GROUP_ID) != 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "[resource] INDIVIDUAL (#) and GROUP (@) bits are exclusive";
+    }
+
+    if ( (resource & INDIVIDUAL_ID) != 0 && (resource & ALL_ID) != 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "[resource] INDIVIDUAL (#) and ALL (*) bits are exclusive";
+    }
+
+    if ( (resource & GROUP_ID) != 0 && (resource & ALL_ID) != 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "[resource] GROUP (@) and ALL (*) bits are exclusive";
+    }
+
+    if ( resource_id() < 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "[resource] ID cannot be negative";
+    }
+
+    if ( (resource & ALL_ID) != 0 && resource_id() != 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "when using the ALL bit, [resource] ID must be 0";
+    }
+
+    if ( (resource & 0xFF000000000LL) == 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "[resource] type is missing";
+    }
+
+    if ( (resource & 0xFFFFF00000000000LL) != 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "wrong [resource] type";
+    }
+
+    // Check rights
+
+    if ( rights == 0 )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "wrong [rights], it cannot be 0";
+    }
+
+    if ( rights > 0x1FFLL )
+    {
+        if ( error )
+        {
+            oss << "; ";
+        }
+
+        error = true;
+        oss << "wrong [rights], it cannot be bigger than 0x1FF";
+    }
+
+    if ( error )
+    {
+        error_str = oss.str();
+    }
+
+    return error;
+}
+
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+void AclRule::build_str()
 {
     ostringstream oss;
 
-    oss << "USER:";
     if ( (user & GROUP_ID) != 0 )
     {
         oss << "@" << user_id();
@@ -45,7 +215,7 @@ string AclRule::to_str() const
         oss << "*";
     }
 
-    oss << " RESOURCE:";
+    oss << " ";
 
     AuthRequest::Object objects[] = {
             AuthRequest::VM,
@@ -54,13 +224,12 @@ string AclRule::to_str() const
             AuthRequest::IMAGE,
             AuthRequest::USER,
             AuthRequest::TEMPLATE,
-            AuthRequest::GROUP,
-            AuthRequest::ACL
+            AuthRequest::GROUP
     };
 
     bool prefix = false;
 
-    for ( int i = 0; i < 8; i++ )
+    for ( int i = 0; i < 7; i++ )
     {
         if ( (resource & objects[i]) != 0 )
         {
@@ -89,7 +258,7 @@ string AclRule::to_str() const
         oss << "*";
     }
 
-    oss << " OPERATION:";
+    oss << " ";
 
 
     AuthRequest::Operation operations[] = {
@@ -120,7 +289,7 @@ string AclRule::to_str() const
         }
     }
 
-    return oss.str();
+    str = oss.str();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -131,14 +300,13 @@ string& AclRule::to_xml(string& xml) const
     ostringstream   oss;
 
     oss <<
-    "<RULE>"
+    "<ACL>"
+        "<ID>"       << oid              << "</ID>"          <<
         "<USER>"     << hex << user      << "</USER>"        <<
         "<RESOURCE>" << hex << resource  << "</RESOURCE>"    <<
         "<RIGHTS>"   << hex << rights    << "</RIGHTS>"      <<
-
-        // TODO: Element DEBUG contains a human friendly string
-        "<DEBUG>"    << to_str()         << "</DEBUG>"       <<
-    "</RULE>";
+        "<STRING>"   << str              << "</STRING>"      <<
+    "</ACL>";
 
     xml = oss.str();
 

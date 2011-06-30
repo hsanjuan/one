@@ -35,26 +35,16 @@ protected:
         :Request(method_name,params,help)
     {
         auth_object = AuthRequest::ACL;
+        auth_op     = AuthRequest::MANAGE;
     };
 
     ~RequestManagerAcl(){};
 
     /* -------------------------------------------------------------------- */
 
-    virtual void request_execute(xmlrpc_c::paramList const& _paramList);
+    virtual void request_execute(xmlrpc_c::paramList const& _paramList) = 0;
 
     /* -------------------------------------------------------------------- */
-
-    virtual int perform_operation(string& error_msg)
-    {
-        return 0;
-    };
-
-    /* -------------------------------------------------------------------- */
-
-    long long user;
-    long long resource;
-    long long rights;
 
     AclManager * aclm;
 };
@@ -69,13 +59,11 @@ public:
         RequestManagerAcl("AclAddRule",
                             "Adds a new ACL rule",
                             "A:ssss")
-    {
-        // TODO: auth_op ?
-    };
+    {};
 
     ~AclAddRule(){};
 
-    int perform_operation(string& error_msg);
+    void request_execute(xmlrpc_c::paramList const& _paramList);
 };
 
 /* ------------------------------------------------------------------------- */
@@ -87,14 +75,12 @@ public:
     AclDelRule():
         RequestManagerAcl("AclDelRule",
                             "Deletes an existing ACL rule",
-                            "A:ssss")
-    {
-        // TODO: auth_op ?
-    };
+                            "A:si")
+    {};
 
     ~AclDelRule(){};
 
-    int perform_operation(string& error_msg);
+    void request_execute(xmlrpc_c::paramList const& _paramList);
 };
 
 /* ------------------------------------------------------------------------- */
@@ -107,9 +93,7 @@ public:
         RequestManagerAcl("AclInfo",
                             "Returns the ACL rule set",
                             "A:s")
-    {
-        // TODO: auth_op ?
-    };
+    {};
 
     ~AclInfo(){};
 
