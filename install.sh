@@ -964,7 +964,8 @@ OZONES_ETC_FILES="src/ozones/Server/etc/ozones-server.conf"
 
 OZONES_MODELS_FILES="src/ozones/Server/models/OzonesServer.rb \
                      src/ozones/Server/models/Auth.rb \
-                     src/ozones/Server/models/OCAInteraction.rb"
+                     src/ozones/Server/models/OCAInteraction.rb \
+                     src/ozones/Server/models/JSONUtils.rb"
                      
 OZONES_TEMPLATE_FILES="src/ozones/Server/templates/index.html"
                      
@@ -979,7 +980,8 @@ OZONES_LIB_ZONE_FILES="src/ozones/Server/lib/OZones/Zones.rb \
                 src/ozones/Server/lib/OZones/AggregatedVirtualMachines.rb \
                 src/ozones/Server/lib/OZones/AggregatedVirtualNetworks.rb \
                 src/ozones/Server/lib/OZones/AggregatedPool.rb \
-                src/ozones/Server/lib/OZones/AggregatedImages.rb"
+                src/ozones/Server/lib/OZones/AggregatedImages.rb \
+                src/ozones/Server/lib/OZones/AggregatedTemplates.rb"
                 
 OZONES_PUBLIC_VENDOR_JQUERY="\
                         src/sunstone/public/vendor/jQuery/jquery-1.4.4.min.js \
