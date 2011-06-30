@@ -20,6 +20,10 @@ class VDCHelper < OZonesHelper::OZHelper
     end
     
     def delete_resource(id, options)
+        rc = @ocaInt.create_vdc_in_zone(zone,
+                        vdc,
+                        vdcadminname,
+                        vdcadminpass)
         super(@vdc_str,id, options)
     end
     

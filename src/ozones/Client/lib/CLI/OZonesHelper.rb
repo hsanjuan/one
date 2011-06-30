@@ -14,6 +14,9 @@ module OZonesHelper
                [-1, rc.message] 
             else
                id=rc.body.match('\"id\":(.*)$')[1].strip
+               if id[-1..-1] == ","
+                   id = id[0..id.size-2]
+               end
                [0, "#{kind.upcase} #{id} created successfully"]
             end
         end
