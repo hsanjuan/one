@@ -173,6 +173,7 @@ class OzonesServer
                 zone.save
                     
                 if zone.saved? and vdc.saved?
+                    vdcadminpass = Digest::SHA1.hexdigest(vdcadminpass)
                     rc = @ocaInt.create_vdc_in_zone(zone,
                                                     vdc,
                                                     vdcadminname,
@@ -190,6 +191,7 @@ class OzonesServer
                             "Error: Couldn't create resource #{kind}." +
                             " Maybe duplicated name?").to_json]
                 end
+
             when "zone" then 
                 zone_data=Hash.new
                 data.each{|key,value|
@@ -246,7 +248,14 @@ class OzonesServer
         if OZones.is_error?(resource)
             return [404, resource.to_json]
         end
-
+        
+        if kind == "vdc"
+            rc = @ocaInt.delete_vdc_in_zone(id)
+            if !rc
+               #return error
+            end
+        end
+        
         if !resource.destroy
             return [500, OZones::Error.new(
                "Error: Couldn't delete resource #{kind} with id #{id}").to_json]
