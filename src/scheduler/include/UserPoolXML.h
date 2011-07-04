@@ -15,19 +15,19 @@
 /* -------------------------------------------------------------------------- */
 
 
-#ifndef HOST_POOL_XML_H_
-#define HOST_POOL_XML_H_
+#ifndef USER_POOL_XML_H_
+#define USER_POOL_XML_H_
 
 #include "PoolXML.h"
-#include "HostXML.h"
+#include "UserXML.h"
 
 using namespace std;
 
-class HostPoolXML : public PoolXML
+class UserPoolXML : public PoolXML
 {
 public:
 
-    HostPoolXML(Client* client):PoolXML(client){};
+    UserPoolXML(Client* client):PoolXML(client){};
 
     int set_up();
 
@@ -37,16 +37,16 @@ public:
      *
      *   @return a pointer to the object, 0 in case of failure
      */
-    HostXML * get(int oid) const
+    UserXML * get(int oid) const
     {
-        return static_cast<HostXML *>(PoolXML::get(oid));
+        return static_cast<UserXML *>(PoolXML::get(oid));
     };
 
 protected:
 
     int get_suitable_nodes(vector<xmlNodePtr>& content)
     {
-        return get_nodes("/HOST_POOL/HOST[STATE<3]", content);
+        return get_nodes("/USER_POOL/USER[ENABLED=1]", content);
     };
 
     void add_object(xmlNodePtr node);

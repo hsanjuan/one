@@ -100,6 +100,20 @@ public:
      *    @param value to set
      *    @param xpath_expr of the xml element
      *    @param def default value if the element is not found
+     *    @param hex if true, the contents of the element are expected to be in
+     *    hexadecimal instead of decimal
+     *
+     *    @return -1 if default was set
+     */
+    long long xpath(long long& value, const char * xpath_expr,
+                    const long long& def, bool hex=true);
+
+    /**
+     *  Gets and sets a xpath attribute, if the attribute is not found a default
+     *  is used
+     *    @param value to set
+     *    @param xpath_expr of the xml element
+     *    @param def default value if the element is not found
      *
      *    @return -1 if default was set
      */
@@ -123,6 +137,20 @@ public:
      *    @return the number of nodes found
      */
     int get_nodes(const char * xpath_expr, vector<xmlNodePtr>& content);
+
+    /**
+     *  Frees a vector of XMLNodes, as returned by the get_nodes function
+     *    @param content the vector of xmlNodePtr
+     */
+    void free_nodes(vector<xmlNodePtr>& content)
+    {
+        vector<xmlNodePtr>::iterator it;
+
+        for (it = content.begin(); it < content.end(); it++)
+        {
+            xmlFreeNode(*it);
+        }
+    };
 
     /**
      *   Updates the object representation with a new XML document. Previous
