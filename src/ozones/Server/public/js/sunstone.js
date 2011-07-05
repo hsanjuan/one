@@ -381,7 +381,10 @@ function setLogin(){
 
     $("#user").html(username);
     $("#logout").click(function(){
-        OpenNebula.Auth.logout({
+        //ugly here
+        var f_logout= typeof(OpenNebula)!="undefined"?
+            OpenNebula.Auth.logout : oZones.Auth.logout;
+        f_logout({
             success:function(){
                 window.location.href = "login";
             }

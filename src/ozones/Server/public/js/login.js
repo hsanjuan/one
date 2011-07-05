@@ -39,7 +39,7 @@ function authenticate(){
     var password = $("#password").val();
     var remember = $("#check_remember").is(":checked");
 
-    OpenNebula.Auth.login({ data: {username: username
+    oZones.Auth.login({ data: {username: username
                                     , password: password}
                             , remember: remember
                             , success: auth_success
@@ -48,7 +48,7 @@ function authenticate(){
 }
 
 function logout(){
-    OpenNebula.Auth.logout();
+    oZones.Auth.logout();
 }
 
 

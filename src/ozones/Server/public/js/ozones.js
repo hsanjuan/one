@@ -192,8 +192,8 @@ var oZones = {
             var password = params.data.password;
             var remember = params.remember;
 
-            var resource = OpenNebula.Auth.resource;
-            var request  = OpenNebula.Helper.request(resource,"login");
+            var resource = oZones.Auth.resource;
+            var request  = oZones.Helper.request(resource,"login");
 
             $.ajax({
                 url: "/login",
@@ -215,7 +215,7 @@ var oZones = {
                 {
                     if (callback_error)
                     {
-                        callback_error(request, OpenNebula.Error(response));
+                        callback_error(request, oZones.Error(response));
                     }
                 }
             });
@@ -226,8 +226,8 @@ var oZones = {
             var callback = params.success;
             var callback_error = params.error;
 
-            var resource = OpenNebula.Auth.resource;
-            var request = OpenNebula.Helper.request(resource,"logout");
+            var resource = oZones.Auth.resource;
+            var request =oZones.Helper.request(resource,"logout");
 
             $.ajax({
                 url: "/logout",
@@ -243,7 +243,7 @@ var oZones = {
                 {
                     if (callback_error)
                     {
-                        callback_error(request, OpenNebula.Error(response));
+                        callback_error(request, oZones.Error(response));
                     }
                 }
             });
@@ -258,8 +258,8 @@ var oZones = {
             var callback = params.success;
             var callback_error = params.error;
 
-            var resource = OpenNebula.Config.resource;
-            var request = OpenNebula.Helper.request(resource,"list");
+            var resource = oZones.Config.resource;
+            var request = oZones.Helper.request(resource,"list");
 
             $.ajax({
                 url: "/config",
@@ -276,7 +276,7 @@ var oZones = {
                 {
                     if (callback_error)
                     {
-                        callback_error(request, OpenNebula.Error(response));
+                        callback_error(request, oZones.Error(response));
                     }
                 }
             });
