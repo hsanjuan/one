@@ -44,20 +44,22 @@ class OCAInteraction
              
           # Grant permissions to the group
           rule_str = "@#{group.id} VM+NET+IMAGE+TEMPLATE/* " + 
-            "CREATE+DELETE+USE+MANAGE+INFO+INFO_POOL+INFO_POOL_MINE+INSTANTIATE"        
+            "CREATE+INFO_POOL_MINE"        
           rc = aclp.addrule_with_str rule_str  
           return rc if OpenNebula.is_error?(rc)
           
           # Grant permissions to the vdc admin
-          rule_str = "##{user.id} USER/* " + "
-          CREATE+DELETE+MANAGE+INFO+INFO_POOL+INFO_POOL_MINE"        
+          rule_str = "##{user.id} USER/* CREATE"        
           rc = aclp.addrule_with_str rule_str          
-          return rc if OpenNebula.is_error?(rc)   
+          return rc if OpenNebula.is_error?(rc)  
+          
+          rule_str = "##{user.id} USER/@#{group.id} MANAGE+DELETE+INFO"        
+          rc = aclp.addrule_with_str rule_str          
+          return rc if OpenNebula.is_error?(rc)    
           
           # Grant permissions to use the vdc hosts
           puts vdc.hosts
           vdc.hosts.split(",").each{|hostid|
-              puts hostid
               rule_str = "@#{group.id} HOST/##{hostid} USE"        
               rc = aclp.addrule_with_str rule_str          
               return rc if OpenNebula.is_error?(rc)  
