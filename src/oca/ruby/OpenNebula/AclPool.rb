@@ -34,7 +34,7 @@ module OpenNebula
         def initialize(client)
             super('ACL_POOL','ACL',client)
         end
-        
+
         def factory(element_xml)
             acl=REXML::Document.new(element_xml).root
             OpenNebula::Acl.new(acl['USER'], acl['RESOURCE'], acl['RIGHTS'])
@@ -52,48 +52,38 @@ module OpenNebula
 
         # Adds a new ACL rule.
         #
-        # +user+ A hex number, e.g. 0x100000001
-        # +resource+ A hex number, e.g. 0x2100000001
-        # +rights+ A hex number, e.g. 0x10
+        # +user+        A string containing a hex number, e.g. 0x100000001
+        # +resource+    A string containing a hex number, e.g. 0x2100000001
+        # +rights+      A string containing a hex number, e.g. 0x10
         def addrule(user, resource, rights)
-            rc = @client.call( ACL_POOL_METHODS[:addrule], 
-                               user, 
-                               resource, 
+            rc = @client.call( ACL_POOL_METHODS[:addrule],
+                               user,
+                               resource,
                                rights )
 
             rc = nil if !OpenNebula.is_error?(rc)
 
             return rc
         end
-        
+
         # Adds a new ACL rule.
         #
         # +rule+ Rule tring
         def addrule_with_str(rule_str)
             rule = Acl.new rule_str
-            
+
             return rule.error if rule.is_error?
-                            
-            rc = @client.call( ACL_POOL_METHODS[:addrule], 
-                               rule.users, 
-                               rule.resources, 
-                               rule.rights )
 
-            rc = nil if !OpenNebula.is_error?(rc)
-
-            return rc
+            return addrule( rule.users_hex_str,
+                            rule.resources_hex_str,
+                            rule.rights_hex_str )
         end
 
         # Deletes an existing ACL rule.
         #
-        # +user+ A hex number, e.g. 0x100000001
-        # +resource+ A hex number, e.g. 0x2100000001
-        # +rights+ A hex number, e.g. 0x10
-        def delrule(user, resource, rights)
-            rc = @client.call( ACL_POOL_METHODS[:delrule], 
-                               user, 
-                               resource, 
-                               rights )
+        # +id+ An existing ACL rule ID
+        def delrule(id)
+            rc = @client.call( ACL_POOL_METHODS[:delrule], id.to_i )
 
             rc = nil if !OpenNebula.is_error?(rc)
 

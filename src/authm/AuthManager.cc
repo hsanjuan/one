@@ -68,13 +68,31 @@ void AuthRequest::add_auth(Object        ob,
 
     oss << Operation_to_str(op) << ":";
 
-    oss << owner << ":" << pub;
+    oss << owner << ":" << pub << ":";
 
     // -------------------------------------------------------------------------
     // Authorize the request for self authorization
     // -------------------------------------------------------------------------
 
-    if ( uid == 0 )
+    // There are some default conditions that grant permission without
+    // consulting the ACL manager
+    if (
+        // User is oneadmin, or is in the oneadmin group
+        uid == 0 ||
+        gids.count( GroupPool::ONEADMIN_ID ) == 1 ||
+
+        // User is the owner of the object, for certain operations
+        (   owner == uid &&
+            ( op == DELETE || op == USE || op == MANAGE ||
+              op == INFO   || op == INSTANTIATE )
+        ) ||
+
+        // Object is public and user is in its group, for certain operations
+        (   pub && ( gids.count( ob_gid ) == 1 ) &&
+            (op == USE || op == INSTANTIATE || op == INFO ) &&
+            (ob == NET || ob == IMAGE || ob == TEMPLATE)
+        )
+    )
     {
         auth = true;
     }
@@ -85,6 +103,8 @@ void AuthRequest::add_auth(Object        ob,
 
         auth = aclm->authorize(uid, gids, ob, ob_id_int, ob_gid, op);
     }
+
+    oss << auth; // Store the ACL authorization result in the request
 
     self_authorize = self_authorize && auth;
 

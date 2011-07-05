@@ -222,6 +222,47 @@ int ObjectXML::xpath(unsigned int& value, const char * xpath_expr,
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
+long long ObjectXML::xpath(long long& value, const char * xpath_expr,
+                        const long long& def, bool hex)
+{
+    vector<string> values;
+    int rc = 0;
+
+    values = (*this)[xpath_expr];
+
+    if (values.empty() == true)
+    {
+        value = def;
+        rc = -1;
+    }
+    else
+    {
+        istringstream iss;
+
+        iss.str(values[0]);
+
+        if ( hex )
+        {
+            iss >> hex >> value;
+        }
+        else
+        {
+            iss >> dec >> value;
+        }
+
+        if (iss.fail() == true)
+        {
+            value = def;
+            rc    = -1;
+        }
+    }
+
+    return rc;
+}
+
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
 int ObjectXML::xpath(time_t& value, const char * xpath_expr, const time_t& def)
 {
     int int_val;
@@ -287,10 +328,11 @@ int ObjectXML::get_nodes (const char * xpath_expr, vector<xmlNodePtr>& content)
 
     for(int i = 0; i < size; ++i)
     {
-        cur = ns->nodeTab[i];
+        cur = xmlCopyNode(ns->nodeTab[i],1);
 
         if ( cur == 0 || cur->type != XML_ELEMENT_NODE )
         {
+            xmlFreeNode(cur);
             continue;
         }
 

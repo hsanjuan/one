@@ -15,43 +15,44 @@
 /* -------------------------------------------------------------------------- */
 
 
-#ifndef HOST_POOL_XML_H_
-#define HOST_POOL_XML_H_
+#ifndef USER_XML_H_
+#define USER_XML_H_
 
-#include "PoolXML.h"
-#include "HostXML.h"
+#include "ObjectXML.h"
+#include <set>
 
 using namespace std;
 
-class HostPoolXML : public PoolXML
+class UserXML : public ObjectXML
 {
 public:
-
-    HostPoolXML(Client* client):PoolXML(client){};
-
-    int set_up();
-
-    /**
-     *  Gets an object from the pool
-     *   @param oid the object unique identifier
-     *
-     *   @return a pointer to the object, 0 in case of failure
-     */
-    HostXML * get(int oid) const
+    UserXML(const string &xml_doc):ObjectXML(xml_doc)
     {
-        return static_cast<HostXML *>(PoolXML::get(oid));
+        init_attributes();
     };
 
-protected:
-
-    int get_suitable_nodes(vector<xmlNodePtr>& content)
+    UserXML(const xmlNodePtr node):ObjectXML(node)
     {
-        return get_nodes("/HOST_POOL/HOST[STATE<3]", content);
+        init_attributes();
     };
 
-    void add_object(xmlNodePtr node);
+    int get_uid()
+    {
+        return oid;
+    };
 
-    int load_info(xmlrpc_c::value &result);
+    set<int> get_groups()
+    {
+        return group_ids;
+    };
+
+private:
+    int oid;
+    int gid;
+
+    set<int> group_ids;
+
+    void init_attributes();
 };
 
-#endif /* HOST_POOL_XML_H_ */
+#endif /* USER_XML_H_ */

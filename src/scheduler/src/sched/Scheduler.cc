@@ -121,6 +121,7 @@ void Scheduler::start()
 
     hpool  = new HostPoolXML(client);
     vmpool = new VirtualMachinePoolXML(client, machines_limit);
+    upool  = new UserPoolXML(client);
 
     // -----------------------------------------------------------
     // Load scheduler policies
@@ -229,6 +230,25 @@ int Scheduler::set_up_pools()
     }
 
     //--------------------------------------------------------------------------
+    //Cleans the cache and get the users
+    //--------------------------------------------------------------------------
+
+    rc = upool->set_up();
+
+    if ( rc != 0 )
+    {
+        return rc;
+    }
+
+    //--------------------------------------------------------------------------
+    //Cleans the cache and get the ACLs
+    //--------------------------------------------------------------------------
+
+    //TODO
+    //  1.- one.acl.list
+    //  2.- from_xml
+
+    //--------------------------------------------------------------------------
     //Get the matching hosts for each VM
     //--------------------------------------------------------------------------
 
@@ -246,6 +266,7 @@ void Scheduler::match()
     int                 vm_memory;
     int                 vm_cpu;
     int                 vm_disk;
+    int                 uid;
     string              reqs;
 
     HostXML * host;
@@ -253,6 +274,9 @@ void Scheduler::match()
     int       host_cpu;
     char *    error;
     bool      matched;
+
+    UserXML * user;
+    set<int>  gids;
 
     int       rc;
 
@@ -268,8 +292,9 @@ void Scheduler::match()
         vm = static_cast<VirtualMachineXML*>(vm_it->second);
 
         reqs = vm->get_requirements();
+        uid  = vm->get_uid();
 
-        for (h_it=hosts.begin(); h_it != hosts.end(); h_it++)
+        for (h_it=hosts.begin(), matched=false; h_it != hosts.end(); h_it++)
         {
             host = static_cast<HostXML *>(h_it->second);
 
@@ -298,12 +323,38 @@ void Scheduler::match()
             {
                 matched = true;
             }
+            
+            if ( matched == false )
+            {
+                continue;
+            }
+            
+            // -----------------------------------------------------------------
+            // Check host capacity
+            // -----------------------------------------------------------------
+
+            user    = upool->get(uid);
+            matched = false;
+
+            if ( user != 0 )
+            {
+               set<int> groups = user->get_groups(); 
+               //TODO Authorization test for this user on this host   
+               //  1.- user = uid
+               //  2.- gid
+               //  3.- groups
+               //  4.- DEPLOY on host->get_hid
+            }
+            else
+            {
+                //TODO Log debug info (user not authorized)?
+                continue;
+            }
 
             if ( matched == false )
             {
                 continue;
             }
-
             // -----------------------------------------------------------------
             // Check host capacity
             // -----------------------------------------------------------------
