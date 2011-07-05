@@ -41,7 +41,7 @@ var create_zone_tmpl =
         <input type="text" name="name" id="name" /><br />\
         <label for="endpoint">End point:</label>\
         <input type="text" name="endpoint" id="endpoint" /><br />\
-        <label for="endpoint">ONE auth:</label>\
+        <label for="onename">ONE auth:</label>\
         <input type="text" name="onename" id="onename" /><br />\
         <label for="onepass">Password:</label>\
         <input type="password" name="onepass" id="onepass" />\
@@ -58,7 +58,7 @@ var create_zone_tmpl =
 var zones_select="";
 var dataTable_zones;
 
-var zoneSelectedNodes = function() {
+function zoneSelectedNodes() {
     return getSelectedNodes(dataTable_zones);
 };
 
@@ -122,13 +122,7 @@ var zone_actions = {
         type: "single",
         call: oZones.Zone.host,
         callback: function(req,host_json) {
-            var hostDataTable = $('#datatable_zone_hosts').dataTable();
-            var hosts_array = [];
-            $.each(host_json,function(){
-                hosts_array.push(hostElementArray(this));
-            });
-
-            updateView(hosts_array,hostDataTable);
+            updateHostsList(req,host_json,'#datatable_zone_hosts');
         },
         error: onError
     },
@@ -136,30 +130,7 @@ var zone_actions = {
         type: "single",
         call: oZones.Zone.vm,
         callback: function(req,vms_json){
-            var vmsDataTable = $('#datatable_zone_vms').dataTable();
-            var vms_array = [];
-            $.each(vms_json,function(){
-                var vm = this.VM;
-                var state = oZones.Helper.resource_state("vm",vm.STATE);
-                if (state == "ACTIVE") {
-                    state = oZones.Helper.resource_state("vm_lcm",vm.LCM_STATE);
-                }
-
-                vms_array.push([
-                    vm.ID,
-                    vm.UID,
-                    vm.GID,
-                    vm.NAME,
-                    state,
-                    vm.CPU,
-                    humanize_size(vm.MEMORY),
-                    vm.HISTORY ? vm.HISTORY.HOSTNAME : "--",
-                    pretty_time(vm.STIME)
-                ]);
-            });
-
-            updateView(vms_array,vmsDataTable);
-
+            updateVMsList(req,vms_json,'#datatable_zone_vms');
         },
         error: onError
     },
@@ -167,31 +138,7 @@ var zone_actions = {
         type: "single",
         call: oZones.Zone.vn,
         callback: function(req, vn_json){
-            var vnDataTable = $('#datatable_zone_vnets').dataTable();
-            var vn_array = [];
-            $.each(vn_json,function(){
-                var network = this.VNET;
-                var total_leases = "0";
-                if (network.TOTAL_LEASES){
-                    total_leases = network.TOTAL_LEASES;
-                } else if (network.LEASES && network.LEASES.LEASE){
-                    total_leases = network.LEASES.LEASE.length ? network.LEASES.LEASE.length : "1";
-                }
-
-                vn_array.push([
-                    network.ID,
-                    network.UID,
-                    network.GID,
-                    network.NAME,
-                    parseInt(network.TYPE) ? "FIXED" : "RANGED",
-                    network.BRIDGE,
-                    parseInt(network.PUBLIC) ? "yes" : "no",
-                    total_leases
-                ]);
-            });
-
-            updateView(vn_array,vnDataTable);
-
+            updateVNsList(req,vn_json,'#datatable_zone_vnets');
         },
         error: onError
     },
@@ -199,24 +146,7 @@ var zone_actions = {
         type: "single",
         call: oZones.Zone.image,
         callback: function(req,image_json){
-            var imageDataTable = $('#datatable_zone_images').dataTable();
-            var image_array = [];
-            $.each(image_json,function(){
-                var image = this.IMAGE;
-                image_array.push([
-                    image.ID,
-                    image.UID,
-                    image.GID,
-                    image.NAME,
-                    oZones.Helper.image_type(image.TYPE),
-                    pretty_time(image.REGTIME),
-                    parseInt(image.PUBLIC) ? "yes" : "no",
-                    parseInt(image.PERSISTENT) ? "yes" : "no",
-                    oZones.Helper.resource_state("image",image.STATE),
-                    image.RUNNING_VMS
-                ]);
-            });
-            updateView(image_array,imageDataTable);
+            updateImagesList(req,image_json,'#datatable_zone_images');
         },
         error: onError
     },
@@ -224,21 +154,7 @@ var zone_actions = {
         type: "single",
         call: oZones.Zone.template,
         callback: function(req,template_json){
-            var templateDataTable = $('#datatable_zone_templates').dataTable();
-
-            var template_array = [];
-            $.each(template_json,function(){
-                var template = this.VMTEMPLATE;
-                template_array.push([
-                    template.ID,
-                    template.UID,
-                    template.GID,
-                    template.NAME,
-                    pretty_time(template.REGTIME),
-                    parseInt(template.PUBLIC) ? "yes" : "no"
-                ]);
-            });
-            updateView(template_array,templateDataTable);
+            updateTemplatesList(req,template_json,'#datatable_zone_templates');
         },
         error: onError
     },
@@ -246,38 +162,7 @@ var zone_actions = {
         type: "single",
         call: oZones.Zone.user,
         callback: function(req,user_json){
-            var userDataTable = $('#datatable_zone_users').dataTable({
-                "bJQueryUI": true,
-                "bSortClasses": false,
-                "sPaginationType": "full_numbers",
-                "bAutoWidth":false,
-                "aoColumnDefs": [
-                    { "sWidth": "35px", "aTargets": [0] }
-                ]
-            });
-
-            var user_array = [];
-            $.each(user_json,function(){
-                var user = this.USER;
-                var name = "";
-                var group_str = "";
-                if (user.NAME && user.NAME != {}){
-                    name = user.NAME;
-                }
-
-                if (user.GROUPS.ID){
-                    $.each(user.GROUPS.ID,function() {
-                        groups_str += this +", ";
-                    });
-                }
-
-                user_array.push([
-                    user.ID,
-                    name,
-                    group_str
-                ]);
-            });
-            updateView(user_array,userDataTable);
+            updateUsersList(req,user_json,'#datatable_zone_users');
         },
         error: onError
     }
@@ -530,6 +415,11 @@ function updateZoneInfo(req,zone_json){
 </table></div>'
     };
 
+    var users_tab = {
+        title: "Users",
+        content: "TODO"
+    };
+
     Sunstone.updateInfoPanelTab("zone_info_panel","zone_info_tab",info_tab);
     Sunstone.updateInfoPanelTab("zone_info_panel","zone_hosts_tab",hosts_tab);
     Sunstone.updateInfoPanelTab("zone_info_panel","zone_templates_tab",templates_tab);
@@ -601,6 +491,15 @@ function updateZoneInfo(req,zone_json){
         ]
     });
 
+    $('#datatable_zone_users').dataTable({
+        "bJQueryUI": true,
+        "bSortClasses": false,
+        "sPaginationType": "full_numbers",
+        "bAutoWidth":false,
+        "aoColumnDefs": [
+            { "sWidth": "35px", "aTargets": [0] }
+        ]
+    });
 
 
     /*End init dataTables*/
@@ -667,57 +566,6 @@ function setZoneAutorefresh() {
     },INTERVAL+someTime());
 }
 
-function hostElementArray(host_json){
-
-    var host = host_json.HOST;
-
-    //Calculate some values
-    var acpu = parseInt(host.HOST_SHARE.MAX_CPU);
-    if (!acpu) {acpu=100};
-    acpu = acpu - parseInt(host.HOST_SHARE.CPU_USAGE);
-
-    var total_mem = parseInt(host.HOST_SHARE.MAX_MEM);
-    var free_mem = parseInt(host.HOST_SHARE.FREE_MEM);
-
-    var ratio_mem = 0;
-    if (total_mem) {
-        ratio_mem = Math.round(((total_mem - free_mem) / total_mem) * 100);
-    }
-
-
-    var total_cpu = parseInt(host.HOST_SHARE.MAX_CPU);
-    var used_cpu = Math.max(total_cpu - parseInt(host.HOST_SHARE.USED_CPU),acpu);
-
-    var ratio_cpu = 0;
-    if (total_cpu){
-        ratio_cpu = Math.round(((total_cpu - used_cpu) / total_cpu) * 100);
-    }
-
-
-    //progressbars html code - hardcoded jquery html result
-     var pb_mem =
-'<div style="height:10px" class="ratiobar ui-progressbar ui-widget ui-widget-content ui-corner-all" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+ratio_mem+'">\
-    <div class="ui-progressbar-value ui-widget-header ui-corner-left ui-corner-right" style="width: '+ratio_mem+'%;"/>\
-    <span style="position:relative;left:90px;top:-4px;font-size:0.6em">'+ratio_mem+'%</span>\
-    </div>\
-</div>';
-
-    var pb_cpu =
-'<div style="height:10px" class="ratiobar ui-progressbar ui-widget ui-widget-content ui-corner-all" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+ratio_cpu+'">\
-    <div class="ui-progressbar-value ui-widget-header ui-corner-left ui-corner-right" style="width: '+ratio_cpu+'%;"/>\
-    <span style="position:relative;left:90px;top:-4px;font-size:0.6em">'+ratio_cpu+'%</span>\
-    </div>\
-</div>';
-
-
-    return [
-        host.ID,
-        host.NAME,
-        host.HOST_SHARE.RUNNING_VMS, //rvm
-        pb_cpu,
-        pb_mem,
-        oZones.Helper.resource_state("host_simple",host.STATE) ];
-}
 
 $(document).ready(function(){
     dataTable_zones = $("#datatable_zones").dataTable({

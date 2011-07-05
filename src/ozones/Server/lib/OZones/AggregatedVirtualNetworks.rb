@@ -19,7 +19,7 @@ module OZones
     class AggregatedVirtualNetworks < AggregatedPool 
         
         def initialize
-            super("ZONE_VN_POOL")
+            super("ZONE_POOL")
         end
         
         def factory(client)  
@@ -27,4 +27,4 @@ module OZones
         end    
     end
     
-end 
+end

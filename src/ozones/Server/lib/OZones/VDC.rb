@@ -31,7 +31,7 @@ module OZones
         def self.to_hash
             zonePoolHash = Hash.new
             zonePoolHash["VDC_POOL"] = Hash.new
-            zonePoolHash["VDC_POOL"]["VDC"] = Array.new
+            zonePoolHash["VDC_POOL"]["VDC"] = Array.new unless self.all.empty?
             self.all.each{|vdc|
                   zonePoolHash["VDC_POOL"]["VDC"] << vdc.attributes              
             }

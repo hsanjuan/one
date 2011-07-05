@@ -108,7 +108,7 @@ var oZones = {
         {
             return ["OS", "CDROM", "DATABLOCK"][value];
         },
-// TODO Are we going to use this ?? 
+// TODO Are we going to use this ??
         "action": function(action, params)
         {
             obj = {
@@ -152,7 +152,7 @@ var oZones = {
             {
                 return Error('Incorrect Pool');
             }
-            
+
             var p_pool = [];
 
             if (response[pool_name]) {
@@ -192,7 +192,7 @@ var oZones = {
             var password = params.data.password;
             var remember = params.remember;
 
-            var resource = OpenNebula.Auth.resource;            
+            var resource = OpenNebula.Auth.resource;
             var request  = OpenNebula.Helper.request(resource,"login");
 
             $.ajax({
@@ -409,7 +409,7 @@ var oZones = {
                 }
             });
         },
-        
+
         "host": function(params)
         {
 
@@ -441,7 +441,7 @@ var oZones = {
                 }
             });
         },
-        
+
         "image": function(params)
         {
 
@@ -460,7 +460,7 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var pool = oZones.Helper.pool("IMAGE",response); 
+                        var pool = oZones.Helper.pool("IMAGE",response);
                         callback(request, pool);
                     }
                 },
@@ -473,7 +473,7 @@ var oZones = {
                 }
             });
         },
-        
+
         "template": function(params)
         {
 
@@ -492,7 +492,7 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var pool = oZones.Helper.pool("VMTEMPLATE",response); 
+                        var pool = oZones.Helper.pool("VMTEMPLATE",response);
                         callback(request, pool);
                     }
                 },
@@ -505,7 +505,7 @@ var oZones = {
                 }
             });
         },
-        
+
         "user": function(params)
         {
 
@@ -524,7 +524,7 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var pool = oZones.Helper.pool("USER",response); 
+                        var pool = oZones.Helper.pool("USER",response);
                         callback(request, pool);
                     }
                 },
@@ -537,7 +537,7 @@ var oZones = {
                 }
             });
         },
-        
+
         "vm": function(params)
         {
 
@@ -556,7 +556,7 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var pool = oZones.Helper.pool("VM",response); 
+                        var pool = oZones.Helper.pool("VM",response);
                         callback(request, pool);
                     }
                 },
@@ -569,7 +569,7 @@ var oZones = {
                 }
             });
         },
-        
+
         "vn": function(params)
         {
 
@@ -588,7 +588,7 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var pool = oZones.Helper.pool("VNET",response); 
+                        var pool = oZones.Helper.pool("VNET",response);
                         callback(request, pool);
                     }
                 },
@@ -601,7 +601,7 @@ var oZones = {
                 }
             });
         },
-        
+
         "group": function(params)
         {
 
@@ -620,7 +620,7 @@ var oZones = {
                 {
                     if (callback)
                     {
-                        var pool = oZones.Helper.pool("GROUP",response); 
+                        var pool = oZones.Helper.pool("GROUP",response);
                         callback(request, pool);
                     }
                 },
@@ -762,9 +762,9 @@ var oZones = {
             });
         }
     },
-    
+
     "ZoneHosts": {
-        "resource": "ZONEHOST",
+        "resource": "ZONE",
 
         "list": function(params)
         {
@@ -797,10 +797,10 @@ var oZones = {
                 }
             });
         }
-    },    
-    
+    },
+
     "ZoneVMs": {
-        "resource": "ZONEVMS",
+        "resource": "ZONE",
 
         "list": function(params)
         {
@@ -833,10 +833,10 @@ var oZones = {
                 }
             });
         }
-    },   
-    
+    },
+
     "ZoneVNs": {
-        "resource": "ZONEVNS",
+        "resource": "ZONE",
 
         "list": function(params)
         {
@@ -869,10 +869,10 @@ var oZones = {
                 }
             });
         }
-    },  
-    
+    },
+
     "ZoneImages": {
-        "resource": "ZONEIMAGES",
+        "resource": "ZONE",
 
         "list": function(params)
         {
@@ -905,10 +905,10 @@ var oZones = {
                 }
             });
         }
-    }, 
-    
+    },
+
     "ZoneUsers": {
-        "resource": "ZONEUSERS",
+        "resource": "ZONE",
 
         "list": function(params)
         {
@@ -941,10 +941,10 @@ var oZones = {
                 }
             });
         }
-    },  
-    
+    },
+
     "ZoneTemplates": {
-        "resource": "ZONETEMPLATES",
+        "resource": "ZONE",
 
         "list": function(params)
         {

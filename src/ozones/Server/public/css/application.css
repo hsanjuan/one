@@ -142,7 +142,6 @@ div.action_blocks {
 	}
 
 input, textarea, select {
-    border: 0;
     border: 1px #bbbbbb solid;
 }
 
@@ -311,11 +310,11 @@ tr.odd td, tr.even td{
 }
 
 tr.odd:hover{
-	background-color: #E69138 !important;
+	background-color: #1FB539 !important;
 }
 
 tr.even:hover{
-	background-color: #E69138 !important;
+	background-color: #1FB539 !important;
 }
 
 .show_hide label{
@@ -538,7 +537,7 @@ ul.action_list li a{
 
 }
 ul.action_list li a:hover{
-    color:#E69138;
+    color:#1FB539;
 
 }
 
@@ -547,3 +546,31 @@ ul.action_list li a:hover{
 	background: #8F9392;
 }
 
+
+.dd_lists{
+    width:154px;
+    display:inline-block;
+    height:200px;
+    margin-left:2px;
+}
+ul.dd_list{
+    height:200px;
+    width:67px;
+    margin:0;
+    border: 1px #bbbbbb solid;
+    list-style-type:none;
+    padding:3px;
+    height:100%;
+    vertical-align:top;
+    display:inline-block;
+}
+
+ul.dd_list li{
+    border-bottom:1px solid #cccccc;
+}
+
+ul.dd_right{
+}
+ul.dd_left{
+
+}

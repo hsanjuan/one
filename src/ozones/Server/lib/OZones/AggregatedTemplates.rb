@@ -19,7 +19,7 @@ module OZones
     class AggregatedTemplates < AggregatedPool 
         
         def initialize
-            super("ZONE_TEMPLATES_POOL")
+            super("ZONE_POOL")
         end
         
         def factory(client)  
@@ -27,4 +27,4 @@ module OZones
         end    
     end
     
-end 
+end

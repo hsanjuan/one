@@ -32,7 +32,7 @@ module OZones
         def self.to_hash
             zonePoolHash = Hash.new
             zonePoolHash["ZONE_POOL"] = Hash.new
-            zonePoolHash["ZONE_POOL"]["ZONE"] = Array.new
+            zonePoolHash["ZONE_POOL"]["ZONE"] = Array.new unless self.all.empty?
             self.all.each{|zone|
                   zonePoolHash["ZONE_POOL"]["ZONE"] <<  
                      zone.attributes.merge({:numbervdcs => zone.vdcs.all.size})              
