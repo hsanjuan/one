@@ -1,0 +1,283 @@
+/* -------------------------------------------------------------------------- */
+/* Copyright 2002-2011, OpenNebula Project Leads (OpenNebula.org)             */
+/*                                                                            */
+/* Licensed under the Apache License, Version 2.0 (the "License"); you may    */
+/* not use this file except in compliance with the License. You may obtain    */
+/* a copy of the License at                                                   */
+/*                                                                            */
+/* http://www.apache.org/licenses/LICENSE-2.0                                 */
+/*                                                                            */
+/* Unless required by applicable law or agreed to in writing, software        */
+/* distributed under the License is distributed on an "AS IS" BASIS,          */
+/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   */
+/* See the License for the specific language governing permissions and        */
+/* limitations under the License.                                             */
+/* -------------------------------------------------------------------------- */
+
+
+function updateHostsList(req,list,tag,zone_id){
+    var hostDataTable = $(tag).dataTable();
+    var hosts_array = [];
+    //TODO incongruency if its a zone->host_pool
+    //or an aggregated host pool
+    list = list.HOST && list.HOST.length ? list.HOST:list;
+    $.each(list,function(){
+        hosts_array.push(hostElementArray(this,zone_id));
+    });
+    if (!zone_id) { hostDataTable.fnClearTable();}
+    hostDataTable.fnAddData(hosts_array);
+    hostDataTable.fnDraw(false);
+}
+
+function updateVMsList(req,list,tag,zone_id){
+    var vmsDataTable = $(tag).dataTable();
+    var vms_array = [];
+    list = list.VM && list.VM.length ? list.VM : list;
+    $.each(list,function(){
+        var vm = this.VM? this.vm : this;
+        var state = oZones.Helper.resource_state("vm",vm.STATE);
+        if (state == "ACTIVE") {
+            state = oZones.Helper.resource_state("vm_lcm",vm.LCM_STATE);
+        }
+
+        if (zone_id){
+            vms_array.push([
+                zone_id,
+                vm.ID,
+                vm.UID,
+                vm.GID,
+                vm.NAME,
+                state,
+                vm.CPU,
+                humanize_size(vm.MEMORY),
+                vm.HISTORY ? vm.HISTORY.HOSTNAME : "--",
+                pretty_time(vm.STIME)
+            ]);
+        } else {
+            vms_array.push([
+                vm.ID,
+                vm.UID,
+                vm.GID,
+                vm.NAME,
+                state,
+                vm.CPU,
+                humanize_size(vm.MEMORY),
+                vm.HISTORY ? vm.HISTORY.HOSTNAME : "--",
+                pretty_time(vm.STIME)
+            ]);
+        };
+    });
+
+    updateView(vms_array,vmsDataTable);
+
+}
+
+function updateVNsList(req,list,tag,zone_id){
+    var vnDataTable = $(tag).dataTable();
+    var vn_array = [];
+    list = list.VNET && list.VNET.length ? list.VNET : list;
+    $.each(list,function(){
+        var network = this.VNET ? this.VNET : this;
+        var total_leases = "0";
+        if (network.TOTAL_LEASES){
+            total_leases = network.TOTAL_LEASES;
+        } else if (network.LEASES && network.LEASES.LEASE){
+            total_leases = network.LEASES.LEASE.length ? network.LEASES.LEASE.length : "1";
+        }
+
+        if (zone_id) {
+            vn_array.push([
+                zone_id,
+                network.ID,
+                network.UID,
+                network.GID,
+                network.NAME,
+                parseInt(network.TYPE) ? "FIXED" : "RANGED",
+                network.BRIDGE,
+                parseInt(network.PUBLIC) ? "yes" : "no",
+                total_leases
+            ]);
+        } else {
+             vn_array.push([
+                network.ID,
+                network.UID,
+                network.GID,
+                network.NAME,
+                parseInt(network.TYPE) ? "FIXED" : "RANGED",
+                network.BRIDGE,
+                parseInt(network.PUBLIC) ? "yes" : "no",
+                total_leases
+            ]);
+        }
+    });
+
+    updateView(vn_array,vnDataTable);
+}
+
+function updateTemplatesList(req,list,tag,zone_id){
+    var templateDataTable = $(tag).dataTable();
+    var template_array = [];
+    list = list.VMTEMPLATE && list.VMTEMPLATE.length ? list.VMTEMPLATE : list;
+    $.each(list,function(){
+        var template = this.VMTEMPLATE ? this.VMTEMPLATE : this;
+        if (zone_id){
+            template_array.push([
+                zone_id,
+                template.ID,
+                template.UID,
+                template.GID,
+                template.NAME,
+                pretty_time(template.REGTIME),
+                parseInt(template.PUBLIC) ? "yes" : "no"
+            ]);
+        } else {
+            template_array.push([
+                template.ID,
+                template.UID,
+                template.GID,
+                template.NAME,
+                pretty_time(template.REGTIME),
+                parseInt(template.PUBLIC) ? "yes" : "no"
+           ]);
+        };
+    });
+    updateView(template_array,templateDataTable);
+}
+
+function updateUsersList(req,list,tag, zone_id){
+    var userDataTable = $(tag).dataTable();
+    var user_array = [];
+    list = list.USER && list.USER.length ? list.USER : list;
+
+    $.each(list,function(){
+        var user = this.USER ? this.USER : this;
+        var name = "";
+        var group_str = "";
+        if (user.NAME && user.NAME != {}){
+            name = user.NAME;
+        }
+
+        // if (user.GROUPS.ID){
+        //     $.each(user.GROUPS.ID,function() {
+        //         groups_str += this +", ";
+        //     });
+        // }
+        if (zone_id){
+            user_array.push([
+                zone_id,
+                user.ID,
+                name
+            ]);
+        } else {
+            user_array.push([
+                user.ID,
+                name
+            ]);
+        }
+
+    });
+    updateView(user_array,userDataTable);
+}
+
+function updateImagesList(req,list,tag,zone_id){
+    var imageDataTable = $(tag).dataTable();
+    var image_array = [];
+    list = list.IMAGE && list.IMAGE.length ? list.IMAGE : list;
+    $.each(list,function(){
+        var image = this.IMAGE ? this.IMAGE : this;
+
+        if (zone_id) {
+            image_array.push([
+                zone_id,
+                image.ID,
+                image.UID,
+                image.GID,
+                image.NAME,
+                oZones.Helper.image_type(image.TYPE),
+                pretty_time(image.REGTIME),
+                parseInt(image.PUBLIC) ? "yes" : "no",
+                parseInt(image.PERSISTENT) ? "yes" : "no",
+                oZones.Helper.resource_state("image",image.STATE),
+                image.RUNNING_VMS
+            ]);
+        } else {
+            image_array.push([
+                image.ID,
+                image.UID,
+                image.GID,
+                image.NAME,
+                oZones.Helper.image_type(image.TYPE),
+                pretty_time(image.REGTIME),
+                parseInt(image.PUBLIC) ? "yes" : "no",
+                parseInt(image.PERSISTENT) ? "yes" : "no",
+                oZones.Helper.resource_state("image",image.STATE),
+                image.RUNNING_VMS
+            ]);
+        };
+    });
+    updateView(image_array,imageDataTable);
+}
+
+
+function hostElementArray(host,zone_id){
+
+    //TODO incongruent
+    host = host.HOST ? host.HOST : host;
+
+    //Calculate some values
+    var acpu = parseInt(host.HOST_SHARE.MAX_CPU);
+    if (!acpu) {acpu=100};
+    acpu = acpu - parseInt(host.HOST_SHARE.CPU_USAGE);
+
+    var total_mem = parseInt(host.HOST_SHARE.MAX_MEM);
+    var free_mem = parseInt(host.HOST_SHARE.FREE_MEM);
+
+    var ratio_mem = 0;
+    if (total_mem) {
+        ratio_mem = Math.round(((total_mem - free_mem) / total_mem) * 100);
+    }
+
+
+    var total_cpu = parseInt(host.HOST_SHARE.MAX_CPU);
+    var used_cpu = Math.max(total_cpu - parseInt(host.HOST_SHARE.USED_CPU),acpu);
+
+    var ratio_cpu = 0;
+    if (total_cpu){
+        ratio_cpu = Math.round(((total_cpu - used_cpu) / total_cpu) * 100);
+    }
+
+
+    //progressbars html code - hardcoded jquery html result
+     var pb_mem =
+'<div style="height:10px" class="ratiobar ui-progressbar ui-widget ui-widget-content ui-corner-all" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+ratio_mem+'">\
+    <div class="ui-progressbar-value ui-widget-header ui-corner-left ui-corner-right" style="width: '+ratio_mem+'%;"/>\
+    <span style="position:relative;left:90px;top:-4px;font-size:0.6em">'+ratio_mem+'%</span>\
+    </div>\
+</div>';
+
+    var pb_cpu =
+'<div style="height:10px" class="ratiobar ui-progressbar ui-widget ui-widget-content ui-corner-all" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+ratio_cpu+'">\
+    <div class="ui-progressbar-value ui-widget-header ui-corner-left ui-corner-right" style="width: '+ratio_cpu+'%;"/>\
+    <span style="position:relative;left:90px;top:-4px;font-size:0.6em">'+ratio_cpu+'%</span>\
+    </div>\
+</div>';
+
+    if (zone_id){
+        return [
+            zone_id,
+            host.ID,
+            host.NAME,
+            host.HOST_SHARE.RUNNING_VMS, //rvm
+            pb_cpu,
+            pb_mem,
+            oZones.Helper.resource_state("host_simple",host.STATE) ];
+    };
+
+    return [
+        host.ID,
+        host.NAME,
+        host.HOST_SHARE.RUNNING_VMS, //rvm
+        pb_cpu,
+        pb_mem,
+        oZones.Helper.resource_state("host_simple",host.STATE) ];
+}
