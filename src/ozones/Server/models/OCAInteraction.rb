@@ -84,10 +84,10 @@ class OCAInteraction
                                   "GROUP")[1].to_i
 
         # Delete the resources from the VDC
-        delete_images    (vdcgroupid, client)
-        delete_templates (vdcgroupid, client)
-        delete_vms       (vdcgroupid, client)
-        delete_vns       (vdcgroupid, client)                
+        delete_images(vdcgroupid, client)
+        delete_templates(vdcgroupid, client)
+        delete_vms(vdcgroupid, client)
+        delete_vns(vdcgroupid, client)                
                       
         # Delete users from a group
         up = OpenNebula::UserPool.new(client)
