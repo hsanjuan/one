@@ -252,6 +252,7 @@ OZONES_DIRS="$OZONES_LOCATION/Server \
              $OZONES_LOCATION/Server/public/vendor \
              $OZONES_LOCATION/Server/public/vendor/jQuery \
              $OZONES_LOCATION/Server/public/js \
+             $OZONES_LOCATION/Server/public/images \
              $OZONES_LOCATION/Server/public/js/pugins"
 
 OZONES_CLIENT_DIRS="$LIB_LOCATION/ruby \
@@ -399,6 +400,7 @@ INSTALL_OZONES_FILES=(
     OZONES_LIB_ZONE_FILES:$OZONES_LOCATION/Server/lib/OZones
     OZONES_PUBLIC_VENDOR_JQUERY:$OZONES_LOCATION/Server/public/vendor/jQuery
     OZONES_PUBLIC_JS_FILES:$OZONES_LOCATION/Server/public/js
+    OZONES_PUBLIC_IMAGES_FILES:$OZONES_LOCATION/Server/public/images
     OZONES_PUBLIC_JS_PLUGINS_FILES:$OZONES_LOCATION/Server/public/js/plugins
     OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
     OZONES_LIB_CLIENT_CLI_FILES:$OZONES_LOCATION/Client/lib/CLI
@@ -993,7 +995,8 @@ OZONES_MODELS_FILES="src/ozones/Server/models/OzonesServer.rb \
                      src/ozones/Server/models/OCAInteraction.rb \
                      src/ozones/Server/models/JSONUtils.rb"
                      
-OZONES_TEMPLATE_FILES="src/ozones/Server/templates/index.html"
+OZONES_TEMPLATE_FILES="src/ozones/Server/templates/index.html \
+                       src/ozones/Server/templates/login.html"
                      
 OZONES_LIB_FILES="src/ozones/Server/lib/OZones.rb"
 
@@ -1014,9 +1017,20 @@ OZONES_PUBLIC_VENDOR_JQUERY="\
                         src/sunstone/public/vendor/jQuery/MIT-LICENSE.txt \
                         src/sunstone/public/vendor/jQuery/NOTICE"
                         
-OZONES_PUBLIC_JS_FILES="src/ozones/Server/public/js/ozones.js"
+OZONES_PUBLIC_JS_FILES="src/ozones/Server/public/js/ozones.js \
+                        src/ozones/Server/public/js/login.js \
+                        src/ozones/Server/public/js/layout.js \
+                        src/ozones/Server/public/js/sunstone.js \
+                        src/ozones/Server/public/js/sunstone-util.js \
+                        src/ozones/Server/public/js/ozones-util.js"
+                        
+OZONES_PUBLIC_IMAGES_FILES="src/ozones/Server/public/images/panel.png \
+                        src/ozones/Server/public/images/login.png \
+                        src/ozones/Server/public/images/opennebula-sunstone-big.png"
 
-OZONES_PUBLIC_JS_PLUGIN_FILES="src/ozones/public/js/plugins/zones-tab.js"
+OZONES_PUBLIC_JS_PLUGIN_FILES="src/ozones/public/js/plugins/zones-tab.js \
+                               src/ozones/public/js/plugins/vdcs-tab.js \
+                               src/ozones/public/js/plugins/aggregated-tab.js"
                 
 OZONES_LIB_CLIENT_FILES="src/ozones/Client/lib/OZonesClient.rb"
                                 

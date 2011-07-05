@@ -118,16 +118,41 @@ set :show_exceptions, false
 # Helpers
 ##############################################################################
 helpers do
-    def authorized?        
-        http_auth = Rack::Auth::Basic::Request.new(request.env)
-        if http_auth.provided? && http_auth.basic? && http_auth.credentials
-            user      = http_auth.credentials[0]
-            sha1_pass = Digest::SHA1.hexdigest(http_auth.credentials[1])
+
+    
+    def authorized?
+        session[:ip] && session[:ip]==request.ip ? true : false
+    end
+
+    def build_session
+        auth = Rack::Auth::Basic::Request.new(request.env)
+        if auth.provided? && auth.basic? && auth.credentials
+            user = auth.credentials[0]
+            sha1_pass = Digest::SHA1.hexdigest(auth.credentials[1])
+            
             if user == ADMIN_NAME && sha1_pass == ADMIN_PASS
-                return true
+                session[:user]     = user
+                session[:user_id]  = rc[1]
+                session[:password] = sha1_pass
+                session[:ip]       = request.ip
+                session[:remember] = params[:remember]
+
+                if params[:remember]
+                    env['rack.session.options'][:expire_after] = 30*60*60*24
+                end
+
+                return [204, ""]
+            else
+                return [401, ""]
             end
         end
-        true
+
+        return [401, ""]
+    end
+
+    def destroy_session
+        session.clear
+        return [204, ""]
     end
 
 end
@@ -142,27 +167,48 @@ before do
 end
 
 after do
-
+    unless request.path=='/login' || request.path=='/'
+        unless session[:remember]
+            if params[:timeout] == true
+                env['rack.session.options'][:defer] = true
+            else
+                env['rack.session.options'][:expire_after] = 60*10
+            end
+        end
+    end
 end
 
 ##############################################################################
 # HTML Requests
 ##############################################################################
 get '/' do
+    return  File.read(File.dirname(__FILE__)+
+                      '/templates/login.html') unless authorized?
+
+    time = Time.now + 60
+    response.set_cookie("one-user",
+                        :value=>"#{session[:user]}",
+                        :expires=>time)
+    response.set_cookie("one-user_id",
+                        :value=>"#{session[:user_id]}",
+                        :expires=>time)
+
     File.read(File.dirname(__FILE__)+'/templates/index.html')
 end
 
 get '/login' do
-    "Nothing here, move along TODO TODO TODO TODO"
+    File.read(File.dirname(__FILE__)+'/templates/login.html')
 end
 
 ##############################################################################
 # Login
 ##############################################################################
 post '/login' do
+    build_session
 end
 
 post '/logout' do
+    destroy_session
 end
 
 ##############################################################################
