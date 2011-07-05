@@ -29,7 +29,6 @@ else
     RUBY_LIB_LOCATION=ONE_LOCATION+"/lib/ruby"
 end
 
-
 OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Server"
 ENV['OZONES_LOCATION']=OZONES_LOCATION
 
@@ -38,6 +37,7 @@ $: << File.dirname(__FILE__) + "../sunstone/models"
 $: << RUBY_LIB_LOCATION
 $: << File.dirname(__FILE__)+'/models'
 $: << File.dirname(__FILE__)+'/lib'
+$: << RUBY_LIB_LOCATION+"/cli"
 
 
 ##############################################################################

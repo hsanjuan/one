@@ -15,7 +15,7 @@
 #--------------------------------------------------------------------------- #
 
 require 'OpenNebula'
-
+require 'one_helper/onegroup_helper'
 
 class OCAInteraction
     
@@ -38,11 +38,51 @@ class OCAInteraction
         # Change primary group of the admin user to the VDC group
         result = user.chgrp(group.id)
         return result if OpenNebula.is_error?(result)
-        
+
+        # Add ACLs
+        aclp = OpenNebula::AclPool.new client     
+             
+          # Grant permissions to the group
+          rule_str = "@#{group.id} VM+NET+IMAGE+TEMPLATE/* " + 
+            "CREATE+DELETE+USE+MANAGE+INFO+INFO_POOL+INFO_POOL_MINE+INSTANTIATE"        
+          rc = aclp.addrule_with_str rule_str  
+          return rc if OpenNebula.is_error?(rc)
+          
+          # Grant permissions to the vdc admin
+          rule_str = "##{user.id} USER/* " + "
+          CREATE+DELETE+MANAGE+INFO+INFO_POOL+INFO_POOL_MINE"        
+          rc = aclp.addrule_with_str rule_str          
+          return rc if OpenNebula.is_error?(rc)   
+          
+          # Grant permissions to use the vdc hosts
+          puts vdc.hosts
+          vdc.hosts.split(",").each{|hostid|
+              puts hostid
+              rule_str = "@#{group.id} HOST/##{hostid} USE"        
+              rc = aclp.addrule_with_str rule_str          
+              return rc if OpenNebula.is_error?(rc)  
+          }     
+          
         return true
     end
     
-        # Creates a VDC (user, group, hosts)
+    def delete_vdc_in_zone(id)
+        vdc = OZones::Vdc.get(id)
+        # TODO data mapper to get the zone
+        
+        zone= OZones::Zones.get(vdc.zone_id)
+        # Create a new client to interact with the zone
+        client = OpenNebula::Client.new(zone.onename + ":plain:" + zone.onepass,
+                                        zone.endpoint)
+
+        #puts OneHelper.id_to_name(vdc.vdcadminame,      
+        #                          OpenNebula::GroupPool.new(client), 
+        #                          "GROUP")
+        #        OneHelper.id_to_name()
+        #       OpenNebula::Group.new_with_id(id, client)                      
+    end
+    
+    # Creates a VDC (user, group, hosts)
     def check_oneadmin(oneadminname, oneadminpass, endpoint)
         # Create a new client to interact with the zone
         client = OpenNebula::Client.new(oneadminname + ":plain:" + oneadminpass,

@@ -252,7 +252,9 @@ class OzonesServer
         if kind == "vdc"
             rc = @ocaInt.delete_vdc_in_zone(id)
             if !rc
-               #return error
+               return [500, OZones::Error.new(
+               "Error: Couldn't delete resources from VDC with id #{id}, " + 
+               "aborting VDC deletion").to_json]
             end
         end
         

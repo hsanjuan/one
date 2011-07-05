@@ -19,8 +19,8 @@ module OpenNebula
     # which are:
     #     USER      -> #<num>
     #                  @<num>
-    #                  ALL
-    #     RESOURCE  -> + separated list and "/{#,@}<num>|ALL"
+    #                  *
+    #     RESOURCE  -> + separated list and "/{#,@}<num>|*"
     #                  VM,
     #                  HOST
     #                  NET

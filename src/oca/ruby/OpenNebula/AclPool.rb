@@ -60,7 +60,7 @@ module OpenNebula
                                user,
                                resource,
                                rights )
-
+                               
             rc = nil if !OpenNebula.is_error?(rc)
 
             return rc
