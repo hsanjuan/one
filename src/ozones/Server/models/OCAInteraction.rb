@@ -33,11 +33,11 @@ class OCAInteraction
         # Create the VDC admin user in the Zone
         user=OpenNebula::User.new(OpenNebula::User.build_xml, client)
         result=user.allocate(adminname, adminpass)
-        return result if OpenNebula.is_error?(result)
-        
+        return rollback(group, result, user) if OpenNebula.is_error?(result)
+
         # Change primary group of the admin user to the VDC group
         result = user.chgrp(group.id)
-        return result if OpenNebula.is_error?(result)
+        return rollback(group, result, user) if OpenNebula.is_error?(result)
 
         # Add ACLs
         aclp = OpenNebula::AclPool.new client     
@@ -45,24 +45,26 @@ class OCAInteraction
           # Grant permissions to the group
           rule_str = "@#{group.id} VM+NET+IMAGE+TEMPLATE/* " + 
             "CREATE+INFO_POOL_MINE"        
-          rc = aclp.addrule_with_str rule_str  
-          return rc if OpenNebula.is_error?(rc)
+          result = aclp.addrule_with_str rule_str  
+          return rollback(group, result, user) if OpenNebula.is_error?(result)
           
           # Grant permissions to the vdc admin
           rule_str = "##{user.id} USER/* CREATE"        
-          rc = aclp.addrule_with_str rule_str          
-          return rc if OpenNebula.is_error?(rc)  
+          result = aclp.addrule_with_str rule_str          
+          return rollback(group, result, user) if OpenNebula.is_error?(result)
           
           rule_str = "##{user.id} USER/@#{group.id} MANAGE+DELETE+INFO"        
-          rc = aclp.addrule_with_str rule_str          
-          return rc if OpenNebula.is_error?(rc)    
+          result = aclp.addrule_with_str rule_str          
+          return rollback(group, result, user) if OpenNebula.is_error?(result)
           
           # Grant permissions to use the vdc hosts
-          puts vdc.hosts
+
           vdc.hosts.split(",").each{|hostid|
               rule_str = "@#{group.id} HOST/##{hostid} USE"        
               rc = aclp.addrule_with_str rule_str          
-              return rc if OpenNebula.is_error?(rc)  
+              if OpenNebula.is_error?(result) 
+                  return rollback(group, result, user)
+              end
           }     
           
         return true
@@ -70,18 +72,40 @@ class OCAInteraction
     
     def delete_vdc_in_zone(id)
         vdc = OZones::Vdc.get(id)
-        # TODO data mapper to get the zone
-        
-        zone= OZones::Zones.get(vdc.zone_id)
+        zone= OZones::Zones.get(vdc.zones_id)
+
         # Create a new client to interact with the zone
         client = OpenNebula::Client.new(zone.onename + ":plain:" + zone.onepass,
                                         zone.endpoint)
+                            
+        # Get the id of vdcadmin                             
+        vdcgroupid = OpenNebulaHelper::OneHelper.id_to_name(vdc.name,      
+                                  OpenNebula::GroupPool.new(client), 
+                                  "GROUP")[1].to_i
 
-        #puts OneHelper.id_to_name(vdc.vdcadminame,      
-        #                          OpenNebula::GroupPool.new(client), 
-        #                          "GROUP")
-        #        OneHelper.id_to_name()
-        #       OpenNebula::Group.new_with_id(id, client)                      
+        # Delete the resources from the VDC
+        delete_images    (vdcgroupid, client)
+        delete_templates (vdcgroupid, client)
+        delete_vms       (vdcgroupid, client)
+        delete_vns       (vdcgroupid, client)                
+                      
+        # Delete users from a group
+        up = OpenNebula::UserPool.new(client)
+        up.info
+        up.each{|user| 
+            if user['GID'].to_i == vdcgroupid
+                OpenNebula::User.new_with_id(user['ID'], client).delete 
+            end
+        }
+        
+        # Delete the group
+        rc = OpenNebula::Group.new_with_id(vdcgroupid, client).delete
+
+        if OpenNebula.is_error?(rc)
+            return rc 
+        else 
+            return nil
+        end                
     end
     
     # Creates a VDC (user, group, hosts)
@@ -94,6 +118,57 @@ class OCAInteraction
         result = hostpool.info
         
         return result
+    end
+    
+    # Deletes resources from failed created VDC
+    def rollback(group, result, user=nil)
+        group.delete 
+        user.delete if user
+        return result
+    end
+    
+    # Deletes images from a group
+    def delete_images(groupid, client)
+        ip = OpenNebula::ImagePool.new(client)
+        ip.info
+        ip.each{|image| 
+            if image['GID'].to_i == groupid
+                OpenNebula::Image.new_with_id(image['ID'], client).delete 
+            end
+        }
+    end
+    
+    # Deletes templates from a group
+    def delete_templates(groupid, client)
+        tp = OpenNebula::TemplatePool.new(client)
+        tp.info
+        tp.each{|template| 
+            if template['GID'].to_i == groupid
+                OpenNebula::Image.new_with_id(template['ID'], client).delete 
+            end
+        }
+    end
+    
+    # Deletes VMs from a group
+    def delete_vms(groupid, client)
+        vmp = OpenNebula::VirtualMachinePool.new(client)
+        vmp.info
+        vmp.each{|vm| 
+            if vm['GID'].to_i == groupid
+                OpenNebula::VirtualMachine.new_with_id(vm['ID'], client).delete 
+            end
+        }
+    end
+    
+    # Deletes VNs from a group
+    def delete_vns(groupid, client)
+        vnp = OpenNebula::VirtualNetworkPool.new(client)
+        vnp.info
+        vnp.each{|vn| 
+            if vn['GID'].to_i == groupid
+                OpenNebula::VirtualNetwork.new_with_id(vn['ID'], client).delete 
+            end
+        }
     end
 end
     

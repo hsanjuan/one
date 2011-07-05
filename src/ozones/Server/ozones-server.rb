@@ -51,6 +51,7 @@ require 'rubygems'
 require 'data_mapper'
 require 'digest/sha1'
 require 'OzonesServer'
+require 'one_helper'
 
 ##############################################################################
 # Read configuration
@@ -109,7 +110,7 @@ ADMIN_PASS = @auth.password
 ##############################################################################
 # Sinatra Configuration
 ##############################################################################
-#use Rack::Session::Pool
+use Rack::Session::Pool
 set :host, config[:host]
 set :port, config[:port]
 set :show_exceptions, false
@@ -121,6 +122,7 @@ helpers do
 
     
     def authorized?
+        #return true
         session[:ip] && session[:ip]==request.ip ? true : false
     end
 
@@ -132,7 +134,6 @@ helpers do
             
             if user == ADMIN_NAME && sha1_pass == ADMIN_PASS
                 session[:user]     = user
-                session[:user_id]  = rc[1]
                 session[:password] = sha1_pass
                 session[:ip]       = request.ip
                 session[:remember] = params[:remember]
@@ -188,9 +189,6 @@ get '/' do
     time = Time.now + 60
     response.set_cookie("one-user",
                         :value=>"#{session[:user]}",
-                        :expires=>time)
-    response.set_cookie("one-user_id",
-                        :value=>"#{session[:user_id]}",
                         :expires=>time)
 
     File.read(File.dirname(__FILE__)+'/templates/index.html')
