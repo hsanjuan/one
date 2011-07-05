@@ -65,6 +65,7 @@ $(document).ready(function () {
 
     $(".outer-west ul li.topTab a").live("click",function(){
         var tab = $(this).attr('href');
+        //toggle subtabs trick
         $('li.'+tab.substr(1)).toggle();
         showTab(tab);
         return false;

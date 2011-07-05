@@ -269,7 +269,7 @@ function updateZonesView(req, zone_list){
 
     updateView(zone_list_array,dataTable_zones);
     updateZoneSelect();
-    //update a dashboard?
+    updateZonesDashboard("zones",zone_list);
 }
 
 function updateZoneInfo(req,zone_json){

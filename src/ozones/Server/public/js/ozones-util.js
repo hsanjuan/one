@@ -18,9 +18,7 @@
 function updateHostsList(req,list,tag,zone_id){
     var hostDataTable = $(tag).dataTable();
     var hosts_array = [];
-    //TODO incongruency if its a zone->host_pool
-    //or an aggregated host pool
-    list = list.HOST && list.HOST.length ? list.HOST:list;
+
     $.each(list,function(){
         hosts_array.push(hostElementArray(this,zone_id));
     });
@@ -32,9 +30,8 @@ function updateHostsList(req,list,tag,zone_id){
 function updateVMsList(req,list,tag,zone_id){
     var vmsDataTable = $(tag).dataTable();
     var vms_array = [];
-    list = list.VM && list.VM.length ? list.VM : list;
     $.each(list,function(){
-        var vm = this.VM? this.vm : this;
+        var vm = this.VM;
         var state = oZones.Helper.resource_state("vm",vm.STATE);
         if (state == "ACTIVE") {
             state = oZones.Helper.resource_state("vm_lcm",vm.LCM_STATE);
@@ -75,9 +72,9 @@ function updateVMsList(req,list,tag,zone_id){
 function updateVNsList(req,list,tag,zone_id){
     var vnDataTable = $(tag).dataTable();
     var vn_array = [];
-    list = list.VNET && list.VNET.length ? list.VNET : list;
+
     $.each(list,function(){
-        var network = this.VNET ? this.VNET : this;
+        var network = this.VNET;
         var total_leases = "0";
         if (network.TOTAL_LEASES){
             total_leases = network.TOTAL_LEASES;
@@ -117,9 +114,9 @@ function updateVNsList(req,list,tag,zone_id){
 function updateTemplatesList(req,list,tag,zone_id){
     var templateDataTable = $(tag).dataTable();
     var template_array = [];
-    list = list.VMTEMPLATE && list.VMTEMPLATE.length ? list.VMTEMPLATE : list;
+
     $.each(list,function(){
-        var template = this.VMTEMPLATE ? this.VMTEMPLATE : this;
+        var template = this.VMTEMPLATE;
         if (zone_id){
             template_array.push([
                 zone_id,
@@ -147,10 +144,9 @@ function updateTemplatesList(req,list,tag,zone_id){
 function updateUsersList(req,list,tag, zone_id){
     var userDataTable = $(tag).dataTable();
     var user_array = [];
-    list = list.USER && list.USER.length ? list.USER : list;
 
     $.each(list,function(){
-        var user = this.USER ? this.USER : this;
+        var user = this.USER;
         var name = "";
         var group_str = "";
         if (user.NAME && user.NAME != {}){
@@ -182,9 +178,9 @@ function updateUsersList(req,list,tag, zone_id){
 function updateImagesList(req,list,tag,zone_id){
     var imageDataTable = $(tag).dataTable();
     var image_array = [];
-    list = list.IMAGE && list.IMAGE.length ? list.IMAGE : list;
+
     $.each(list,function(){
-        var image = this.IMAGE ? this.IMAGE : this;
+        var image = this.IMAGE;
 
         if (zone_id) {
             image_array.push([
@@ -221,8 +217,7 @@ function updateImagesList(req,list,tag,zone_id){
 
 function hostElementArray(host,zone_id){
 
-    //TODO incongruent
-    host = host.HOST ? host.HOST : host;
+    host = host.HOST;
 
     //Calculate some values
     var acpu = parseInt(host.HOST_SHARE.MAX_CPU);

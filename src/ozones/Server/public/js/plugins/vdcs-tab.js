@@ -41,7 +41,7 @@ var create_vdc_tmpl =
         <label for="vdcadminname">Admin name:</label>\
         <input type="text" name="vdcadminname" id="vdcadminname" /><br />\
         <label for="vdcadminpass">Admin pass:</label>\
-        <input type="vdcadminpass" name="vdcadminpass" id="vdcadminpass" />\
+        <input type="password" name="vdcadminpass" id="vdcadminpass" />\
         <label for="zone">Zone:</label>\
         <select id="zoneid" name="zone">\
         </select>\
@@ -199,7 +199,7 @@ function updateVDCsView(req,vdc_list){
     });
 
     updateView(vdc_list_array,dataTable_vdcs);
-
+    updateZonesDashboard("vdcs",vdc_list);
 }
 
 function updateVDCInfo(req,vdc_json){

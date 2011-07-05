@@ -351,39 +351,52 @@ var templates_buttons = {
 };
 
 var hosts_tab = {
-    title: "Total Hosts",
+    title: "Hosts",
     content: aggregated_hosts_tab_content,
-    buttons: hosts_buttons
+    buttons: hosts_buttons,
+    tabClass: "subTab",
+    parentTab: "dashboard_tab"
 };
 
 var vms_tab = {
-    title: "Total VMs",
+    title: "Virtual Machines",
     content: aggregated_vms_tab_content,
-    buttons: vms_buttons
+    buttons: vms_buttons,
+    tabClass: "subTab",
+    parentTab: "dashboard_tab"
 };
 
 var vns_tab = {
-    title: "Total VNs",
+    title: "Virtual Networks",
     content: aggregated_vns_tab_content,
-    buttons: vns_buttons
+    buttons: vns_buttons,
+    tabClass: "subTab",
+    parentTab: "dashboard_tab"
+
 };
 
 var images_tab = {
-    title: "Total Images",
+    title: "Images",
     content: aggregated_images_tab_content,
-    buttons: images_buttons
+    buttons: images_buttons,
+    tabClass: "subTab",
+    parentTab: "dashboard_tab"
 };
 
 var users_tab = {
-    title: "Total Users",
+    title: "Users",
     content: aggregated_users_tab_content,
-    buttons: users_buttons
+    buttons: users_buttons,
+    tabClass: "subTab",
+    parentTab: "dashboard_tab"
 };
 
 var templates_tab = {
-    title: "Total Templates",
+    title: "Templates",
     content: aggregated_templates_tab_content,
-    buttons: templates_buttons
+    buttons: templates_buttons,
+    tabClass: "subTab",
+    parentTab: "dashboard_tab"
 };
 
 Sunstone.addActions(agg_actions);
@@ -402,8 +415,9 @@ function hostsListCB(req,list){
             notifyError(this.ZONE.error.message);
             return;
         };
-        var host_json = this.ZONE.HOST_POOL;
+        var host_json = oZones.Helper.pool("HOST",this.ZONE);
         updateHostsList(req, host_json,'#datatable_agg_hosts',this.ZONE.id);
+        updateZonesDashboard("hosts",host_json);
     });
 }
 
@@ -414,8 +428,9 @@ function vmsListCB(req,list){
             notifyError(this.ZONE.error.message);
             return;
         };
-        var vms_json = this.ZONE.VM_POOL;
+        var vms_json = oZones.Helper.pool("VM",this.ZONE);
         updateVMsList(req, vms_json,'#datatable_agg_vms',this.ZONE.id);
+        updateZonesDashboard("vms",vms_json);
     });
 }
 
@@ -426,8 +441,9 @@ function vnsListCB(req,list){
             notifyError(this.ZONE.error.message);
             return;
         };
-        var vn_json = this.ZONE.VNET_POOL;
+        var vn_json = oZones.Helper.pool("VNET",this.ZONE);
         updateVNsList(req, vn_json,'#datatable_agg_vnets',this.ZONE.id);
+        updateZonesDashboard("vnets",vn_json);
     });
 }
 
@@ -438,8 +454,9 @@ function imagesListCB(req,list){
             notifyError(this.ZONE.error.message);
             return;
         };
-        var image_json = this.ZONE.IMAGE_POOL;
+        var image_json = oZones.Helper.pool("IMAGE",this.ZONE);
         updateImagesList(req,image_json,'#datatable_agg_images',this.ZONE.id);
+        updateZonesDashboard("images",image_json);
     });
 }
 
@@ -450,8 +467,9 @@ function usersListCB(req,list){
             notifyError(this.ZONE.error.message);
             return;
         };
-        var user_json = this.ZONE.USER_POOL;
+        var user_json = oZones.Helper.pool("USER",this.ZONE);
         updateUsersList(req,user_json,'#datatable_agg_users',this.ZONE.id);
+        updateZonesDashboard("users",user_json);
     });
 }
 
@@ -462,8 +480,9 @@ function templatesListCB(req,list){
             notifyError(this.ZONE.error.message);
             return;
         };
-        var template_json = this.ZONE.VMTEMPLATE_POOL;
+        var template_json = oZones.Helper.pool("VMTEMPLATE",this.ZONE);
         updateTemplatesList(req,template_json,'#datatable_agg_templates',this.ZONE.id);
+        updateZonesDashboard("templates",template_json);
     });
 }
 

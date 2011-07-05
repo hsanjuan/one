@@ -283,7 +283,7 @@ $(document).ready(function(){
 
     //Insert the tabs in the DOM and their buttons.
     insertTabs();
-    hideSubTabs();
+    //hideSubTabs();
     insertButtons();
 
     //Enhace the look of select buttons
