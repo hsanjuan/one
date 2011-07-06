@@ -242,7 +242,7 @@ SUNSTONE_DIRS="$SUNSTONE_LOCATION/models \
                $SUNSTONE_LOCATION/public/images \
                $SUNSTONE_LOCATION/templates \
                $SUNSTONE_LOCATION/views"
-               
+
 OZONES_DIRS="$OZONES_LOCATION/Server \
              $OZONES_LOCATION/Server/lib \
              $OZONES_LOCATION/Server/lib/OZones \
@@ -251,9 +251,14 @@ OZONES_DIRS="$OZONES_LOCATION/Server \
              $OZONES_LOCATION/Server/public \
              $OZONES_LOCATION/Server/public/vendor \
              $OZONES_LOCATION/Server/public/vendor/jQuery \
+             $OZONES_LOCATION/Server/public/vendor/jQueryLayout \
+             $OZONES_LOCATION/Server/public/vendor/dataTables \
+             $OZONES_LOCATION/Server/public/vendor/jQueryUI \
+             $OZONES_LOCATION/Server/public/vendor/jGrowl \
              $OZONES_LOCATION/Server/public/js \
+             $OZONES_LOCATION/Server/public/js/plugins \
              $OZONES_LOCATION/Server/public/images \
-             $OZONES_LOCATION/Server/public/js/pugins"
+             $OZONES_LOCATION/Server/public/css"
 
 OZONES_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula \
@@ -399,8 +404,13 @@ INSTALL_OZONES_FILES=(
     OZONES_LIB_FILES:$OZONES_LOCATION/Server/lib
     OZONES_LIB_ZONE_FILES:$OZONES_LOCATION/Server/lib/OZones
     OZONES_PUBLIC_VENDOR_JQUERY:$OZONES_LOCATION/Server/public/vendor/jQuery
+    OZONES_PUBLIC_VENDOR_DATATABLES:$OZONES_LOCATION/Server/public/vendor/dataTables
+    OZONES_PUBLIC_VENDOR_JGROWL:$OZONES_LOCATION/Server/public/vendor/jGrowl
+    OZONES_PUBLIC_VENDOR_JQUERYUI:$OZONES_LOCATION/Server/public/vendor/jQueryUI
+    OZONES_PUBLIC_VENDOR_JQUERYLAYOUT:$OZONES_LOCATION/Server/public/vendor/jQueryLayout
     OZONES_PUBLIC_JS_FILES:$OZONES_LOCATION/Server/public/js
     OZONES_PUBLIC_IMAGES_FILES:$OZONES_LOCATION/Server/public/images
+    OZONES_PUBLIC_CSS_FILES:$OZONES_LOCATION/Server/public/css
     OZONES_PUBLIC_JS_PLUGINS_FILES:$OZONES_LOCATION/Server/public/js/plugins
     OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
     OZONES_LIB_CLIENT_CLI_FILES:$OZONES_LOCATION/Client/lib/CLI
@@ -1012,10 +1022,15 @@ OZONES_LIB_ZONE_FILES="src/ozones/Server/lib/OZones/Zones.rb \
                 src/ozones/Server/lib/OZones/AggregatedImages.rb \
                 src/ozones/Server/lib/OZones/AggregatedTemplates.rb"
                 
-OZONES_PUBLIC_VENDOR_JQUERY="\
-                        src/sunstone/public/vendor/jQuery/jquery-1.4.4.min.js \
-                        src/sunstone/public/vendor/jQuery/MIT-LICENSE.txt \
-                        src/sunstone/public/vendor/jQuery/NOTICE"
+OZONES_PUBLIC_VENDOR_JQUERY=$SUNSTONE_PUBLIC_VENDOR_JQUERY
+                        
+OZONES_PUBLIC_VENDOR_DATATABLES=$SUNSTONE_PUBLIC_VENDOR_DATATABLES
+
+OZONES_PUBLIC_VENDOR_JGROWL=$SUNSTONE_PUBLIC_VENDOR_JGROWL
+
+OZONES_PUBLIC_VENDOR_JQUERYUI=$SUNSTONE_PUBLIC_VENDOR_JQUERYUI
+
+OZONES_PUBLIC_VENDOR_JQUERYLAYOUT=$SUNSTONE_PUBLIC_VENDOR_JQUERYLAYOUT
                         
 OZONES_PUBLIC_JS_FILES="src/ozones/Server/public/js/ozones.js \
                         src/ozones/Server/public/js/login.js \
@@ -1024,13 +1039,18 @@ OZONES_PUBLIC_JS_FILES="src/ozones/Server/public/js/ozones.js \
                         src/ozones/Server/public/js/sunstone-util.js \
                         src/ozones/Server/public/js/ozones-util.js"
                         
+OZONES_PUBLIC_CSS_FILES="src/ozones/Server/public/css/application.css \
+                         src/ozones/Server/public/css/layout.css \
+                         src/ozones/Server/public/css/login.css"
+                        
 OZONES_PUBLIC_IMAGES_FILES="src/ozones/Server/public/images/panel.png \
                         src/ozones/Server/public/images/login.png \
                         src/ozones/Server/public/images/opennebula-sunstone-big.png"
 
-OZONES_PUBLIC_JS_PLUGIN_FILES="src/ozones/public/js/plugins/zones-tab.js \
-                               src/ozones/public/js/plugins/vdcs-tab.js \
-                               src/ozones/public/js/plugins/aggregated-tab.js"
+OZONES_PUBLIC_JS_PLUGINS_FILES="src/ozones/Server/public/js/plugins/zones-tab.js \
+                               src/ozones/Server/public/js/plugins/vdcs-tab.js \
+                               src/ozones/Server/public/js/plugins/aggregated-tab.js \
+                               src/ozones/Server/public/js/plugins/dashboard-tab.js"
                 
 OZONES_LIB_CLIENT_FILES="src/ozones/Client/lib/OZonesClient.rb"
                                 
