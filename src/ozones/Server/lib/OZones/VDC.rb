@@ -24,6 +24,7 @@ module OZones
         property :id,            Serial
         property :name,          String, :required => true, :unique => true
         property :vdcadminname,  String, :required => true
+        property :acls,          String
         property :hosts,         String
 
         belongs_to :zones

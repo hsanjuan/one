@@ -68,7 +68,7 @@ class OneAclHelper < OpenNebulaHelper::OneHelper
         OpenNebula::AclPool.new(@client)
     end
     
-        # TODO check that @content[:resources_str]  is valid
+    # TODO check that @content[:resources_str]  is valid
     def self.resource_mask(str)
         resource_type=str.split("/")[0]
   

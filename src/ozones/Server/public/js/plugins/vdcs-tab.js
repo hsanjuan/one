@@ -139,7 +139,9 @@ var vdc_buttons = {
     },
     "VDC.delete" : {
         type: "action",
-        text: "Delete"
+        text: "Delete",
+        type : "confirm",
+        tip: "Careful! This will delete the selected VDCs and associated resources"
     }
 };
 
@@ -272,11 +274,6 @@ function setupCreateVDCDialog(){
             $('div#create_vdc_dialog #vdc_available_hosts_list');
         var sel_hosts=
             $('div#create_vdc_dialog #vdc_selected_hosts_list');
-        if (!id.length){
-            av_hosts.empty();
-            sel_hosts.empty();
-            return true;
-        }
         av_hosts.html('<li>'+spinner+'</li>');
         sel_hosts.empty();
         Sunstone.runAction("VDC.zone_hosts",id);
