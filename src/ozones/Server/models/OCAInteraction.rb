@@ -46,34 +46,38 @@ class OCAInteraction
              
           # Grant permissions to the group
           rule_str = "@#{group.id} VM+NET+IMAGE+TEMPLATE/* " + 
-            "CREATE+INFO_POOL_MINE"        
-          result = aclp.addrule_with_str rule_str  
+            "CREATE+INFO_POOL_MINE"       
+          acl    = OpenNebula::Acl.new(OpenNebula::Acl.build_xml,client)            
+          result = acl.allocate(*OpenNebula::Acl.parse_rule(rule_str))
           return rollback(client, group, 
                           result, user) if OpenNebula.is_error?(result)
-          acls_str = result.to_s + ","
+          acls_str = acl.id.to_s + ","
           
           # Grant permissions to the vdc admin
-          rule_str = "##{user.id} USER/* CREATE"        
-          result = aclp.addrule_with_str rule_str          
+          rule_str = "##{user.id} USER/* CREATE"  
+          acl    = OpenNebula::Acl.new(OpenNebula::Acl.build_xml,client)    
+          result = acl.allocate(*OpenNebula::Acl.parse_rule(rule_str))
           return rollback(client, group, 
                           result,user,acls_str) if OpenNebula.is_error?(result)
-          acls_str += result.to_s + ","
+          acls_str += acl.id.to_s + ","
           
           rule_str = "##{user.id} USER/@#{group.id} MANAGE+DELETE+INFO"        
-          result = aclp.addrule_with_str rule_str          
+          acl    = OpenNebula::Acl.new(OpenNebula::Acl.build_xml,client)    
+          result = acl.allocate(*OpenNebula::Acl.parse_rule(rule_str))
           return rollback(client, group, 
                           result,user,acls_str) if OpenNebula.is_error?(result)
-          acls_str += result.to_s + ","
+          acls_str += acl.id.to_s + ","
           
           # Grant permissions to use the vdc hosts
 
           vdc.hosts.split(",").each{|hostid|
               rule_str = "@#{group.id} HOST/##{hostid} USE"        
-              result = aclp.addrule_with_str rule_str          
+              acl    = OpenNebula::Acl.new(OpenNebula::Acl.build_xml,client)    
+              result = acl.allocate(*OpenNebula::Acl.parse_rule(rule_str))
               if OpenNebula.is_error?(result) 
                   return rollback(client, group, result, user, acls_str)
               end
-              acls_str += result.to_s + ","
+              acls_str += acl.id.to_s + ","
           } 
 
         return acls_str.chop
@@ -139,11 +143,10 @@ class OCAInteraction
 
         return result if !acls_str
 
-        acl = OpenNebula::AclPool.new( client )
         acls_str.chop.split(",").each{|acl_id|
-            acl.delrule acl_id 
+            OpenNebula::Acl.new_with_id(acl_id, client).delete
         }
-
+        
         return result
     end
 
@@ -192,11 +195,9 @@ class OCAInteraction
     end
     
     # Delete ACLs from a group
-    def delete_acls(acls_str, client)
-        acl = OpenNebula::AclPool.new( client )
-        
+    def delete_acls(acls_str, client)      
         acls_str.split(",").each{|acl_id|
-            acl.delrule acl_id 
+            OpenNebula::Acl.new_with_id(acl_id, client).delete
         }
     end
 end

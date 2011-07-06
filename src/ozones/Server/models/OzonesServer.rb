@@ -184,6 +184,8 @@ class OzonesServer
                              "Error: Couldn't create #{kind}. Reason: " +
                              rc.message).to_json]
                     else
+                        vdc.acls = rc
+                        vdc.save
                         pr.update # Rewrite proxy conf file
                         return [200, vdc.to_json]
                     end
