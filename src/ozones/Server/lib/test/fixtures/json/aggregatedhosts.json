@@ -1,14 +1,17 @@
 {
-  "ZONE_HOST_POOL": {
+  "ZONE_POOL": {
     "ZONE": [
       {
         "onepass": "onepassA",
         "endpoint": "http://zonea.zoneadomain.za:2633/RPC2",
         "vdcs": [
           {
+            "hosts": null,
             "zones_id": 1,
             "name": "vdca",
-            "id": 1
+            "acls": null,
+            "id": 1,
+            "vdcadminname": "vdcadminB"
           }
         ],
         "name": "zoneA",
@@ -74,14 +77,20 @@
         "endpoint": "http://zoneb.zoneadomain.za:2634/RPC2",
         "vdcs": [
           {
+            "hosts": "1",
             "zones_id": 2,
             "name": "vdcb",
-            "id": 2
+            "acls": null,
+            "id": 2,
+            "vdcadminname": "vdcadminB"
           },
           {
+            "hosts": "7,9,29",
             "zones_id": 2,
             "name": "vdcc",
-            "id": 3
+            "acls": null,
+            "id": 3,
+            "vdcadminname": "vdcadminB"
           }
         ],
         "name": "zoneB",

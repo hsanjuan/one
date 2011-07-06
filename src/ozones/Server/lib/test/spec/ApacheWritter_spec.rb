@@ -51,15 +51,20 @@ module OZones
                     )
                     
             @vdca = OZones::Vdc.create(
-                     :name     =>    "vdca"
+                     :name          => "vdca",
+                     :vdcadminname  => "vdcadminA"
                     )
 
             @vdcb1 = OZones::Vdc.create(
-                     :name     =>    "vdcb"
+                     :name          => "vdcb",
+                     :vdcadminname  => "vdcadminB",
+                     :hosts         => "1,4,5"
                     )
             
             @vdcb2 = OZones::Vdc.create(
-                     :name     =>    "vdcc"
+                     :name          => "vdcc",
+                     :vdcadminname  => "vdcadminC",
+                     :hosts         => "1,7"
                     )
             
             @zoneA.vdcs << @vdca
