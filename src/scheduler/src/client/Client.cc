@@ -54,9 +54,26 @@ void Client::set_one_auth(string secret)
 
         if( rc == 0 )
         {
-            string sha1_pass = SSLTools::sha1_digest(pass);
-
-            one_auth = user + ":" + sha1_pass;
+	    string plain_tok = "plain:";
+            if(pass.find(plain_tok) == 0)
+	    {
+	        size_t pt_length = plain_tok.length();
+                if(pass.length() == pt_length)
+		{
+		    throw runtime_error("Empty password for auth token in the form "
+                                    "<username>:plain:<password>");
+		}
+		else
+		{
+		    string plain_pass = pass.substr(pt_length);
+                    one_auth = user + ":" + plain_pass;
+		}
+	    }
+	    else
+	    {
+	        string sha1_pass = SSLTools::sha1_digest(pass);
+                one_auth = user + ":" + sha1_pass;
+	    }
         }
         else
         {

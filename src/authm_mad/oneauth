@@ -103,7 +103,56 @@ cmd=CommandParser::CmdParser.new(ARGV) do
         ssh.login(user, time)
         exit_with_code 0
     end
+    
+    x509_login_desc = <<-EOT.unindent
+        Generates an X509-based authenication proxy based on a user certificate.
+        oneauth x509_login <username> [<lifetime in seconds>]
+    EOT
 
+    command 'x509_login', x509_login_desc, :userid, :lifetime do
+        user=args[0]
+        time=args[1]
+        
+        if time
+            time=time.to_i
+        else
+            time=3600
+        end
+
+        x509=X509Auth.new
+        x509.login(user, time)
+        exit_with_code 0
+    end
+
+    host_login_desc = <<-EOT.unindent
+        Generates an X509-based authenication proxy based on a host certificate.
+        oneauth host_login [<username>] [<lifetime in seconds>] [<login_file>]
+    EOT
+
+    command 'host_login', host_login_desc, :userid, :lifetime :loginfile do
+        user=args[0]
+        time=args[1]
+	login_file=args[2]
+        
+        if !user
+            user='oneadmin'
+        end
+    
+        if time
+            time=time.to_i
+        else
+            time=0
+        end
+            
+        if !login_file
+            login_file=''
+        end
+    
+        x509=X509Auth.new
+        x509.host_login(login_file, time, user)
+        exit_with_code 0
+    end
+    
     command 'key', 'Gets public key' do
         ssh=SshAuth.new
         puts ssh.extract_public_key
