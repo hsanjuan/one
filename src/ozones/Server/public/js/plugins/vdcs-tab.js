@@ -291,7 +291,7 @@ function setupCreateVDCDialog(){
         }
         var hosts="";
         $('#vdc_selected_hosts_list li',$(this)).each(function(){
-            hosts+=$(this).text()+',';
+            hosts+=$(this).attr("host_id")+',';
         });
         if (hosts.length){
             hosts= hosts.slice(0,-1);
