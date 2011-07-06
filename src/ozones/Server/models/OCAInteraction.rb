@@ -122,8 +122,8 @@ class OCAInteraction
     
     # Deletes resources from failed created VDC
     def rollback(group, result, user=nil)
-        group.delete 
         user.delete if user
+        group.delete
         return result
     end
     

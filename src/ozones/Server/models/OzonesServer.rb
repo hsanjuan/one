@@ -179,6 +179,7 @@ class OzonesServer
                                                     vdcadminname,
                                                     vdcadminpass)
                     if OpenNebula.is_error?(rc)
+                        vdc.destroy
                         return [400, OZones::Error.new(
                              "Error: Couldn't create #{kind}. Reason: " +
                              rc.message).to_json]
