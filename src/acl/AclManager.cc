@@ -61,6 +61,14 @@ AclManager::AclManager(SqlDB * _db) : db(_db), lastOID(-1)
     db->exec(oss, this);
 
     unset_callback();
+
+    if (lastOID == -1)
+    {
+        // Add a default rule
+        // @1 VM+NET+IMAGE+TEMPLATE/* CREATE+INFO_POOL_MINE
+        string error_str;
+        add_rule(0x200000001LL, 0x2d400000000LL, 0x41LL, error_str);
+    }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -332,7 +340,6 @@ int AclManager::add_rule(long long user, long long resource, long long rights,
         goto error_malformed;
     }
 
-
     rc = insert(rule);
 
     if ( rc != 0 )
@@ -469,11 +476,6 @@ void AclManager::bootstrap(SqlDB * _db)
     ostringstream oss(db_bootstrap);
 
     _db->exec(oss);
-
-    // Add a default rule
-    // @1 VM+NET+IMAGE+TEMPLATE/* CREATE+INFO_POOL_MINE
-    AclRule default_rule(0, 0x200000001LL, 0x2d400000000LL, 0x41LL);
-    insert(&default_rule, _db);
 }
 
 /* -------------------------------------------------------------------------- */
