@@ -83,9 +83,13 @@ module OZones
             ahp      = AggregatedHosts.new
             ahp_json = ahp.to_json 
             
-            ahp_json.should eql(File.read(
-                                 @fixtures_path+"/json/aggregatedhosts.json"))
+            golden = File.read(@fixtures_path+"/json/aggregatedhosts.json")
+            golden_hash = JSON.parse(golden)
             
+            ahp_hash    = JSON.parse(ahp_json)
+            
+            result = ahp_hash === golden_hash
+            result.should eql(true)
             
         end
         
@@ -93,41 +97,65 @@ module OZones
             avmp      = AggregatedVirtualMachines.new
             avmp_json = avmp.to_json
             
-            avmp_json.should eql(File.read(
-                                 @fixtures_path+"/json/aggregatedvms.json"))                
+            golden = File.read(@fixtures_path+"/json/aggregatedvms.json")
+            golden_hash = JSON.parse(golden)
+            
+            ahmp_hash    = JSON.parse(avmp_json)
+            
+            result = ahmp_hash === golden_hash
+            result.should eql(true)              
         end
         
         it "should be able to retrieve an aggregated image pool" do
             aip       = AggregatedImages.new
             aip_json  = aip.to_json
             
-            aip_json.should eql(File.read(
-                                @fixtures_path+"/json/aggregatedimages.json"))                
+            golden = File.read(@fixtures_path+"/json/aggregatedimages.json")
+            golden_hash = JSON.parse(golden)
+            
+            ahip_hash    = JSON.parse(aip_json)
+            
+            result = ahip_hash === golden_hash
+            result.should eql(true)                             
         end  
         
         it "should be able to retrieve an aggregated network pool" do
             avnp       = AggregatedVirtualNetworks.new
             avnp_json  = avnp.to_json
             
-            avnp_json.should eql(File.read(
-                                @fixtures_path+"/json/aggregatedvns.json"))                
+            golden = File.read(@fixtures_path+"/json/aggregatedvns.json")
+            golden_hash = JSON.parse(golden)
+            
+            ahnp_hash    = JSON.parse(avnp_json) 
+            
+            result = ahnp_hash === golden_hash
+            result.should eql(true)                
         end  
         
         it "should be able to retrieve an aggregated user pool" do
             aup        = AggregatedUsers.new
             aup_json   = aup.to_json
-
-            aup_json.should eql(File.read(
-                                @fixtures_path+"/json/aggregatedusers.json"))                
+            
+            golden = File.read(@fixtures_path+"/json/aggregatedusers.json")
+            golden_hash = JSON.parse(golden)
+            
+            ahup_hash    = JSON.parse(aup_json) 
+            
+            result = ahup_hash === golden_hash
+            result.should eql(true)                 
         end 
         
         it "should be able to retrieve an aggregated template pool" do
             atp        = AggregatedTemplates.new
             atp_json   = atp.to_json
-
-            atp_json.should eql(File.read(
-                                @fixtures_path+
-                                "/json/aggregatedtemplates.json"))                
+            
+            golden = File.read(@fixtures_path+"/json/aggregatedtemplates.json")
+            golden_hash = JSON.parse(golden)
+            
+            ahtp_hash    = JSON.parse(atp_json) 
+            
+            result = ahtp_hash === golden_hash
+            result.should eql(true)                  
         end       
     end
 end

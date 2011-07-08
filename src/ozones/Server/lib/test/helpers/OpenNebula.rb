@@ -14,6 +14,9 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
+
+$: << "../../../../oca/ruby"
+
 begin # require 'rubygems'
     require 'rubygems'
 rescue Exception
@@ -35,8 +38,6 @@ require 'OpenNebula/User'
 require 'OpenNebula/UserPool'
 require 'OpenNebula/Host'
 require 'OpenNebula/HostPool'
-require 'OpenNebula/Cluster'
-require 'OpenNebula/ClusterPool'
 require 'OpenNebula/Template'
 require 'OpenNebula/TemplatePool'
 require 'OpenNebula/Group'
