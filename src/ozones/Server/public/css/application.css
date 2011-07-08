@@ -563,10 +563,14 @@ ul.dd_list{
     height:100%;
     vertical-align:top;
     display:inline-block;
+    overflow: auto;
 }
 
 ul.dd_list li{
     border-bottom:1px solid #cccccc;
+}
+ul.dd_list li:hover{
+    font-weight:bold;
 }
 
 ul.dd_right{

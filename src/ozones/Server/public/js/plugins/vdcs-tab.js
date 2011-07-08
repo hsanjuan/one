@@ -45,6 +45,7 @@ var create_vdc_tmpl =
         <label for="zone">Zone:</label>\
         <select id="zoneid" name="zone">\
         </select>\
+        <label style="margin-left:205px;font-size:0.8em;color:#bbbbbb">Drag & Drop</label>\
         <label style="margin-left:195px;font-size:0.8em;color:#bbbbbb">Available / Selected</label>\
         <label>Hosts:</label>\
         <div id="vdc_hosts_lists" class="dd_lists">\
@@ -54,7 +55,7 @@ var create_vdc_tmpl =
    </fieldset>\
    <fieldset>\
      <div class="form_buttons">\
-        <button class="button" id="create_vdc_submit" value="Zone.create">Create</button>\
+        <button class="button" id="create_vdc_submit" value="VDC.create">Create</button>\
         <button class="button" type="reset" value="reset">Reset</button>\
      </div>\
    </fieldset>\
@@ -274,6 +275,11 @@ function setupCreateVDCDialog(){
             $('div#create_vdc_dialog #vdc_available_hosts_list');
         var sel_hosts=
             $('div#create_vdc_dialog #vdc_selected_hosts_list');
+        if (!id.length){
+            av_hosts.empty();
+            sel_hosts.empty();
+            return true;
+        }
         av_hosts.html('<li>'+spinner+'</li>');
         sel_hosts.empty();
         Sunstone.runAction("VDC.zone_hosts",id);
@@ -318,7 +324,7 @@ function setupCreateVDCDialog(){
 function openCreateVDCDialog(){
     var dialog = $('div#create_vdc_dialog')
     $('select#zoneid',dialog).html(zones_select);
-    $('#vdc_available_hosts_list',dialog).html("<li>No hosts available</li>");
+    $('#vdc_available_hosts_list',dialog).empty();
     $('#vdc_selected_hosts_list',dialog).empty();
     dialog.dialog('open');
 }

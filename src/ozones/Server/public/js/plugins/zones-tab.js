@@ -417,7 +417,19 @@ function updateZoneInfo(req,zone_json){
 
     var users_tab = {
         title: "Users",
-        content: "TODO"
+        content:
+'<div style="padding: 10px 10px;">\
+<table id="datatable_zone_users" class="display">\
+  <thead>\
+    <tr>\
+      <th>ID</th>\
+      <th>Name</th>\
+    </tr>\
+  </thead>\
+  <tbody>\
+  </tbody>\
+</table>\
+</div>'
     };
 
     Sunstone.updateInfoPanelTab("zone_info_panel","zone_info_tab",info_tab);
@@ -426,6 +438,7 @@ function updateZoneInfo(req,zone_json){
     Sunstone.updateInfoPanelTab("zone_info_panel","zone_vms_tab",vms_tab);
     Sunstone.updateInfoPanelTab("zone_info_panel","zone_vnets_tab",vnets_tab);
     Sunstone.updateInfoPanelTab("zone_info_panel","zone_images_tab",images_tab);
+    Sunstone.updateInfoPanelTab("zone_info_panel","zone_users_tab",users_tab);
 
     //Pop up the info we have now.
     Sunstone.popUpInfoPanel("zone_info_panel");
@@ -438,7 +451,7 @@ function updateZoneInfo(req,zone_json){
         "bAutoWidth":false,
         "sPaginationType": "full_numbers",
         "aoColumnDefs": [
-            { "sWidth": "60px", "aTargets": [2] },
+            { "sWidth": "60px", "aTargets": [2,5] },
             { "sWidth": "35px", "aTargets": [0] },
             { "sWidth": "200px", "aTargets": [3,4] }
         ]
@@ -450,8 +463,8 @@ function updateZoneInfo(req,zone_json){
         "sPaginationType": "full_numbers",
         "bAutoWidth":false,
         "aoColumnDefs": [
-            { "sWidth": "35px", "aTargets": [0,8] },
-            { "sWidth": "100px", "aTargets": [1,2,3] }
+            { "sWidth": "35px", "aTargets": [0] },
+            { "sWidth": "100px", "aTargets": [1,2,3,4] }
         ]
     });
 
@@ -474,9 +487,9 @@ function updateZoneInfo(req,zone_json){
         "bAutoWidth":false,
         "sPaginationType": "full_numbers",
         "aoColumnDefs": [
-            { "sWidth": "60px", "aTargets": [2] },
-            { "sWidth": "35px", "aTargets": [0] },
-            { "sWidth": "100px", "aTargets": [1,3] }
+            { "sWidth": "60px", "aTargets": [8] },
+            { "sWidth": "35px", "aTargets": [0,6,7,9] },
+            { "sWidth": "100px", "aTargets": [1,2,3,5] }
         ]
     });
 
@@ -486,8 +499,8 @@ function updateZoneInfo(req,zone_json){
         "bAutoWidth":false,
         "sPaginationType": "full_numbers",
         "aoColumnDefs": [
-            { "sWidth": "35px", "aTargets": [0] },
-            { "sWidth": "100px", "aTargets": [1,2,3] }
+            { "sWidth": "35px", "aTargets": [0,5] },
+            { "sWidth": "100px", "aTargets": [1,2,4] }
         ]
     });
 
@@ -510,6 +523,7 @@ function updateZoneInfo(req,zone_json){
     Sunstone.runAction("Zone.vms",zone.id);
     Sunstone.runAction("Zone.vn",zone.id);
     Sunstone.runAction("Zone.image",zone.id);
+    Sunstone.runAction("Zone.user",zone.id);
 }
 
 
