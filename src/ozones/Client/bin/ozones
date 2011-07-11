@@ -1,19 +1,18 @@
 #!/usr/bin/ruby
 
-if !ENV['ONE_LOCATION']
-    puts "ONE_LOCATION not found."
-    exit 1
+ONE_LOCATION=ENV["ONE_LOCATION"]
+
+if !ONE_LOCATION
+    RUBY_LIB_LOCATION="/usr/lib/one/ruby"
+else
+    RUBY_LIB_LOCATION=ONE_LOCATION+"/lib/ruby"
 end
 
-OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Client"
-ONE_LOCATION    = ENV['ONE_LOCATION']
+$: << RUBY_LIB_LOCATION
+$: << RUBY_LIB_LOCATION+"/cli"
 
-$: << ONE_LOCATION + "/lib/ruby"
-$: << ONE_LOCATION + "/lib/ruby/cli"
-$: << OZONES_LOCATION + "/lib"
-
-require 'cli/command_parser'
-require 'CLI/OZonesHelper/ZonesHelper.rb'
+require 'command_parser'
+require 'ozones_helper/zones_helper.rb'
 
 cmd=CommandParser::CmdParser.new(ARGV) do
     usage "ozones COMMAND [args..] [options..]"	

@@ -263,11 +263,9 @@ OZONES_DIRS="$OZONES_LOCATION/Server \
 
 OZONES_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula \
-                 $OZONES_LOCATION/Client \
-                 $OZONES_LOCATION/Client/lib \
-                 $OZONES_LOCATION/Client/lib/CLI \
-                 $OZONES_LOCATION/Client/lib/CLI/OZonesHelper"
-
+                 $LIB_LOCATION/ruby/cli \
+                 $LIB_LOCATION/ruby/cli/ozones_helper"
+                 
 LIB_ECO_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula \
                  $LIB_LOCATION/ruby/cloud/ \
@@ -355,18 +353,16 @@ INSTALL_CLIENT_FILES=(
     COMMON_CLOUD_CLIENT_LIB_FILES:$LIB_LOCATION/ruby/cloud
     OCCI_LIB_CLIENT_FILES:$LIB_LOCATION/ruby/cloud/occi
     OCCI_BIN_CLIENT_FILES:$BIN_LOCATION
-    OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
-    OZONES_BIN_CLIENT_FILES:$BIN_LOCATION
     CLI_BIN_FILES:$BIN_LOCATION
     CLI_LIB_FILES:$LIB_LOCATION/ruby/cli
     ONE_CLI_LIB_FILES:$LIB_LOCATION/ruby/cli/one_helper
     CLI_CONF_FILES:$CONF_LOCATION/cli
     OCA_LIB_FILES:$LIB_LOCATION/ruby
     RUBY_OPENNEBULA_LIB_FILES:$LIB_LOCATION/ruby/OpenNebula
-    OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
-    OZONES_LIB_CLIENT_CLI_FILES:$OZONES_LOCATION/Client/lib/CLI
-    OZONES_LIB_CLIENT_CLI_HELPER_FILES:$OZONES_LOCATION/Client/lib/CLI/OZonesHelper    
-    OZONES_BIN_CLIENT_FILES:$BIN_LOCATION  
+    OZONES_LIB_CLIENT_FILES:$LIB_LOCATION/ruby
+    OZONES_BIN_CLIENT_FILES:$BIN_LOCATION
+    OZONES_LIB_CLIENT_CLI_FILES:$LIB_LOCATION/ruby/cli
+    OZONES_LIB_CLIENT_CLI_HELPER_FILES:$LIB_LOCATION/ruby/cli/ozones_helper
 )
 
 INSTALL_SUNSTONE_RUBY_FILES=(
@@ -415,11 +411,14 @@ INSTALL_OZONES_FILES=(
     OZONES_PUBLIC_IMAGES_FILES:$OZONES_LOCATION/Server/public/images
     OZONES_PUBLIC_CSS_FILES:$OZONES_LOCATION/Server/public/css
     OZONES_PUBLIC_JS_PLUGINS_FILES:$OZONES_LOCATION/Server/public/js/plugins
-    OZONES_LIB_CLIENT_FILES:$OZONES_LOCATION/Client/lib
-    OZONES_LIB_CLIENT_CLI_FILES:$OZONES_LOCATION/Client/lib/CLI
-    OZONES_LIB_CLIENT_CLI_HELPER_FILES:$OZONES_LOCATION/Client/lib/CLI/OZonesHelper    
-    OZONES_BIN_CLIENT_FILES:$BIN_LOCATION    
+    OZONES_LIB_CLIENT_FILES:$LIB_LOCATION/ruby
+    OZONES_BIN_CLIENT_FILES:$BIN_LOCATION
+    OZONES_LIB_CLIENT_CLI_FILES:$LIB_LOCATION/ruby/cli
+    OZONES_LIB_CLIENT_CLI_HELPER_FILES:$LIB_LOCATION/ruby/cli/ozones_helper
 )
+
+
+
 
 INSTALL_ETC_FILES=(
     ETC_FILES:$ETC_LOCATION
@@ -1059,13 +1058,14 @@ OZONES_PUBLIC_JS_PLUGINS_FILES="src/ozones/Server/public/js/plugins/zones-tab.js
                 
 OZONES_LIB_CLIENT_FILES="src/ozones/Client/lib/OZonesClient.rb"
                                 
-OZONES_LIB_CLIENT_CLI_FILES="src/ozones/Client/lib/CLI/OZonesHelper.rb"                   
+OZONES_LIB_CLIENT_CLI_FILES="src/ozones/Client/lib/cli/ozones_helper.rb"                   
                 
-OZONES_LIB_CLIENT_CLI_HELPER_FILES="src/ozones/Client/lib/CLI/OZonesHelper/VDCHelper.rb \
-                src/ozones/Client/lib/CLI/OZonesHelper/ZonesHelper.rb"                
+OZONES_LIB_CLIENT_CLI_HELPER_FILES="\
+                src/ozones/Client/lib/cli/ozones_helper/vdc_helper.rb \
+                src/ozones/Client/lib/cli/ozones_helper/zones_helper.rb"                
 
 OZONES_BIN_CLIENT_FILES="src/ozones/Client/bin/ovdcs \
-               src/ozones/Client/bin/ozones"
+                         src/ozones/Client/bin/ozones"
                
 OZONES_RUBY_LIB_FILES="src/oca/ruby/OpenNebula.rb"
 

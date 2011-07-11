@@ -1,4 +1,4 @@
-require 'CLI/OZonesHelper'
+require 'cli/ozones_helper'
 require 'cli/one_helper'
 
 class VDCHelper < OZonesHelper::OZHelper
