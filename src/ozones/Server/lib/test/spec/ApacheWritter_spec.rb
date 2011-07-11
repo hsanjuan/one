@@ -47,7 +47,8 @@ module OZones
                      :name     =>    "zoneB",
                      :onename  =>    "oneadminB",
                      :onepass  =>    "onepassB",
-                     :endpoint =>    "http://zoneb.zoneadomain.za:2634/RPC2"
+                     :endpoint =>    "http://zoneb.zoneadomain.za:2634/RPC2",
+                     :sunsendpoint =>"http://zoneb.zoneadomain.za:9869"
                     )
                     
             @vdca = OZones::Vdc.create(

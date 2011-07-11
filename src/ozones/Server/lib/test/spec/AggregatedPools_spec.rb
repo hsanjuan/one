@@ -100,7 +100,7 @@ module OZones
             golden = File.read(@fixtures_path+"/json/aggregatedvms.json")
             golden_hash = JSON.parse(golden)
             
-            ahmp_hash    = JSON.parse(avmp_json)
+            ahmp_hash   = JSON.parse(avmp_json)
             
             result = ahmp_hash === golden_hash
             result.should eql(true)              
@@ -113,7 +113,7 @@ module OZones
             golden = File.read(@fixtures_path+"/json/aggregatedimages.json")
             golden_hash = JSON.parse(golden)
             
-            ahip_hash    = JSON.parse(aip_json)
+            ahip_hash   = JSON.parse(aip_json)
             
             result = ahip_hash === golden_hash
             result.should eql(true)                             
@@ -126,7 +126,7 @@ module OZones
             golden = File.read(@fixtures_path+"/json/aggregatedvns.json")
             golden_hash = JSON.parse(golden)
             
-            ahnp_hash    = JSON.parse(avnp_json) 
+            ahnp_hash   = JSON.parse(avnp_json) 
             
             result = ahnp_hash === golden_hash
             result.should eql(true)                
@@ -139,7 +139,7 @@ module OZones
             golden = File.read(@fixtures_path+"/json/aggregatedusers.json")
             golden_hash = JSON.parse(golden)
             
-            ahup_hash    = JSON.parse(aup_json) 
+            ahup_hash   = JSON.parse(aup_json) 
             
             result = ahup_hash === golden_hash
             result.should eql(true)                 
@@ -152,7 +152,7 @@ module OZones
             golden = File.read(@fixtures_path+"/json/aggregatedtemplates.json")
             golden_hash = JSON.parse(golden)
             
-            ahtp_hash    = JSON.parse(atp_json) 
+            ahtp_hash   = JSON.parse(atp_json) 
             
             result = ahtp_hash === golden_hash
             result.should eql(true)                  

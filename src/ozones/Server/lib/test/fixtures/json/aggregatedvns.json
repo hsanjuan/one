@@ -79,14 +79,15 @@
         },
         "vdcs": [
           {
-            "hosts": null,
             "zones_id": 1,
-            "name": "vdca",
+            "hosts": null,
             "acls": null,
+            "name": "vdca",
             "id": 1,
             "vdcadminname": "vdcadminB"
           }
         ],
+        "sunsendpoint": null,
         "name": "zoneA",
         "onename": "oneadminA",
         "id": 1
@@ -118,22 +119,23 @@
         },
         "vdcs": [
           {
-            "hosts": "1",
             "zones_id": 2,
-            "name": "vdcb",
+            "hosts": "1",
             "acls": null,
+            "name": "vdcb",
             "id": 2,
             "vdcadminname": "vdcadminB"
           },
           {
-            "hosts": "7,9,29",
             "zones_id": 2,
-            "name": "vdcc",
+            "hosts": "7,9,29",
             "acls": null,
+            "name": "vdcc",
             "id": 3,
             "vdcadminname": "vdcadminB"
           }
         ],
+        "sunsendpoint": null,
         "name": "zoneB",
         "onename": "oneadminB",
         "id": 2
