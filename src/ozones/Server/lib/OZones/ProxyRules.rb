@@ -21,8 +21,12 @@ module OZones
             @type      = type
             if file_path
                 @file_path = file_path
-            else
-                @file_path = ENV['OZONES_LOCATION'] + "/htaccess"
+            else 
+                if !ENV["ONE_LOCATION"]
+                    @file_path="/usr/lib/one/ozones/htaccess"
+                else
+                    @file_path=ENV["ONE_LOCATION"]+"/lib/ozones/htaccess"    
+                end
             end
         end
         

@@ -16,27 +16,22 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-if !ENV['ONE_LOCATION']
-    puts "ONE_LOCATION not found."
-    exit 1
-end
-
 ONE_LOCATION=ENV["ONE_LOCATION"]
 
 if !ONE_LOCATION
+    ETC_LOCATION="/etc/one"
+    LIB_LOCATION="/usr/lib/one"
     RUBY_LIB_LOCATION="/usr/lib/one/ruby"
 else
+    ETC_LOCATION=ONE_LOCATION+"/etc"    
+    LIB_LOCATION=ONE_LOCATION+"/lib"
     RUBY_LIB_LOCATION=ONE_LOCATION+"/lib/ruby"
 end
 
-OZONES_LOCATION = ENV['ONE_LOCATION'] + "/lib/ozones/Server"
-ENV['OZONES_LOCATION']=OZONES_LOCATION
-
-$: << ENV['ONE_LOCATION'] + "/lib/sunstone/models"
-$: << File.dirname(__FILE__) + "../sunstone/models"
+$: << LIB_LOCATION + "/sunstone/models"
 $: << RUBY_LIB_LOCATION
-$: << File.dirname(__FILE__)+'/models'
-$: << File.dirname(__FILE__)+'/lib'
+$: << LIB_LOCATION+'/ozones/models'
+$: << LIB_LOCATION+'/ozones/lib'
 $: << RUBY_LIB_LOCATION+"/cli"
 
 
@@ -56,12 +51,7 @@ require 'one_helper'
 ##############################################################################
 # Read configuration
 ##############################################################################
-begin
-    config_data=File.read(ONE_LOCATION+'/etc/ozones-server.conf')
-rescue 
-    config_data=File.read(File.dirname(__FILE__)+'/etc/ozones-server.conf')
-end
-
+config_data=File.read(ETC_LOCATION+'/ozones-server.conf')
 config=YAML::load(config_data)
 
 db_type = config[:databasetype]

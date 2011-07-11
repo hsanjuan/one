@@ -166,7 +166,7 @@ else
     else
         MAKE_DIRS="$BIN_LOCATION $LIB_LOCATION $ETC_LOCATION $VAR_LOCATION \
                    $INCLUDE_LOCATION $SHARE_LOCATION $IMAGES_LOCATION \
-                   $MAN_LOCATION"
+                   $MAN_LOCATION $OZONES_LOCATION"
 
         DELETE_DIRS="$MAKE_DIRS"
 
@@ -244,22 +244,21 @@ SUNSTONE_DIRS="$SUNSTONE_LOCATION/models \
                $SUNSTONE_LOCATION/templates \
                $SUNSTONE_LOCATION/views"
 
-OZONES_DIRS="$OZONES_LOCATION/Server \
-             $OZONES_LOCATION/Server/lib \
-             $OZONES_LOCATION/Server/lib/OZones \
-             $OZONES_LOCATION/Server/models \
-             $OZONES_LOCATION/Server/templates \
-             $OZONES_LOCATION/Server/public \
-             $OZONES_LOCATION/Server/public/vendor \
-             $OZONES_LOCATION/Server/public/vendor/jQuery \
-             $OZONES_LOCATION/Server/public/vendor/jQueryLayout \
-             $OZONES_LOCATION/Server/public/vendor/dataTables \
-             $OZONES_LOCATION/Server/public/vendor/jQueryUI \
-             $OZONES_LOCATION/Server/public/vendor/jGrowl \
-             $OZONES_LOCATION/Server/public/js \
-             $OZONES_LOCATION/Server/public/js/plugins \
-             $OZONES_LOCATION/Server/public/images \
-             $OZONES_LOCATION/Server/public/css"
+OZONES_DIRS="$OZONES_LOCATION/lib \
+             $OZONES_LOCATION/lib/OZones \
+             $OZONES_LOCATION/models \
+             $OZONES_LOCATION/templates \
+             $OZONES_LOCATION/public \
+             $OZONES_LOCATION/public/vendor \
+             $OZONES_LOCATION/public/vendor/jQuery \
+             $OZONES_LOCATION/public/vendor/jQueryLayout \
+             $OZONES_LOCATION/public/vendor/dataTables \
+             $OZONES_LOCATION/public/vendor/jQueryUI \
+             $OZONES_LOCATION/public/vendor/jGrowl \
+             $OZONES_LOCATION/public/js \
+             $OZONES_LOCATION/public/js/plugins \
+             $OZONES_LOCATION/public/images \
+             $OZONES_LOCATION/public/css"
 
 OZONES_CLIENT_DIRS="$LIB_LOCATION/ruby \
                  $LIB_LOCATION/ruby/OpenNebula \
@@ -396,29 +395,26 @@ INSTALL_OZONES_RUBY_FILES=(
 )
 
 INSTALL_OZONES_FILES=(
-    OZONES_FILES:$OZONES_LOCATION/Server
+    OZONES_FILES:$OZONES_LOCATION
     OZONES_BIN_FILES:$BIN_LOCATION
-    OZONES_MODELS_FILES:$OZONES_LOCATION/Server/models
-    OZONES_TEMPLATE_FILES:$OZONES_LOCATION/Server/templates
-    OZONES_LIB_FILES:$OZONES_LOCATION/Server/lib
-    OZONES_LIB_ZONE_FILES:$OZONES_LOCATION/Server/lib/OZones
-    OZONES_PUBLIC_VENDOR_JQUERY:$OZONES_LOCATION/Server/public/vendor/jQuery
-    OZONES_PUBLIC_VENDOR_DATATABLES:$OZONES_LOCATION/Server/public/vendor/dataTables
-    OZONES_PUBLIC_VENDOR_JGROWL:$OZONES_LOCATION/Server/public/vendor/jGrowl
-    OZONES_PUBLIC_VENDOR_JQUERYUI:$OZONES_LOCATION/Server/public/vendor/jQueryUI
-    OZONES_PUBLIC_VENDOR_JQUERYLAYOUT:$OZONES_LOCATION/Server/public/vendor/jQueryLayout
-    OZONES_PUBLIC_JS_FILES:$OZONES_LOCATION/Server/public/js
-    OZONES_PUBLIC_IMAGES_FILES:$OZONES_LOCATION/Server/public/images
-    OZONES_PUBLIC_CSS_FILES:$OZONES_LOCATION/Server/public/css
-    OZONES_PUBLIC_JS_PLUGINS_FILES:$OZONES_LOCATION/Server/public/js/plugins
+    OZONES_MODELS_FILES:$OZONES_LOCATION/models
+    OZONES_TEMPLATE_FILES:$OZONES_LOCATION/templates
+    OZONES_LIB_FILES:$OZONES_LOCATION/lib
+    OZONES_LIB_ZONE_FILES:$OZONES_LOCATION/lib/OZones
+    OZONES_PUBLIC_VENDOR_JQUERY:$OZONES_LOCATION/public/vendor/jQuery
+    OZONES_PUBLIC_VENDOR_DATATABLES:$OZONES_LOCATION/public/vendor/dataTables
+    OZONES_PUBLIC_VENDOR_JGROWL:$OZONES_LOCATION/public/vendor/jGrowl
+    OZONES_PUBLIC_VENDOR_JQUERYUI:$OZONES_LOCATION/public/vendor/jQueryUI
+    OZONES_PUBLIC_VENDOR_JQUERYLAYOUT:$OZONES_LOCATION/public/vendor/jQueryLayout
+    OZONES_PUBLIC_JS_FILES:$OZONES_LOCATION/public/js
+    OZONES_PUBLIC_IMAGES_FILES:$OZONES_LOCATION/public/images
+    OZONES_PUBLIC_CSS_FILES:$OZONES_LOCATION/public/css
+    OZONES_PUBLIC_JS_PLUGINS_FILES:$OZONES_LOCATION/public/js/plugins
     OZONES_LIB_CLIENT_FILES:$LIB_LOCATION/ruby
     OZONES_BIN_CLIENT_FILES:$BIN_LOCATION
     OZONES_LIB_CLIENT_CLI_FILES:$LIB_LOCATION/ruby/cli
     OZONES_LIB_CLIENT_CLI_HELPER_FILES:$LIB_LOCATION/ruby/cli/ozones_helper
 )
-
-
-
 
 INSTALL_ETC_FILES=(
     ETC_FILES:$ETC_LOCATION
