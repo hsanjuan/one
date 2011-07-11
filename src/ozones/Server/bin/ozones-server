@@ -16,14 +16,21 @@
 # limitations under the License.                                             #
 #--------------------------------------------------------------------------- #
 
-
-
-OZONES_PID=$ONE_LOCATION/var/ozones.pid
-OZONES_LOCATION=$ONE_LOCATION/lib/ozones
-OZONES_SERVER=$OZONES_LOCATION/config.ru
-OZONES_LOCK_FILE=$ONE_LOCATION/var/.lock
-OZONES_LOG=$ONE_LOCATION/var/ozones-server.log
-OZONES_CONF=$ONE_LOCATION/etc/ozones-server.conf
+if [ -z "$ONE_LOCATION" ]; then
+    OZONES_PID=/var/run/one/ozones.pid
+    OZONES_LOCATION=/usr/lib/one/ozones
+    OZONES_SERVER=$OZONES_LOCATION/config.ru
+    OZONES_LOCK_FILE=/var/lock/one/.ozones.lock
+    OZONES_LOG=/var/log/one/ozones-server.log
+    OZONES_CONF=/etc/one/ozones-server.conf
+else
+    OZONES_PID=$ONE_LOCATION/var/ozones.pid
+    OZONES_LOCATION=$ONE_LOCATION/lib/ozones
+    OZONES_SERVER=$OZONES_LOCATION/config.ru
+    OZONES_LOCK_FILE=$ONE_LOCATION/var/.lock
+    OZONES_LOG=$ONE_LOCATION/var/ozones-server.log
+    OZONES_CONF=$ONE_LOCATION/etc/ozones-server.conf
+fi
 
 setup()
 {
