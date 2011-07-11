@@ -22,10 +22,12 @@ if !ONE_LOCATION
     ETC_LOCATION="/etc/one"
     LIB_LOCATION="/usr/lib/one"
     RUBY_LIB_LOCATION="/usr/lib/one/ruby"
+    VAR_LOCATION="/var/lib/one"
 else
     ETC_LOCATION=ONE_LOCATION+"/etc"    
     LIB_LOCATION=ONE_LOCATION+"/lib"
     RUBY_LIB_LOCATION=ONE_LOCATION+"/lib/ruby"
+    VAR_LOCATION=ONE_LOCATION+"/var"
 end
 
 $: << LIB_LOCATION + "/sunstone/models"
@@ -56,7 +58,7 @@ config=YAML::load(config_data)
 
 db_type = config[:databasetype]
 
-db_url = db_type + "://" + ONE_LOCATION + "/var/ozones.db"
+db_url = db_type + "://" + VAR_LOCATION + "/var/ozones.db"
 
 ##############################################################################
 # DB bootstrapping
