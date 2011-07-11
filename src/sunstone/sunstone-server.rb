@@ -146,6 +146,9 @@ get '/' do
         response.set_cookie("one-user_id",
                         :value=>"#{session[:user_id]}",
                         :expires=>time)
+    response.set_cookie("one-user_gid",
+                        :value=>"#{session[:user_gid]}",
+                        :expires=>time)
 
         p = SunstonePlugins.new
         @plugins = p.authorized_plugins(session[:user], session[:user_gname])
@@ -199,11 +202,19 @@ end
 ##############################################################################
 
 get '/:resource/monitor' do
-    @SunstoneServer.get_log(params)
+    @SunstoneServer.get_monitoring(
+        nil,
+        params[:resource],
+        params[:monitor_resources]
+    )
 end
 
 get '/:resource/:id/monitor' do
-    @SunstoneServer.get_log(params)
+    @SunstoneServer.get_monitoring(
+        params[:id],
+        params[:resource],
+        params[:monitor_resources]
+    )
 end
 
 
@@ -211,7 +222,7 @@ end
 # GET Pool information
 ##############################################################################
 get '/:pool' do
-    @SunstoneServer.get_pool(params[:pool])
+    @SunstoneServer.get_pool(params[:pool],session[:user_gid])
 end
 
 ##############################################################################

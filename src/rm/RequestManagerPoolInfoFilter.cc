@@ -36,7 +36,9 @@ const int VirtualMachinePoolInfo::NOT_DONE = -1;
 /* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
 
-void RequestManagerPoolInfoFilter::request_execute(xmlrpc_c::paramList const& paramList)
+void RequestManagerPoolInfoFilter::request_execute(
+        xmlrpc_c::paramList const& paramList,
+        RequestAttributes& att)
 {
     int filter_flag = xmlrpc_c::value_int(paramList.getInt(1));
     int start_id    = xmlrpc_c::value_int(paramList.getInt(2));
@@ -66,14 +68,16 @@ void RequestManagerPoolInfoFilter::request_execute(xmlrpc_c::paramList const& pa
 
     if ( filter_flag < MINE )
     {
-        failure_response(XML_RPC_API,request_error("Incorrect filter_flag",""));
+        failure_response(XML_RPC_API,
+                request_error("Incorrect filter_flag",""),
+                att);
         return;
     }
 
     switch(filter_flag)
     {
         case MINE:
-            uid_filter << "uid = " << uid;
+            uid_filter << "uid = " << att.uid;
 
             request_op = AuthRequest::INFO_POOL_MINE;
             break;
@@ -84,12 +88,8 @@ void RequestManagerPoolInfoFilter::request_execute(xmlrpc_c::paramList const& pa
 
         case MINE_GROUP:
 
-            uid_filter << "uid = " << uid;
-
-            for ( it = group_ids.begin() ; it != group_ids.end(); it++ )
-            {
-                uid_filter << " OR gid = " << *it;
-            }
+            uid_filter << "uid = " << att.uid << " OR "
+                       << "gid = " << att.gid;
 
             request_op = AuthRequest::INFO_POOL_MINE;
             break;
@@ -125,10 +125,13 @@ void RequestManagerPoolInfoFilter::request_execute(xmlrpc_c::paramList const& pa
     {
         int state = xmlrpc_c::value_int(paramList.getInt(4));
 
-        if (( state < MINE ) || ( state > VirtualMachine::FAILED ))
+        if (( state < VirtualMachinePoolInfo::ALL_VM ) ||
+            ( state > VirtualMachine::FAILED ))
         {
             failure_response(XML_RPC_API, 
-                             request_error("Incorrect filter_flag, state",""));
+                             request_error("Incorrect filter_flag, state",""),
+                             att);
+
             return;
         }
 
@@ -184,7 +187,7 @@ void RequestManagerPoolInfoFilter::request_execute(xmlrpc_c::paramList const& pa
     //           Authorize & get the pool
     // ------------------------------------------ 
 
-    if ( basic_authorization(-1, request_op) == false )
+    if ( basic_authorization(-1, request_op, att) == false )
     {
         return;
     }
@@ -193,11 +196,11 @@ void RequestManagerPoolInfoFilter::request_execute(xmlrpc_c::paramList const& pa
 
     if ( rc != 0 )
     {
-        failure_response(INTERNAL,request_error("Internal Error",""));
+        failure_response(INTERNAL,request_error("Internal Error",""), att);
         return;
     }
 
-    success_response(oss.str());
+    success_response(oss.str(), att);
 
     return;
 }

@@ -112,7 +112,8 @@ describe 'openvswitch' do
     it "force VLAN_ID for Open vSwitch vlans in kvm" do
         $capture_commands = {
             /virsh.*dumpxml/ => OUTPUT[:virsh_dumpxml_vlan_id],
-            /brctl show/     => OUTPUT[:brctl_show]
+            /brctl show/     => OUTPUT[:brctl_show],
+            /ovs-vsctl/      => nil
         }
         onevlan = OpenvSwitchVLAN.new(OUTPUT[:onevm_show_vlan_id_kvm],"kvm")
         onevlan.activate
@@ -131,7 +132,8 @@ describe 'firewall' do
             /uname/ => OUTPUT[:xen_uname_a],
             /lsmod/ => OUTPUT[:xen_lsmod],
             /network-list/ => OUTPUT[:xm_network_list],
-            /domid/ => OUTPUT[:xm_domid]
+            /domid/ => OUTPUT[:xm_domid],
+            /iptables/ => nil
         }
         fw = OpenNebulaFirewall.new(OUTPUT[:onevm_show_xen])
         fw.activate
@@ -152,15 +154,19 @@ describe 'host-managed' do
     it "tag tun/tap devices with vlans in kvm" do
         $capture_commands = {
             /virsh.*dumpxml/ => OUTPUT[:virsh_dumpxml_phydev],
-            /brctl show/     => OUTPUT[:brctl_show]
+            /brctl show/     => OUTPUT[:brctl_show],
+	    /brctl add/    => nil,
+	    /vconfig/        => nil,
+	    /ip link/        => nil
         }
         hm = OpenNebulaHM.new(OUTPUT[:onevm_show_phydev_kvm],"kvm")
         hm.activate
 
         hm_activate_rules = ["sudo /usr/sbin/brctl addbr onebr6",
+                             "sudo /sbin/ip link set onebr6 up",
                              "sudo /sbin/ip link show eth0.8",
                              "sudo /sbin/vconfig add eth0 8",
-                             "sudo /sbin/ip set eth0.8 up",
+                             "sudo /sbin/ip link set eth0.8 up",
                              "sudo /usr/sbin/brctl addif onebr6 eth0.8"]
         $collector[:system].should == hm_activate_rules
     end
@@ -168,20 +174,25 @@ describe 'host-managed' do
     it "force VLAN_ID for vlans in kvm" do
         $capture_commands = {
             /virsh.*dumpxml/ => OUTPUT[:virsh_dumpxml_vlan_id],
-            /brctl show/     => OUTPUT[:brctl_show]
+            /brctl show/     => OUTPUT[:brctl_show],
+            /brctl add/      => nil,
+            /vconfig/        => nil,
+            /ip link/        => nil
         }
         hm = OpenNebulaHM.new(OUTPUT[:onevm_show_vlan_id_kvm],"kvm")
         hm.activate
 
         hm_vlan_id = ["sudo /usr/sbin/brctl addbr onebr10",
+                      "sudo /sbin/ip link set onebr10 up",
                       "sudo /sbin/ip link show eth0.50",
                       "sudo /sbin/vconfig add eth0 50",
-                      "sudo /sbin/ip set eth0.50 up",
+                      "sudo /sbin/ip link set eth0.50 up",
                       "sudo /usr/sbin/brctl addif onebr10 eth0.50",
                       "sudo /usr/sbin/brctl addbr specialbr",
+                      "sudo /sbin/ip link set specialbr up",
                       "sudo /sbin/ip link show eth0.51",
                       "sudo /sbin/vconfig add eth0 51",
-                      "sudo /sbin/ip set eth0.51 up",
+                      "sudo /sbin/ip link set eth0.51 up",
                       "sudo /usr/sbin/brctl addif specialbr eth0.51"]
 
         $collector[:system].should == hm_vlan_id

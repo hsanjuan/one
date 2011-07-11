@@ -33,7 +33,10 @@ class OpenNebulaHM < OpenNebulaNetwork
                     vlan = CONF[:start_vlan] + nic[:network_id].to_i
                 end
 
-                create_bridge bridge if !bridge_exists? bridge
+                if !bridge_exists? bridge
+                    create_bridge bridge
+                    ifup bridge
+                end
 
                 if !device_exists?(dev, vlan)
                     create_dev_vlan(dev, vlan)
@@ -83,6 +86,6 @@ class OpenNebulaHM < OpenNebulaNetwork
 
     def ifup(dev, vlan=nil)
         dev = "#{dev}.#{vlan}" if vlan
-        system("#{COMMANDS[:ip]} set #{dev} up")
+        system("#{COMMANDS[:ip]} link set #{dev} up")
     end
 end

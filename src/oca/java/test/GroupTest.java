@@ -109,10 +109,6 @@ public class GroupTest
 
         assertTrue( group.id() >= 100 );
         assertTrue( group.getName().equals(group_name) );
-<<<<<<< HEAD
-        assertTrue( group.uid() == 0 );
-=======
->>>>>>> master
     }
 
     @Test
@@ -136,6 +132,7 @@ public class GroupTest
         assertTrue( !found );
     }
 
+<<<<<<< HEAD
     @Test
 <<<<<<< HEAD
     public void chown()
@@ -161,6 +158,10 @@ public class GroupTest
 
     @Test
 =======
+>>>>>>> master
+=======
+//  Commented out, secondary groups do not exist any more
+//    @Test
 >>>>>>> master
     public void userGroupRelations()
     {

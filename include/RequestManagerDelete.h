@@ -41,7 +41,8 @@ protected:
 
     /* -------------------------------------------------------------------- */
 
-    void request_execute(xmlrpc_c::paramList const& _paramList);
+    void request_execute(xmlrpc_c::paramList const& _paramList,
+                         RequestAttributes& att);
 
     /* -------------------------------------------------------------------- */
 
@@ -165,10 +166,6 @@ public:
     };
 
     ~UserDelete(){};
-
-    /* -------------------------------------------------------------------- */
-
-    int drop(int oid, PoolObjectSQL * object, string& error_msg);
 };
 
 /* -------------------------------------------------------------------------- */

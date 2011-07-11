@@ -15,7 +15,7 @@
 /* -------------------------------------------------------------------------- */
 
 var HISTORY_LENGTH=40;
-var GRAPH_AUTOREFRESH_INTERVAL=100000; //100 secs
+var GRAPH_AUTOREFRESH_INTERVAL=60000; //60 secs
 
 var graph1 = {
     title : "graph1",
@@ -84,8 +84,8 @@ var dashboard_tab_content =
               <td class="value_td"><span id="total_images"></span><span id="public_images"></span></td>\
             </tr>\
             <tr>\
-              <td class="key_td oneadmin">Users</td>\
-              <td class="value_td oneadmin"><span id="total_users"></span></td>\
+              <td class="key_td">Users</td>\
+              <td class="value_td"><span id="total_users"></span></td>\
             </tr>\
           </table>\
 \
@@ -99,15 +99,14 @@ var dashboard_tab_content =
         <h3>Quickstart</h3>\
         <form id="quickstart_form"><fieldset>\
           <table style="width:100%;"><tr style="vertical-align:middle;"><td style="width:70%">\
-          <label style="font-weight:bold;width:40px;height:7em;">New:</label>\
+          <label style="font-weight:bold;width:40px;height:8em;">New:</label>\
           <input type="radio" name="quickstart" value="Host.create_dialog">Host</input><br />\
           <input type="radio" name="quickstart" value="Group.create_dialog">Group</input><br />\
           <input type="radio" name="quickstart" value="Template.create_dialog">VM Template</input><br />\
           <input type="radio" name="quickstart" value="VM.create_dialog">VM Instance</input><br />\
+          <input type="radio" name="quickstart" value="Network.create_dialog">Virtual Network</input><br />\
           <input type="radio" name="quickstart" value="Image.create_dialog">Image</input><br />\
           <input type="radio" name="quickstart" value="User.create_dialog">User</input><br />\
-          </td><td>\
-             <button id="quickstart">Go</button></fieldset></form>\
           </td></tr></table>\
       </div>\
     </td>\
@@ -117,7 +116,7 @@ var dashboard_tab_content =
       <div class="panel">\
         <h3>Sunstone documentation</h3>\
         <ul style="list-style-type:none;">\
-          <li>Sunstone installation and setup</li>\
+          <li><a href="http://opennebula.org/documentation:rel3.0:sunstone" target="_blank">Sunstone installation and setup</a></li>\
           <li>Sunstone plugin guide</li>\
           <li>Sunstone plugin reference</li>\
         </ul>\
@@ -168,30 +167,33 @@ Sunstone.addMainTab('dashboard_tab',dashboard_tab);
 
 function plot_global_graph(data,info){
     var id = info.title;
-    var labels_arr = info.monitor_resources.split(',');
+    var monitoring = data.monitoring;
     var serie;
     var series = [];
     var width = ($(window).width()-129)*45/100;
+    var mon_count = 0;
 
     $('#'+id).html('<div id="'+id+'_graph" style="height:70px;width:'+width+'px"><div>');
 
-    for (var i = 0; i< labels_arr.length; i++) {
+    for (var label in monitoring) {
         serie = {
-            label: labels_arr[i],
-            data: data[i]
+            label: label,
+            data: monitoring[label]
         };
         series.push(serie);
+        mon_count++;
     };
 
     var options = {
         legend : {
             show : true,
-            noColumns: labels_arr.length,
+            noColumns: mon_count,
             container: $('#'+id+'_legend')
         },
         xaxis : {
-            mode: "time",
-            timeformat: "%h:%M"
+            tickFormatter: function(val,axis){
+                return pretty_time_axis(val);
+            },
         },
         yaxis : { labelWidth: 40 }
     }
@@ -209,23 +211,15 @@ function plot_global_graph(data,info){
 
 function quickstart_setup(){
 
-    $('#quickstart').button("disable");
-
     $('#quickstart_form input').click(function(){
-        $('#quickstart').val($(this).val());
-        $('#quickstart').button("enable");
-    });
-
-    $('#quickstart').click(function(){
         Sunstone.runAction($(this).val());
-        return false;
     });
 }
 
 function graph_autorefresh(){
     setInterval(function(){
         refresh_graphs();
-    },GRAPH_AUTOREFRESH_INTERVAL);
+    },GRAPH_AUTOREFRESH_INTERVAL+someTime());
 
 }
 
@@ -246,9 +240,6 @@ $(document).ready(function(){
     });
 
     emptyDashboard();
-    if (uid!=0) {
-        $("td.oneadmin").hide();
-    }
 
     quickstart_setup();
 

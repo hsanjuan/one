@@ -209,7 +209,8 @@ LIB_DIRS="$LIB_LOCATION/ruby \
           $LIB_LOCATION/mads \
           $LIB_LOCATION/sh \
           $LIB_LOCATION/ruby/cli \
-          $LIB_LOCATION/ruby/cli/one_helper"
+          $LIB_LOCATION/ruby/cli/one_helper \
+          $LIB_LOCATION/ruby/acct"
 
 VAR_DIRS="$VAR_LOCATION/remotes \
           $VAR_LOCATION/remotes/im \
@@ -343,6 +344,8 @@ INSTALL_FILES=(
     MAN_FILES:$MAN_LOCATION
     CLI_LIB_FILES:$LIB_LOCATION/ruby/cli
     ONE_CLI_LIB_FILES:$LIB_LOCATION/ruby/cli/one_helper
+    ACCT_LIB_FILES:$LIB_LOCATION/ruby/acct
+    ACCT_BIN_FILES:$BIN_LOCATION
 )
 
 INSTALL_CLIENT_FILES=(
@@ -436,6 +439,7 @@ INSTALL_ETC_FILES=(
     SUNSTONE_ETC_FILES:$ETC_LOCATION
     OZONES_ETC_FILES:$ETC_LOCATION
     CLI_CONF_FILES:$ETC_LOCATION/cli
+    ACCT_ETC_FILES:$ETC_LOCATION
 )
 
 #-------------------------------------------------------------------------------
@@ -903,14 +907,15 @@ SUNSTONE_PUBLIC_JS_FILES="src/sunstone/public/js/layout.js \
                         src/sunstone/public/js/opennebula.js"
 
 SUNSTONE_PUBLIC_JS_PLUGINS_FILES="\
-                            src/sunstone/public/js/plugins/dashboard-tab.js \
-                            src/sunstone/public/js/plugins/hosts-tab.js \
-                            src/sunstone/public/js/plugins/groups-tab.js \
-                            src/sunstone/public/js/plugins/images-tab.js \
-                            src/sunstone/public/js/plugins/templates-tab.js \
-                            src/sunstone/public/js/plugins/users-tab.js \
-                            src/sunstone/public/js/plugins/vms-tab.js \
-                            src/sunstone/public/js/plugins/vnets-tab.js"
+                        src/sunstone/public/js/plugins/dashboard-tab.js \
+                        src/sunstone/public/js/plugins/dashboard-users-tab.js \
+                        src/sunstone/public/js/plugins/hosts-tab.js \
+                        src/sunstone/public/js/plugins/groups-tab.js \
+                        src/sunstone/public/js/plugins/images-tab.js \
+                        src/sunstone/public/js/plugins/templates-tab.js \
+                        src/sunstone/public/js/plugins/users-tab.js \
+                        src/sunstone/public/js/plugins/vms-tab.js \
+                        src/sunstone/public/js/plugins/vnets-tab.js"
 
 SUNSTONE_PUBLIC_CSS_FILES="src/sunstone/public/css/application.css \
                            src/sunstone/public/css/layout.css \
@@ -1063,6 +1068,20 @@ OZONES_BIN_CLIENT_FILES="src/ozones/Client/bin/ovdcs \
                src/ozones/Client/bin/ozones"
                
 OZONES_RUBY_LIB_FILES="src/oca/ruby/OpenNebula.rb"
+
+#-----------------------------------------------------------------------------
+# ACCT files
+#-----------------------------------------------------------------------------
+
+ACCT_BIN_FILES="src/acct/acctd"
+
+ACCT_LIB_FILES="src/acct/monitoring.rb \
+                src/acct/accounting.rb \
+                src/acct/acctd.rb \
+                src/acct/watch_helper.rb \
+                src/acct/watch_client.rb"
+
+ACCT_ETC_FILES="src/acct/etc/acctd.conf"
 
 #-----------------------------------------------------------------------------
 # MAN files

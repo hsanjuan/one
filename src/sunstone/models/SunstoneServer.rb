@@ -36,7 +36,7 @@ include OpenNebulaJSON
 require 'openssl'
 require 'base64'
 
-require 'OneMonitorClient'
+require 'acct/watch_client'
 
 class SunstoneServer
     def initialize(username, password)
@@ -200,22 +200,26 @@ class SunstoneServer
     ############################################################################
     #
     ############################################################################
-    def get_pool(kind)
-        user_flag = -2
+    def get_pool(kind,gid)
         pool = case kind
             when "group"    then GroupPoolJSON.new(@client)
             when "host"     then HostPoolJSON.new(@client)
-            when "image"    then ImagePoolJSON.new(@client, user_flag)
-            when "template" then TemplatePoolJSON.new(@client, user_flag)
-            when "vm"       then VirtualMachinePoolJSON.new(@client, user_flag)
-            when "vnet"     then VirtualNetworkPoolJSON.new(@client, user_flag)
+            when "image"    then ImagePoolJSON.new(@client)
+            when "template" then TemplatePoolJSON.new(@client)
+            when "vm"       then VirtualMachinePoolJSON.new(@client)
+            when "vnet"     then VirtualNetworkPoolJSON.new(@client)
             when "user"     then UserPoolJSON.new(@client)
             else
                 error = Error.new("Error: #{kind} resource not supported")
                 return [404, error.to_json]
         end
 
-        rc = pool.info
+        rc = case kind
+             when "group","host","user" then pool.info
+             else
+                 gid != "0" ? pool.info_group : pool.info_all
+             end
+
         if OpenNebula.is_error?(rc)
             return [500, rc.to_json]
         else
@@ -428,22 +432,34 @@ class SunstoneServer
     #
     ############################################################################
 
-    def get_log(params)
-        resource = params[:resource]
-        id = params[:id]
-        id = "global" unless id
-        columns = params['monitor_resources'].split(',')
-        history_length = params['history_length']
+    def get_monitoring(id, resource, monitor_resources)
+        watch_client = OneWatchClient::WatchClient.new
+        columns = monitor_resources.split(',')
 
-        log_file_folder = case resource
-                          when "vm","VM"
-                              VM_LOG_FOLDER
-                          when "host","HOST"
-                              HOST_LOG_FOLDER
-                          end
+        rc = case resource
+            when "vm","VM"
+                if id
+                    watch_client.vm_monitoring(id, columns)
+                else
+                    watch_client.vm_total(columns)
+                end
+            when "host","HOST"
+                if id
+                    watch_client.host_monitoring(id, columns)
+                else
+                    watch_client.host_total(columns)
+                end
+            else
+                 error = Error.new("Monitoring not supported for this resource: #{resource}")
+                return [200, error.to_json]
+            end
 
-        monitor_client = OneMonitorClient.new(id,log_file_folder)
-        return monitor_client.get_data_for_id(id,columns,history_length).to_json
+        if rc.nil?
+            error = Error.new("There is no monitoring information for #{resource} #{id}")
+            return [500, error.to_json]
+        end
+
+        return [200, rc.to_json]
     end
 
     ############################################################################
