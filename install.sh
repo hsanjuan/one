@@ -1045,7 +1045,12 @@ OZONES_PUBLIC_CSS_FILES="src/ozones/Server/public/css/application.css \
                         
 OZONES_PUBLIC_IMAGES_FILES="src/ozones/Server/public/images/panel.png \
                         src/ozones/Server/public/images/login.png \
-                        src/ozones/Server/public/images/opennebula-sunstone-big.png"
+                        src/ozones/Server/public/images/login_over.png \
+                        src/ozones/Server/public/images/Refresh-icon.png \
+                        src/ozones/Server/public/images/ajax-loader.png \
+                        src/ozones/Server/public/images/opennebula-sunstone-small.png \
+                        src/ozones/Server/public/images/opennebula-sunstone-big.png \
+                        src/ozones/Server/public/images/pbar.gif"
 
 OZONES_PUBLIC_JS_PLUGINS_FILES="src/ozones/Server/public/js/plugins/zones-tab.js \
                                src/ozones/Server/public/js/plugins/vdcs-tab.js \
