@@ -168,7 +168,7 @@ ETC_DIRS="$ETC_LOCATION/im_kvm \
           $ETC_LOCATION/im_ec2 \
           $ETC_LOCATION/vmm_ec2 \
           $ETC_LOCATION/vmm_exec \
-          $ETC_LOCATION/tm_nfs \
+          $ETC_LOCATION/tm_shared \
           $ETC_LOCATION/tm_ssh \
           $ETC_LOCATION/tm_dummy \
           $ETC_LOCATION/tm_lvm \
@@ -186,7 +186,7 @@ LIB_DIRS="$LIB_LOCATION/ruby \
           $LIB_LOCATION/ruby/cloud/occi \
           $LIB_LOCATION/ruby/onedb \
           $LIB_LOCATION/tm_commands \
-          $LIB_LOCATION/tm_commands/nfs \
+          $LIB_LOCATION/tm_commands/shared \
           $LIB_LOCATION/tm_commands/ssh \
           $LIB_LOCATION/tm_commands/dummy \
           $LIB_LOCATION/tm_commands/lvm \
@@ -279,7 +279,7 @@ INSTALL_FILES=(
     VMM_EXEC_XEN_KVM_POLL:$VAR_LOCATION/remotes/vmm/xen/poll
     VMM_EXEC_GANGLIA_POLL:$VAR_LOCATION/remotes/vmm/kvm/poll_local
     VMM_EXEC_GANGLIA_POLL:$VAR_LOCATION/remotes/vmm/xen/poll_local
-    NFS_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/nfs
+    SHARED_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/shared
     SSH_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/ssh
     DUMMY_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/dummy
     LVM_TM_COMMANDS_LIB_FILES:$LIB_LOCATION/tm_commands/lvm
@@ -352,7 +352,7 @@ INSTALL_ETC_FILES=(
     VMM_EC2_ETC_FILES:$ETC_LOCATION/vmm_ec2
     VMM_EXEC_ETC_FILES:$ETC_LOCATION/vmm_exec
     IM_EC2_ETC_FILES:$ETC_LOCATION/im_ec2
-    TM_NFS_ETC_FILES:$ETC_LOCATION/tm_nfs
+    TM_SHARED_ETC_FILES:$ETC_LOCATION/tm_shared
     TM_SSH_ETC_FILES:$ETC_LOCATION/tm_ssh
     TM_DUMMY_ETC_FILES:$ETC_LOCATION/tm_dummy
     TM_LVM_ETC_FILES:$ETC_LOCATION/tm_lvm
@@ -502,19 +502,19 @@ IM_PROBES_GANGLIA_FILES="src/im_mad/remotes/ganglia.d/ganglia_probe"
 
 #-------------------------------------------------------------------------------
 # Transfer Manager commands, to be installed under $LIB_LOCATION/tm_commands
-#   - NFS TM, $LIB_LOCATION/tm_commands/nfs
+#   - SHARED TM, $LIB_LOCATION/tm_commands/shared
 #   - SSH TM, $LIB_LOCATION/tm_commands/ssh
 #   - dummy TM, $LIB_LOCATION/tm_commands/dummy
 #   - LVM TM, $LIB_LOCATION/tm_commands/lvm
 #-------------------------------------------------------------------------------
 
-NFS_TM_COMMANDS_LIB_FILES="src/tm_mad/nfs/tm_clone.sh \
-                           src/tm_mad/nfs/tm_delete.sh \
-                           src/tm_mad/nfs/tm_ln.sh \
-                           src/tm_mad/nfs/tm_mkswap.sh \
-                           src/tm_mad/nfs/tm_mkimage.sh \
-                           src/tm_mad/nfs/tm_mv.sh \
-                           src/tm_mad/nfs/tm_context.sh"
+SHARED_TM_COMMANDS_LIB_FILES="src/tm_mad/shared/tm_clone.sh \
+                           src/tm_mad/shared/tm_delete.sh \
+                           src/tm_mad/shared/tm_ln.sh \
+                           src/tm_mad/shared/tm_mkswap.sh \
+                           src/tm_mad/shared/tm_mkimage.sh \
+                           src/tm_mad/shared/tm_mv.sh \
+                           src/tm_mad/shared/tm_context.sh"
 
 SSH_TM_COMMANDS_LIB_FILES="src/tm_mad/ssh/tm_clone.sh \
                            src/tm_mad/ssh/tm_delete.sh \
@@ -583,14 +583,14 @@ IM_EC2_ETC_FILES="src/im_mad/ec2/im_ec2rc \
 
 #-------------------------------------------------------------------------------
 # Storage drivers config. files, to be installed under $ETC_LOCATION
-#   - nfs, $ETC_LOCATION/tm_nfs
+#   - shared, $ETC_LOCATION/tm_shared
 #   - ssh, $ETC_LOCATION/tm_ssh
 #   - dummy, $ETC_LOCATION/tm_dummy
 #   - lvm, $ETC_LOCATION/tm_lvm
 #-------------------------------------------------------------------------------
 
-TM_NFS_ETC_FILES="src/tm_mad/nfs/tm_nfs.conf \
-                  src/tm_mad/nfs/tm_nfsrc"
+TM_SHARED_ETC_FILES="src/tm_mad/shared/tm_shared.conf \
+                  src/tm_mad/shared/tm_sharedrc"
 
 TM_SSH_ETC_FILES="src/tm_mad/ssh/tm_ssh.conf \
                   src/tm_mad/ssh/tm_sshrc"
