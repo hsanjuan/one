@@ -310,11 +310,11 @@ tr.odd td, tr.even td{
 }
 
 tr.odd:hover{
-	background-color: #1FB539 !important;
+	background-color: #88C140 !important;
 }
 
 tr.even:hover{
-	background-color: #1FB539 !important;
+	background-color: #88C140 !important;
 }
 
 .show_hide label{
@@ -537,7 +537,7 @@ ul.action_list li a{
 
 }
 ul.action_list li a:hover{
-    color:#1FB539;
+    color:#88C140;
 
 }
 

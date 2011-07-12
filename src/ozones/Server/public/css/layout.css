@@ -84,7 +84,7 @@ body {
     font-weight: bold;
 }
 .sunstone-color {
-    color: #1FB539;
+    color: #88C140;
 }
 
 #footer {
@@ -150,12 +150,12 @@ background-image: -moz-linear-gradient(
     linear,
     left top,
     right top,
-    color-stop(0.95, #1FB539),
+    color-stop(0.95, #88C140),
     color-stop(1, rgb(53,55,53))
 );
 background-image: -moz-linear-gradient(
     left center,
-    #1FB539 95%,
+    #88C140 95%,
     rgb(53,55,53) 100%
 );
     /*
