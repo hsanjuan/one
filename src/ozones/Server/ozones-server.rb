@@ -58,7 +58,7 @@ config=YAML::load(config_data)
 
 db_type = config[:databasetype]
 
-db_url = db_type + "://" + VAR_LOCATION + "/var/ozones.db"
+db_url = db_type + "://" + VAR_LOCATION + "/ozones.db"
 
 ##############################################################################
 # DB bootstrapping
