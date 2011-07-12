@@ -15,19 +15,19 @@
 /* -------------------------------------------------------------------------- */
 
 
-function updateHostsList(req,list,tag,zone_id){
+function updateHostsList(req,list,tag,zone_id,zone_name){
     var hostDataTable = $(tag).dataTable();
     var hosts_array = [];
 
     $.each(list,function(){
-        hosts_array.push(hostElementArray(this,zone_id));
+        hosts_array.push(hostElementArray(this,zone_id,zone_name));
     });
     if (!zone_id) { hostDataTable.fnClearTable();}
     hostDataTable.fnAddData(hosts_array);
     hostDataTable.fnDraw(false);
 }
 
-function updateVMsList(req,list,tag,zone_id){
+function updateVMsList(req,list,tag,zone_id,zone_name){
     var vmsDataTable = $(tag).dataTable();
     var vms_array = [];
     $.each(list,function(){
@@ -40,6 +40,7 @@ function updateVMsList(req,list,tag,zone_id){
         if (zone_id){
             vms_array.push([
                 zone_id,
+                zone_name,
                 vm.ID,
                 vm.UID,
                 vm.GID,
@@ -69,7 +70,7 @@ function updateVMsList(req,list,tag,zone_id){
 
 }
 
-function updateVNsList(req,list,tag,zone_id){
+function updateVNsList(req,list,tag,zone_id,zone_name){
     var vnDataTable = $(tag).dataTable();
     var vn_array = [];
 
@@ -85,6 +86,7 @@ function updateVNsList(req,list,tag,zone_id){
         if (zone_id) {
             vn_array.push([
                 zone_id,
+                zone_name,
                 network.ID,
                 network.UID,
                 network.GID,
@@ -111,7 +113,7 @@ function updateVNsList(req,list,tag,zone_id){
     updateView(vn_array,vnDataTable);
 }
 
-function updateTemplatesList(req,list,tag,zone_id){
+function updateTemplatesList(req,list,tag,zone_id,zone_name){
     var templateDataTable = $(tag).dataTable();
     var template_array = [];
 
@@ -120,6 +122,7 @@ function updateTemplatesList(req,list,tag,zone_id){
         if (zone_id){
             template_array.push([
                 zone_id,
+                zone_name,
                 template.ID,
                 template.UID,
                 template.GID,
@@ -141,7 +144,7 @@ function updateTemplatesList(req,list,tag,zone_id){
     updateView(template_array,templateDataTable);
 }
 
-function updateUsersList(req,list,tag, zone_id){
+function updateUsersList(req,list,tag, zone_id,zone_name){
     var userDataTable = $(tag).dataTable();
     var user_array = [];
 
@@ -161,6 +164,7 @@ function updateUsersList(req,list,tag, zone_id){
         if (zone_id){
             user_array.push([
                 zone_id,
+                zone_name,
                 user.ID,
                 name
             ]);
@@ -175,7 +179,7 @@ function updateUsersList(req,list,tag, zone_id){
     updateView(user_array,userDataTable);
 }
 
-function updateImagesList(req,list,tag,zone_id){
+function updateImagesList(req,list,tag,zone_id,zone_name){
     var imageDataTable = $(tag).dataTable();
     var image_array = [];
 
@@ -185,6 +189,7 @@ function updateImagesList(req,list,tag,zone_id){
         if (zone_id) {
             image_array.push([
                 zone_id,
+                zone_name,
                 image.ID,
                 image.UID,
                 image.GID,
@@ -215,7 +220,7 @@ function updateImagesList(req,list,tag,zone_id){
 }
 
 
-function hostElementArray(host,zone_id){
+function hostElementArray(host,zone_id,zone_name){
 
     host = host.HOST;
 
@@ -246,20 +251,21 @@ function hostElementArray(host,zone_id){
      var pb_mem =
 '<div style="height:10px" class="ratiobar ui-progressbar ui-widget ui-widget-content ui-corner-all" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+ratio_mem+'">\
     <div class="ui-progressbar-value ui-widget-header ui-corner-left ui-corner-right" style="width: '+ratio_mem+'%;"/>\
-    <span style="position:relative;left:90px;top:-4px;font-size:0.6em">'+ratio_mem+'%</span>\
+    <span style="position:relative;left:68px;top:-4px;font-size:0.6em">'+ratio_mem+'%</span>\
     </div>\
 </div>';
 
     var pb_cpu =
 '<div style="height:10px" class="ratiobar ui-progressbar ui-widget ui-widget-content ui-corner-all" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+ratio_cpu+'">\
     <div class="ui-progressbar-value ui-widget-header ui-corner-left ui-corner-right" style="width: '+ratio_cpu+'%;"/>\
-    <span style="position:relative;left:90px;top:-4px;font-size:0.6em">'+ratio_cpu+'%</span>\
+    <span style="position:relative;left:68px;top:-4px;font-size:0.6em">'+ratio_cpu+'%</span>\
     </div>\
 </div>';
 
     if (zone_id){
         return [
             zone_id,
+            zone_name,
             host.ID,
             host.NAME,
             host.HOST_SHARE.RUNNING_VMS, //rvm

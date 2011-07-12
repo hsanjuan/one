@@ -22,6 +22,7 @@ var aggregated_hosts_tab_content =
   <thead>\
     <tr>\
       <th>Zone ID</th>\
+      <th>Zone Name</th>\
       <th>ID</th>\
       <th>Name</th>\
       <th>Running VMs</th>\
@@ -40,6 +41,7 @@ var aggregated_vms_tab_content =
   <thead>\
     <tr>\
       <th>Zone ID</th>\
+      <th>Zone Name</th>\
       <th>ID</th>\
       <th>Owner</th>\
       <th>Group</th>\
@@ -61,6 +63,7 @@ var aggregated_vns_tab_content =
   <thead>\
     <tr>\
       <th>Zone ID</th>\
+      <th>Zone Name</th>\
       <th>ID</th>\
       <th>Owner</th>\
       <th>Group</th>\
@@ -81,6 +84,7 @@ var aggregated_images_tab_content =
   <thead>\
     <tr>\
       <th>Zone ID</th>\
+      <th>Zone Name</th>\
       <th>ID</th>\
       <th>Owner</th>\
       <th>Group</th>\
@@ -103,6 +107,7 @@ var aggregated_users_tab_content =
   <thead>\
     <tr>\
       <th>Zone ID</th>\
+      <th>Zone Name</th>\
       <th>ID</th>\
       <th>Name</th>\
     </tr>\
@@ -118,6 +123,7 @@ var aggregated_templates_tab_content =
   <thead>\
     <tr>\
       <th>Zone ID</th>\
+      <th>Zone Name</th>\
       <th>ID</th>\
       <th>Owner</th>\
       <th>Group</th>\
@@ -416,7 +422,7 @@ function hostsListCB(req,list){
             return;
         };
         var host_json = oZones.Helper.pool("HOST",this.ZONE);
-        updateHostsList(req, host_json,'#datatable_agg_hosts',this.ZONE.id);
+        updateHostsList(req, host_json,'#datatable_agg_hosts',this.ZONE.id,this.ZONE.name);
         updateZonesDashboard("hosts",host_json);
     });
 }
@@ -429,7 +435,7 @@ function vmsListCB(req,list){
             return;
         };
         var vms_json = oZones.Helper.pool("VM",this.ZONE);
-        updateVMsList(req, vms_json,'#datatable_agg_vms',this.ZONE.id);
+        updateVMsList(req, vms_json,'#datatable_agg_vms',this.ZONE.id,this.ZONE.name);
         updateZonesDashboard("vms",vms_json);
     });
 }
@@ -442,7 +448,7 @@ function vnsListCB(req,list){
             return;
         };
         var vn_json = oZones.Helper.pool("VNET",this.ZONE);
-        updateVNsList(req, vn_json,'#datatable_agg_vnets',this.ZONE.id);
+        updateVNsList(req, vn_json,'#datatable_agg_vnets',this.ZONE.id,this.ZONE.name);
         updateZonesDashboard("vnets",vn_json);
     });
 }
@@ -455,7 +461,7 @@ function imagesListCB(req,list){
             return;
         };
         var image_json = oZones.Helper.pool("IMAGE",this.ZONE);
-        updateImagesList(req,image_json,'#datatable_agg_images',this.ZONE.id);
+        updateImagesList(req,image_json,'#datatable_agg_images',this.ZONE.id,this.ZONE.name);
         updateZonesDashboard("images",image_json);
     });
 }
@@ -468,7 +474,7 @@ function usersListCB(req,list){
             return;
         };
         var user_json = oZones.Helper.pool("USER",this.ZONE);
-        updateUsersList(req,user_json,'#datatable_agg_users',this.ZONE.id);
+        updateUsersList(req,user_json,'#datatable_agg_users',this.ZONE.id,this.ZONE.name);
         updateZonesDashboard("users",user_json);
     });
 }
@@ -481,7 +487,7 @@ function templatesListCB(req,list){
             return;
         };
         var template_json = oZones.Helper.pool("VMTEMPLATE",this.ZONE);
-        updateTemplatesList(req,template_json,'#datatable_agg_templates',this.ZONE.id);
+        updateTemplatesList(req,template_json,'#datatable_agg_templates',this.ZONE.id,this.ZONE.name);
         updateZonesDashboard("templates",template_json);
     });
 }
@@ -541,9 +547,10 @@ $(document).ready(function(){
         "bAutoWidth":false,
         "sPaginationType": "full_numbers",
         "aoColumnDefs": [
-            { "sWidth": "60px", "aTargets": [3,6] },
-            { "sWidth": "35px", "aTargets": [0,1] },
-            { "sWidth": "200px", "aTargets": [4,5] }
+            { "sWidth": "60px", "aTargets": [4,7] },
+            { "sWidth": "35px", "aTargets": [0,2] },
+            { "sWidth": "160px", "aTargets": [5,6] },
+            { "sWidth": "100px", "aTargets": [1] }
         ]
     });
 
@@ -553,8 +560,8 @@ $(document).ready(function(){
         "sPaginationType": "full_numbers",
         "bAutoWidth":false,
         "aoColumnDefs": [
-            { "sWidth": "35px", "aTargets": [0,1] },
-            { "sWidth": "100px", "aTargets": [2,3,4,9] }
+            { "sWidth": "35px", "aTargets": [0,2] },
+            { "sWidth": "100px", "aTargets": [1,3,4,5,10] }
         ]
     });
 
@@ -564,9 +571,9 @@ $(document).ready(function(){
         "bAutoWidth":false,
         "sPaginationType": "full_numbers",
         "aoColumnDefs": [
-            { "sWidth": "60px", "aTargets": [5,6,7,8] },
-            { "sWidth": "35px", "aTargets": [0,1] },
-            { "sWidth": "100px", "aTargets": [2,3] }
+            { "sWidth": "60px", "aTargets": [6,7,8,9] },
+            { "sWidth": "35px", "aTargets": [0,2] },
+            { "sWidth": "100px", "aTargets": [1,3,4] }
         ]
     });
 
@@ -576,9 +583,9 @@ $(document).ready(function(){
         "bAutoWidth":false,
         "sPaginationType": "full_numbers",
         "aoColumnDefs": [
-            { "sWidth": "60px", "aTargets": [9] },
-            { "sWidth": "35px", "aTargets": [0,1,7,8,10] },
-            { "sWidth": "100px", "aTargets": [2,3,4,6] }
+            { "sWidth": "60px", "aTargets": [10] },
+            { "sWidth": "35px", "aTargets": [0,2,8,9,11] },
+            { "sWidth": "100px", "aTargets": [1,3,4,5,7] }
         ]
     });
 
@@ -588,8 +595,8 @@ $(document).ready(function(){
         "bAutoWidth":false,
         "sPaginationType": "full_numbers",
         "aoColumnDefs": [
-            { "sWidth": "35px", "aTargets": [0,1,6] },
-            { "sWidth": "100px", "aTargets": [2,3,5] }
+            { "sWidth": "35px", "aTargets": [0,2,7] },
+            { "sWidth": "100px", "aTargets": [1,3,4,6] }
         ]
     });
 
@@ -599,7 +606,8 @@ $(document).ready(function(){
         "sPaginationType": "full_numbers",
         "bAutoWidth":false,
         "aoColumnDefs": [
-            { "sWidth": "35px", "aTargets": [0,1] }
+            { "sWidth": "35px", "aTargets": [0,2] },
+            { "sWidth": "100px", "aTargets": [1] }
         ]
     });
 
