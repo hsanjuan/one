@@ -2,9 +2,10 @@ require 'cli/ozones_helper'
 require 'cli/one_helper'
 
 class VDCHelper < OZonesHelper::OZHelper
-    def initialize(kind)
+    def initialize(kind, user=nil, pass=nil, endpoint_str=nil,
+                       timeout=nil, debug_flag=true)
         @vdc_str = kind
-        super()
+        super(user, pass, endpoint_str, timeout, debug_flag)
     end
 
     def create_resource(template)

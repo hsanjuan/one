@@ -3,8 +3,13 @@ require 'OZonesClient'
 module OZonesHelper
     
     class OZHelper
-        def initialize
-            @client = OZonesClient::Client.new
+        def initialize(user=nil, pass=nil, endpoint_str=nil,
+                       timeout=nil, debug_flag=true)
+            @client = OZonesClient::Client.new(user, 
+                                               pass, 
+                                               endpoint_str,
+                                               timeout, 
+                                               debug_flag)
         end
 
         def create_resource(kind, template)
