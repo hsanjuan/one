@@ -1034,10 +1034,10 @@ OZONES_PUBLIC_VENDOR_JQUERYLAYOUT=$SUNSTONE_PUBLIC_VENDOR_JQUERYLAYOUT
                         
 OZONES_PUBLIC_JS_FILES="src/ozones/Server/public/js/ozones.js \
                         src/ozones/Server/public/js/login.js \
-                        src/ozones/Server/public/js/layout.js \
-                        src/ozones/Server/public/js/sunstone.js \
-                        src/ozones/Server/public/js/sunstone-util.js \
-                        src/ozones/Server/public/js/ozones-util.js"
+                        src/ozones/Server/public/js/ozones-util.js \
+                        src/sunstone/public/js/layout.js \
+                        src/sunstone/public/js/sunstone.js \
+                        src/sunstone/public/js/sunstone-util.js"
                         
 OZONES_PUBLIC_CSS_FILES="src/ozones/Server/public/css/application.css \
                          src/ozones/Server/public/css/layout.css \
