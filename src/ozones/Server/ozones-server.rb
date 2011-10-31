@@ -129,6 +129,8 @@ helpers do
             sha1_pass = Digest::SHA1.hexdigest(auth.credentials[1])
 
             if user == ADMIN_NAME && sha1_pass == ADMIN_PASS
+                token = "#{user}:#{auth.credentials[1]}"
+                OZones.encryption_key = Digest::SHA1.hexdigest(token)
                 return true
             end
         end

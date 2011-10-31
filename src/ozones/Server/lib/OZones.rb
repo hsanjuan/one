@@ -35,6 +35,17 @@ require 'base64'
 module OZones
 
     CIPHER="aes-256-cbc"
+
+    @encryption_key=""
+
+    def self.encryption_key
+        @@encryption_key
+    end
+
+    def self.encryption_key=(value)
+        @@encryption_key=value
+    end
+
     # -------------------------------------------------------------------------
     # The Error Class represents a generic error in the OZones
     # library. It contains a readable representation of the error.
@@ -73,20 +84,11 @@ module OZones
         return JSON.pretty_generate({:message  => str})
     end
 
-    def self.readKey
-        begin
-            credentials = IO.read(ENV['OZONES_AUTH']).strip
-            return Digest::SHA1.hexdigest(credentials);
-        rescue
-            return "";
-        end
-    end
-
     def self.encrypt(plain_txt)
         #prepare cipher object
         cipher = OpenSSL::Cipher.new(CIPHER)
         cipher.encrypt
-        cipher.key = OZones.readKey
+        cipher.key = OZones.encryption_key
 
         enc_txt = cipher.update(plain_txt)
         enc_txt << cipher.final
@@ -98,7 +100,7 @@ module OZones
         #prepare cipher object
         cipher = OpenSSL::Cipher.new(CIPHER)
         cipher.decrypt
-        cipher.key = OZones.readKey
+        cipher.key = OZones.encryption_key
 
         enc_txt = Base64::decode64(b64_txt)
 
