@@ -30,6 +30,8 @@ require 'ImagePoolOCCI'
 require 'UserOCCI'
 require 'UserPoolOCCI'
 
+require 'OpenNebulaVNC'
+
 require 'pp'
 
 
@@ -62,11 +64,11 @@ class OCCIServer < CloudServer
     # Prepare the OCCI XML Response
     # resource:: _Pool_ or _PoolElement_ that represents a OCCI resource
     # [return] _String_,_Integer_ Resource Representation or error, status code
-    def to_occi_xml(resource, code)
-        xml_response = resource.to_occi(@base_url)
+    def to_occi_xml(resource, opts)
+        xml_response = resource.to_occi(@base_url, opts[:verbose])
         return xml_response, 500 if OpenNebula.is_error?(xml_response)
 
-        return xml_response, code
+        return xml_response, opts[:code]
     end
 
     ############################################################################
@@ -122,7 +124,7 @@ class OCCIServer < CloudServer
             return rc, CloudServer::HTTP_ERROR_CODE[rc.errno]
         end
 
-        return to_occi_xml(vmpool, 200)
+        return to_occi_xml(vmpool, :status=>200, :verbose=>request.params['verbose'])
     end
 
 
@@ -142,7 +144,7 @@ class OCCIServer < CloudServer
             return rc, CloudServer::HTTP_ERROR_CODE[rc.errno]
         end
 
-        return to_occi_xml(network_pool, 200)
+        return to_occi_xml(network_pool, :status=>200, :verbose=>request.params['verbose'])
     end
 
     # Gets the pool representation of STORAGES
@@ -161,7 +163,7 @@ class OCCIServer < CloudServer
             return rc, CloudServer::HTTP_ERROR_CODE[rc.errno]
         end
 
-        return to_occi_xml(image_pool, 200)
+        return to_occi_xml(image_pool, :status=>200, :verbose=>request.params['verbose'])
     end
 
     # Gets the pool representation of USERs
@@ -178,7 +180,7 @@ class OCCIServer < CloudServer
             return rc, CloudServer::HTTP_ERROR_CODE[rc.errno]
         end
 
-        return to_occi_xml(user_pool, 200)
+        return to_occi_xml(user_pool, :status=>200, :verbose=>request.params['verbose'])
     end
 
     ############################################################################
@@ -214,7 +216,7 @@ class OCCIServer < CloudServer
 
         # --- Prepare XML Response ---
         vm.info
-        return to_occi_xml(vm, 201)
+        return to_occi_xml(vm, :status=>201)
     end
 
     # Get the representation of a COMPUTE resource
@@ -233,9 +235,8 @@ class OCCIServer < CloudServer
             return rc, CloudServer::HTTP_ERROR_CODE[rc.errno]
         end
 
-        return to_occi_xml(vm, 200)
+        return to_occi_xml(vm, :status=>200)
     end
-
 
     # Deletes a COMPUTE resource
     # request:: _Hash_ hash containing the data of the request
@@ -277,7 +278,7 @@ class OCCIServer < CloudServer
             return result, code
         else
             vm.info
-            return to_occi_xml(vm, code)
+            return to_occi_xml(vm, :status=>code)
         end
     end
 
@@ -307,7 +308,7 @@ class OCCIServer < CloudServer
 
         # --- Prepare XML Response ---
         network.info
-        return to_occi_xml(network, 201)
+        return to_occi_xml(network, :status=>201)
     end
 
     # Retrieves a NETWORK resource
@@ -325,7 +326,7 @@ class OCCIServer < CloudServer
             return rc, CloudServer::HTTP_ERROR_CODE[rc.errno]
         end
 
-        return to_occi_xml(network, 200)
+        return to_occi_xml(network, :status=>200)
     end
 
     # Deletes a NETWORK resource
@@ -371,7 +372,7 @@ class OCCIServer < CloudServer
 
         # --- Prepare XML Response ---
         vnet.info
-        return to_occi_xml(vnet, 202)
+        return to_occi_xml(vnet, :status=>202)
     end
 
     ############################################################################
@@ -411,7 +412,7 @@ class OCCIServer < CloudServer
 
         # --- Prepare XML Response ---
         image.info
-        return to_occi_xml(image, 201)
+        return to_occi_xml(image, :status=>201)
     end
 
     # Get a STORAGE resource
@@ -430,7 +431,7 @@ class OCCIServer < CloudServer
         end
 
         # --- Prepare XML Response ---
-        return to_occi_xml(image, 200)
+        return to_occi_xml(image, :status=>200)
     end
 
     # Deletes a STORAGE resource (Not yet implemented)
@@ -484,7 +485,7 @@ class OCCIServer < CloudServer
 
         # --- Prepare XML Response ---
         image.info
-        return to_occi_xml(image, 202)
+        return to_occi_xml(image, :status=>202)
     end
 
     # Get the representation of a USER
@@ -503,6 +504,34 @@ class OCCIServer < CloudServer
             return rc, CloudServer::HTTP_ERROR_CODE[rc.errno]
         end
 
-        return to_occi_xml(user, 200)
+        return to_occi_xml(user, :status=>200)
+    end
+
+    ############################################################################
+    # VNC Methods
+    ############################################################################
+
+    def startvnc(id,config)
+        vm = VirtualMachineOCCI.new(VirtualMachine.build_xml(id), @client)
+        rc = vm.info
+
+        if OpenNebula.is_error?(rc)
+            error =  "Error starting VNC session, "
+            error << "could not retrieve Virtual Machine"
+            return [404, error]
+        end
+
+        vnc_proxy = OpenNebulaVNC.new(config,{:json_errors => false})
+        return vnc_proxy.start(vm)
+    end
+
+    def stopvnc(pipe)
+        begin
+            OpenNebulaVNC.stop(pipe)
+        rescue Exception => e
+            return [500, e.message]
+        end
+        
+        return [200,nil]
     end
 end

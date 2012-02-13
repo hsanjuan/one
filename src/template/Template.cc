@@ -135,6 +135,52 @@ error_yy:
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
+int Template::parse_str_or_xml(const string &parse_str, string& error_msg)
+{
+    int     rc;
+
+    if ( parse_str[0] == '<' )
+    {
+        rc = from_xml(parse_str);
+
+        if ( rc != 0 )
+        {
+            error_msg = "Parse error: XML Template malformed.";
+        }
+    }
+    else
+    {
+        char * error_char = 0;
+
+        rc = parse(parse_str, &error_char);
+
+        if ( rc != 0 )
+        {
+            ostringstream oss;
+
+            oss << "Parse error";
+
+            if (error_char != 0)
+            {
+                oss << ": " << error_char;
+
+                free(error_char);
+            }
+            else
+            {
+                oss << ".";
+            }
+
+            error_msg = oss.str();
+        }
+    }
+
+    return rc;
+}
+
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
 void Template::marshall(string &str, const char delim)
 {
     multimap<string,Attribute *>::iterator  it;
@@ -528,6 +574,80 @@ void Template::rebuild_attributes(const xmlNode * root_element)
             }
         }
     }
+}
+
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+void Template::set_restricted_attributes( vector<const Attribute *>& rattrs,
+                                vector<string>& restricted_attributes)
+{
+    const SingleAttribute * sattr;
+    string attr;
+
+    for (unsigned int i = 0 ; i < rattrs.size() ; i++ )
+    {
+        sattr = static_cast<const SingleAttribute *>(rattrs[i]);
+
+        attr = sattr->value();
+        transform (attr.begin(),attr.end(),attr.begin(),(int(*)(int))toupper);
+
+        restricted_attributes.push_back(attr);
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+bool Template::check(string& rs_attr, const vector<string> &restricted_attributes)
+{
+    size_t pos;
+    string avector, vattr;
+    vector<const Attribute *> values;
+
+    for (unsigned int i=0; i < restricted_attributes.size(); i++)
+    {
+        pos = restricted_attributes[i].find("/");
+
+        if (pos != string::npos) //Vector Attribute
+        {
+            int num;
+
+            avector = restricted_attributes[i].substr(0,pos);
+            vattr   = restricted_attributes[i].substr(pos+1);
+
+            if ((num = get(avector,values)) > 0 ) //Template contains the attr
+            {
+                const VectorAttribute * attr;
+
+                for (int j=0; j<num ; j++ )
+                {
+                    attr = dynamic_cast<const VectorAttribute *>(values[j]);
+
+                    if (attr == 0)
+                    {
+                        continue;
+                    }
+
+                    if ( !attr->vector_value(vattr.c_str()).empty() )
+                    {
+                        rs_attr = restricted_attributes[i];
+                        return true;
+                    }
+                }
+            }
+        }
+        else //Single Attribute
+        {
+            if (get(restricted_attributes[i],values) > 0 )
+            {
+                rs_attr = restricted_attributes[i];
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 /* -------------------------------------------------------------------------- */

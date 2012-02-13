@@ -41,22 +41,26 @@ public:
      *    @param rs_attr the first restricted attribute found if any
      *    @return true if a restricted attribute is found in the template
      */
-    bool check(string& rs_attr);
-
-private:
-	/**
-	 *  Number of restricted attributes
-	 */
-	const static int    RS_ATTRS_LENGTH;
-
-	/**
-	 *  Restricted template attributes in the form 
-	 *  'SINGLE' or 'VECTOR/ATTR'. Restricted attributes are only
-	 *  allowed for ONE_ADMIN Group.
-	 */
-	const static string RESTRICTED_ATTRIBUTES[];
+    bool check(string& rs_attr)
+    {
+        return Template::check(rs_attr, restricted_attributes);
+    };
     
-    friend class VirtualMachine;
+private:
+
+    friend class VirtualMachinePool;
+
+    static vector<string> restricted_attributes;
+
+    /**
+     * Stores the attributes as restricted, these attributes will be used in
+     * VirtualMachineTemplate::check
+     * @param rattrs Attributes to restrict
+     */
+    static void set_restricted_attributes(vector<const Attribute *>& rattrs)
+    {
+        Template::set_restricted_attributes(rattrs, restricted_attributes);
+    };
 };
 
 /* -------------------------------------------------------------------------- */

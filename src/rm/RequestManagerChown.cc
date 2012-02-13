@@ -69,6 +69,9 @@ void RequestManagerChown::request_execute(xmlrpc_c::paramList const& paramList,
 
     PoolObjectSQL * object;
 
+    string  obj_name;
+    int     old_uid;
+
     // ------------- Check new user and group id's ---------------------
 
     if ( noid > -1  )
@@ -134,11 +137,15 @@ void RequestManagerChown::request_execute(xmlrpc_c::paramList const& paramList,
     {                                            
         failure_response(NO_EXISTS,get_error(object_name(auth_object),oid),att);
         return;
-    }    
+    }
 
     if ( noid != -1 )    
     {
+        obj_name = object->get_name();
+        old_uid  = object->get_uid();
+
         object->set_user(noid,nuname);
+
     }
 
     if ( ngid != -1 )
@@ -149,6 +156,11 @@ void RequestManagerChown::request_execute(xmlrpc_c::paramList const& paramList,
     pool->update(object);
 
     object->unlock();
+
+    if ( noid != -1 )    
+    {
+        pool->update_cache_index(obj_name, old_uid, obj_name, noid);
+    }
 
     success_response(oid, att);
 
@@ -273,4 +285,3 @@ void UserChown::request_execute(xmlrpc_c::paramList const& paramList,
 
     return;
 }
-    

@@ -817,6 +817,8 @@ ONEDB_MIGRATOR_FILES="src/onedb/2.0_to_2.9.80.rb \
                       src/onedb/3.0.0_to_3.1.0.rb \
                       src/onedb/3.1.0_to_3.1.80.rb \
                       src/onedb/3.1.80_to_3.2.0.rb \
+                      src/onedb/3.2.0_to_3.2.1.rb \
+                      src/onedb/3.2.1_to_3.3.0.rb \
                       src/onedb/onedb.rb \
                       src/onedb/onedb_backend.rb"
 
@@ -1011,7 +1013,8 @@ OCCI_LIB_FILES="src/cloud/occi/lib/OCCIServer.rb \
                 src/cloud/occi/lib/UserOCCI.rb \
                 src/cloud/occi/lib/UserPoolOCCI.rb \
                 src/cloud/occi/lib/ImageOCCI.rb \
-                src/cloud/occi/lib/ImagePoolOCCI.rb"
+                src/cloud/occi/lib/ImagePoolOCCI.rb \
+                src/sunstone/OpenNebulaVNC.rb"
 
 OCCI_LIB_CLIENT_FILES="src/cloud/occi/lib/OCCIClient.rb"
 
@@ -1075,7 +1078,8 @@ ETC_CLIENT_FILES="src/cli/etc/group.default"
 #-----------------------------------------------------------------------------
 
 SUNSTONE_FILES="src/sunstone/config.ru \
-                src/sunstone/sunstone-server.rb"
+                src/sunstone/sunstone-server.rb \
+                src/sunstone/OpenNebulaVNC.rb"
 
 SUNSTONE_BIN_FILES="src/sunstone/bin/sunstone-server"
 

@@ -70,7 +70,7 @@ public:
      *  Parse a string representing the template, each attribute is inserted
      *  in the template class.
      *    @param parse_str string with template attributes
-     *    @param error_msg error string, must be freed by the calling funtion.
+     *    @param error_msg error string, must be freed by the calling function.
      *    This string is null if no error occurred.
      *    @return 0 on success.
      */
@@ -79,11 +79,22 @@ public:
     /**
      *  Parse a template file.
      *    @param filename of the template file
-     *    @param error_msg error string, must be freed by the calling funtion.
+     *    @param error_msg error string, must be freed by the calling function.
      *    This string is null if no error occurred.
      *    @return 0 on success.
      */
     int parse(const char * filename, char **error_msg);
+
+    /**
+     *  Parse a string representing the template, automatically detecting if
+     *  it is the default syntax, or an XML template. Each attribute is inserted
+     *  in the template class.
+     *    @param parse_str string with template attributes, or XML template
+     *    @param error_msg error string, must be freed by the calling function.
+     *    This string is null if no error occurred.
+     *    @return 0 on success.
+     */
+    int parse_str_or_xml(const string &parse_str, string& error_msg);
 
     /**
      *  Marshall a template. This function generates a single string with the
@@ -220,6 +231,23 @@ protected:
      *    @return the attribute, or 0 if the node doesn't contain a vector att.
      */
     Attribute* vector_xml_att(const xmlNode * node);
+
+    /**
+     * Stores the attributes as restricted, these attributes will be used in
+     * Template::check
+     * @param rattrs Attributes to restrict
+     * @param restricted_attributes The attributes will be stored here
+     */
+    static void set_restricted_attributes(
+            vector<const Attribute *>& rattrs,
+            vector<string>& restricted_attributes);
+
+    /**
+     *  Checks the template for RESTRICTED ATTRIBUTES
+     *    @param rs_attr the first restricted attribute found if any
+     *    @return true if a restricted attribute is found in the template
+     */
+    bool check(string& rs_attr, const vector<string> &restricted_attributes);
 
 private:
 

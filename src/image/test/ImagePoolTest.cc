@@ -40,7 +40,6 @@ const string templates[] =
 
     "NAME          = \"Second Image\"\n"
     "PATH = /tmp/image_second_test\n"
-    "PUBLIC        = YES\n"
     "DESCRIPTION   = \"This is a rather short description.\"\n",
 
     "NAME          = \"The third image\"\n"
@@ -52,20 +51,20 @@ const string templates[] =
 
 const string xmls[] =
 {
-"<IMAGE><ID>0</ID><UID>0</UID><GID>1</GID><UNAME>one</UNAME><GNAME>oneadmin</GNAME><NAME>Image one</NAME><TYPE>0</TYPE><PUBLIC>0</PUBLIC><PERSISTENT>1</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a very long description of an image, and to achieve the longness I will copy this over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over.This is a very long description of an image, and to achieve the longness I will copy this over.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE>",
+"<IMAGE><ID>0</ID><UID>0</UID><GID>1</GID><UNAME>one</UNAME><GNAME>oneadmin</GNAME><NAME>Image one</NAME><PERMISSIONS><OWNER_U>1</OWNER_U><OWNER_M>1</OWNER_M><OWNER_A>0</OWNER_A><GROUP_U>0</GROUP_U><GROUP_M>0</GROUP_M><GROUP_A>0</GROUP_A><OTHER_U>0</OTHER_U><OTHER_M>0</OTHER_M><OTHER_A>0</OTHER_A></PERMISSIONS><TYPE>0</TYPE><PERSISTENT>1</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a very long description of an image, and to achieve the longness I will copy this over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over.This is a very long description of an image, and to achieve the longness I will copy this over.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE>",
 
-"<IMAGE><ID>1</ID><UID>1</UID><GID>1</GID><UNAME>two</UNAME><GNAME>oneadmin</GNAME><NAME>Second Image</NAME><TYPE>0</TYPE><PUBLIC>1</PUBLIC><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_second_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a rather short description.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE>",
+"<IMAGE><ID>1</ID><UID>1</UID><GID>1</GID><UNAME>two</UNAME><GNAME>oneadmin</GNAME><NAME>Second Image</NAME><PERMISSIONS><OWNER_U>1</OWNER_U><OWNER_M>1</OWNER_M><OWNER_A>0</OWNER_A><GROUP_U>0</GROUP_U><GROUP_M>0</GROUP_M><GROUP_A>0</GROUP_A><OTHER_U>0</OTHER_U><OTHER_M>0</OTHER_M><OTHER_A>0</OTHER_A></PERMISSIONS><TYPE>0</TYPE><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_second_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a rather short description.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE>",
 
-"<IMAGE><ID>0</ID><UID>2</UID><GID>1</GID><UNAME>three</UNAME><GNAME>users</GNAME><NAME>The third image</NAME><TYPE>0</TYPE><PUBLIC>0</PUBLIC><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><BUS><![CDATA[SCSI]]></BUS><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX><PROFILE><![CDATA[STUDENT]]></PROFILE></TEMPLATE></IMAGE>",
+"<IMAGE><ID>0</ID><UID>2</UID><GID>1</GID><UNAME>three</UNAME><GNAME>users</GNAME><NAME>The third image</NAME><PERMISSIONS><OWNER_U>1</OWNER_U><OWNER_M>1</OWNER_M><OWNER_A>0</OWNER_A><GROUP_U>0</GROUP_U><GROUP_M>0</GROUP_M><GROUP_A>0</GROUP_A><OTHER_U>0</OTHER_U><OTHER_M>0</OTHER_M><OTHER_A>0</OTHER_A></PERMISSIONS><TYPE>0</TYPE><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><BUS><![CDATA[SCSI]]></BUS><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX><PROFILE><![CDATA[STUDENT]]></PROFILE></TEMPLATE></IMAGE>",
 };
 
 
 // This xml dump result has the STIMEs modified to 0000000000
 const string xml_dump =
-"<IMAGE_POOL><IMAGE><ID>0</ID><UID>0</UID><GID>1</GID><UNAME>one</UNAME><GNAME>oneadmin</GNAME><NAME>Image one</NAME><TYPE>0</TYPE><PUBLIC>0</PUBLIC><PERSISTENT>1</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a very long description of an image, and to achieve the longness I will copy this over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over.This is a very long description of an image, and to achieve the longness I will copy this over.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE><IMAGE><ID>1</ID><UID>1</UID><GID>1</GID><UNAME>two</UNAME><GNAME>oneadmin</GNAME><NAME>Second Image</NAME><TYPE>0</TYPE><PUBLIC>1</PUBLIC><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_second_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a rather short description.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE><IMAGE><ID>2</ID><UID>2</UID><GID>1</GID><UNAME>three</UNAME><GNAME>users</GNAME><NAME>The third image</NAME><TYPE>0</TYPE><PUBLIC>0</PUBLIC><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><BUS><![CDATA[SCSI]]></BUS><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX><PROFILE><![CDATA[STUDENT]]></PROFILE></TEMPLATE></IMAGE></IMAGE_POOL>";
+"<IMAGE_POOL><IMAGE><ID>0</ID><UID>0</UID><GID>1</GID><UNAME>one</UNAME><GNAME>oneadmin</GNAME><NAME>Image one</NAME><PERMISSIONS><OWNER_U>1</OWNER_U><OWNER_M>1</OWNER_M><OWNER_A>0</OWNER_A><GROUP_U>0</GROUP_U><GROUP_M>0</GROUP_M><GROUP_A>0</GROUP_A><OTHER_U>0</OTHER_U><OTHER_M>0</OTHER_M><OTHER_A>0</OTHER_A></PERMISSIONS><TYPE>0</TYPE><PERSISTENT>1</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a very long description of an image, and to achieve the longness I will copy this over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over.This is a very long description of an image, and to achieve the longness I will copy this over.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE><IMAGE><ID>1</ID><UID>1</UID><GID>1</GID><UNAME>two</UNAME><GNAME>oneadmin</GNAME><NAME>Second Image</NAME><PERMISSIONS><OWNER_U>1</OWNER_U><OWNER_M>1</OWNER_M><OWNER_A>0</OWNER_A><GROUP_U>0</GROUP_U><GROUP_M>0</GROUP_M><GROUP_A>0</GROUP_A><OTHER_U>0</OTHER_U><OTHER_M>0</OTHER_M><OTHER_A>0</OTHER_A></PERMISSIONS><TYPE>0</TYPE><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_second_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a rather short description.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE><IMAGE><ID>2</ID><UID>2</UID><GID>1</GID><UNAME>three</UNAME><GNAME>users</GNAME><NAME>The third image</NAME><PERMISSIONS><OWNER_U>1</OWNER_U><OWNER_M>1</OWNER_M><OWNER_A>0</OWNER_A><GROUP_U>0</GROUP_U><GROUP_M>0</GROUP_M><GROUP_A>0</GROUP_A><OTHER_U>0</OTHER_U><OTHER_M>0</OTHER_M><OTHER_A>0</OTHER_A></PERMISSIONS><TYPE>0</TYPE><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><BUS><![CDATA[SCSI]]></BUS><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX><PROFILE><![CDATA[STUDENT]]></PROFILE></TEMPLATE></IMAGE></IMAGE_POOL>";
 
 const string xml_dump_where =
-"<IMAGE_POOL><IMAGE><ID>0</ID><UID>0</UID><GID>1</GID><UNAME>one</UNAME><GNAME>oneadmin</GNAME><NAME>Image one</NAME><TYPE>0</TYPE><PUBLIC>0</PUBLIC><PERSISTENT>1</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a very long description of an image, and to achieve the longness I will copy this over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over.This is a very long description of an image, and to achieve the longness I will copy this over.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE><IMAGE><ID>1</ID><UID>1</UID><GID>1</GID><UNAME>two</UNAME><GNAME>oneadmin</GNAME><NAME>Second Image</NAME><TYPE>0</TYPE><PUBLIC>1</PUBLIC><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_second_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a rather short description.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE></IMAGE_POOL>";
+"<IMAGE_POOL><IMAGE><ID>0</ID><UID>0</UID><GID>1</GID><UNAME>one</UNAME><GNAME>oneadmin</GNAME><NAME>Image one</NAME><PERMISSIONS><OWNER_U>1</OWNER_U><OWNER_M>1</OWNER_M><OWNER_A>0</OWNER_A><GROUP_U>0</GROUP_U><GROUP_M>0</GROUP_M><GROUP_A>0</GROUP_A><OTHER_U>0</OTHER_U><OTHER_M>0</OTHER_M><OTHER_A>0</OTHER_A></PERMISSIONS><TYPE>0</TYPE><PERSISTENT>1</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a very long description of an image, and to achieve the longness I will copy this over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over. This is a very long description of an image, and to achieve the longness I will copy this over. And over.This is a very long description of an image, and to achieve the longness I will copy this over.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE><IMAGE><ID>1</ID><UID>1</UID><GID>1</GID><UNAME>two</UNAME><GNAME>oneadmin</GNAME><NAME>Second Image</NAME><PERMISSIONS><OWNER_U>1</OWNER_U><OWNER_M>1</OWNER_M><OWNER_A>0</OWNER_A><GROUP_U>0</GROUP_U><GROUP_M>0</GROUP_M><GROUP_A>0</GROUP_A><OTHER_U>0</OTHER_U><OTHER_M>0</OTHER_M><OTHER_A>0</OTHER_A></PERMISSIONS><TYPE>0</TYPE><PERSISTENT>0</PERSISTENT><REGTIME>0000000000</REGTIME><SOURCE></SOURCE><PATH>/tmp/image_second_test</PATH><FSTYPE></FSTYPE><SIZE>0</SIZE><STATE>4</STATE><RUNNING_VMS>0</RUNNING_VMS><TEMPLATE><DESCRIPTION><![CDATA[This is a rather short description.]]></DESCRIPTION><DEV_PREFIX><![CDATA[hd]]></DEV_PREFIX></TEMPLATE></IMAGE></IMAGE_POOL>";
 
 /* ************************************************************************* */
 /* ************************************************************************* */
@@ -88,13 +87,15 @@ public:
 class ImagePoolFriend : public ImagePool
 {
 public:
-    ImagePoolFriend(SqlDB * db,
-                    const string&   _default_type,
-                    const string&   _default_dev_prefix):
+    ImagePoolFriend(SqlDB *                     db,
+                    const string&               _default_type,
+                    const string&               _default_dev_prefix,
+                    vector<const Attribute *>   _restricted_attrs):
 
                     ImagePool(  db,
                                 _default_type,
-                                _default_dev_prefix){};
+                                _default_dev_prefix,
+                                _restricted_attrs){};
 
 
     int allocate(const int& uid, const std::string& stemplate, int* oid)
@@ -144,13 +145,15 @@ class ImagePoolTest : public PoolTest
     CPPUNIT_TEST ( wrong_templates );
     CPPUNIT_TEST ( target_generation );
     CPPUNIT_TEST ( bus_source_assignment );
-//    CPPUNIT_TEST ( public_attribute );
-//    CPPUNIT_TEST ( persistence );
+    CPPUNIT_TEST ( persistence );
     CPPUNIT_TEST ( imagepool_disk_attribute );
     CPPUNIT_TEST ( dump );
     CPPUNIT_TEST ( dump_where );
     CPPUNIT_TEST ( get_using_name );
     CPPUNIT_TEST ( wrong_get_name );
+    CPPUNIT_TEST ( name_index );
+    CPPUNIT_TEST ( chown_name_index );
+
     CPPUNIT_TEST_SUITE_END ();
 
 protected:
@@ -190,7 +193,7 @@ protected:
         ((Image*)obj)->to_xml(xml_str);
         fix_regtimes(xml_str);
 
-/*
+//*
         if( xml_str != xmls[index] )
         {
             cout << endl << xml_str << endl << xmls[index] << endl;
@@ -250,7 +253,8 @@ public:
 
         // Create a new pool, using the same DB. This new pool should read the
         // allocated images.
-        imp = new ImagePool(db,"OS", "hd");
+        vector<const Attribute *> restricted_attrs;
+        imp = new ImagePool(db,"OS", "hd", restricted_attrs);
 
         img = imp->get(0, false);
         CPPUNIT_ASSERT( img != 0 );
@@ -655,100 +659,7 @@ public:
 
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
-/*
-    void public_attribute()
-    {
-        int oid;
-        ImagePoolFriend * imp = static_cast<ImagePoolFriend *>(pool);
-        Image *     img;
 
-        string templates[] =
-        {
-            // false
-            "NAME           = \"name A\"\n"
-            "PATH  = \"/tmp/nothing\"\n",
-
-            // true
-            "NAME           = \"name B\"\n"
-            "PATH  = \"/tmp/nothing\"\n"
-            "PUBLIC         = YES",
-
-            // false
-            "NAME           = \"name C\"\n"
-            "PATH  = \"/tmp/nothing\"\n"
-            "PUBLIC         = NO",
-
-            // false
-            "NAME           = \"name D\"\n"
-            "PATH  = \"/tmp/nothing\"\n"
-            "PUBLIC         = 1",
-
-            // true
-            "NAME           = \"name E\"\n"
-            "PATH  = \"/tmp/nothing\"\n"
-            "PUBLIC         = Yes",
-
-            // false
-            "NAME           = \"name F\"\n"
-            "PATH  = \"/tmp/nothing\"\n"
-            "PUBLIC         = TRUE",
-
-            // true
-            "NAME           = \"name G\"\n"
-            "PATH  = \"/tmp/nothing\"\n"
-            "PUBLIC         = yes",
-
-            // false
-            "NAME           = \"name H\"\n"
-            "PATH  = \"/tmp/nothing\"\n"
-            "PUBLIC         = 'YES'",
-
-            // true
-            "NAME           = \"name I\"\n"
-            "PATH  = \"/tmp/nothing\"\n"
-            "PUBLIC         = \"YES\"",
-
-            "END"
-        };
-
-        bool results[] = {  false, true, false, false,
-                            true, false, true, false, true };
-
-        int i = 0;
-        while( templates[i] != "END" )
-        {
-
-            imp->allocate(0, templates[i], &oid);
-
-            CPPUNIT_ASSERT( oid >= 0 );
-
-            img = imp->get( oid, false );
-            CPPUNIT_ASSERT( img != 0 );
-//cout << endl << i << " : exp. " << results[i] << " got " << img->is_public();
-
-            CPPUNIT_ASSERT( img->isPublic() == results[i] );
-
-            i++;
-        }
-
-        int success;
-
-        // img 0 is not public.
-        img = imp->get( 0, false );
-        CPPUNIT_ASSERT( img != 0 );
-
-        success = img->publish(false);
-        CPPUNIT_ASSERT( success == 0 );
-        CPPUNIT_ASSERT( img->isPublic() == false );
-
-        success = img->publish(true);
-        CPPUNIT_ASSERT( success == 0 );
-        CPPUNIT_ASSERT( img->isPublic() == true );
-    }
-*/
-/* -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- */
-/*
     void persistence()
     {
         int     oid;
@@ -761,44 +672,32 @@ public:
         {
             "NAME       = \"Image 1\"\n"
             "PERSISTENT = NO\n"
-            "PUBLIC     = NO\n"
             "PATH       = /dev/null\n",
 
             "NAME       = \"Image 2\"\n"
             "PERSISTENT = NO\n"
-            "PUBLIC     = YES\n"
             "PATH       = /dev/null\n",
 
             "NAME       = \"Image 3\"\n"
             "PERSISTENT = YES\n"
-            "PUBLIC     = NO\n"
-            "PATH       = /dev/null\n",
-
-            "NAME       = \"Image 4\"\n"
-            "PERSISTENT = YES\n"
-            "PUBLIC     = YES\n"
             "PATH       = /dev/null\n",
 
             "END"
         };
 
-        bool results[]      = { true, true, true, false };
         bool persistent[]   = { false, false, true };
 
         int i = 0;
         while( templates[i] != "END" )
         {
             imp->allocate(0, templates[i], &oid);
-//cout << endl << i << " : exp. " << results[i] << " got " << (oid >= 0);
-            CPPUNIT_ASSERT( (oid >= 0) == results[i] );
 
-            if( oid >= 0 )
-            {
-                img = imp->get( oid, false );
-                CPPUNIT_ASSERT( img != 0 );
+            CPPUNIT_ASSERT( oid >= 0 );
 
-                CPPUNIT_ASSERT( img->isPersistent() == persistent[i] );
-            }
+            img = imp->get( oid, false );
+            CPPUNIT_ASSERT( img != 0 );
+
+            CPPUNIT_ASSERT( img->isPersistent() == persistent[i] );
 
             i++;
         }
@@ -813,12 +712,12 @@ public:
         CPPUNIT_ASSERT( img->isPersistent() == true );
 
         // it isn't public, try to unpublish
-        success = img->publish(false);
+        success = img->set_permissions(1,1,0, 0,0,0, 0,0,0, error_msg);
         CPPUNIT_ASSERT( success == 0 );
         CPPUNIT_ASSERT( img->isPublic() == false );
 
         // try to publish, should fail because it is persistent
-        success = img->publish(true);
+        success = img->set_permissions(1,1,0, 1,0,0, 0,0,0, error_msg);
         CPPUNIT_ASSERT( success == -1 );
         CPPUNIT_ASSERT( img->isPublic() == false );
 
@@ -829,16 +728,16 @@ public:
         CPPUNIT_ASSERT( img->isPersistent() == false );
 
         // it isn't public, try to unpublish
-        success = img->publish(false);
+        success = img->set_permissions(1,1,0, 0,0,0, 0,0,0, error_msg);
         CPPUNIT_ASSERT( success == 0 );
         CPPUNIT_ASSERT( img->isPublic() == false );
 
         // try to publish, now it should be possible
-        success = img->publish(true);
+        success = img->set_permissions(1,1,0, 1,0,0, 0,0,0, error_msg);
         CPPUNIT_ASSERT( success == 0 );
         CPPUNIT_ASSERT( img->isPublic() == true );
     }
-*/
+
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
@@ -860,7 +759,7 @@ public:
         string result = oss.str();
         fix_regtimes(result);
 
-/*
+//*
         if( result != xml_dump )
         {
             cout << endl << result << endl << xml_dump << endl;
@@ -893,7 +792,7 @@ public:
         string result = oss.str();
         fix_regtimes(result);
 
-/*
+//*
         if( result != xml_dump_where )
         {
             cout << endl << result << endl << xml_dump_where << endl;
@@ -963,6 +862,132 @@ public:
 
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
+
+    void name_index()
+    {
+        Image   *img_oid, *img_name;
+        int     oid_0;
+        int     uid_0;
+        string  name_0;
+
+        oid_0 = allocate(0);
+
+        CPPUNIT_ASSERT(oid_0 != -1);
+
+
+        // ---------------------------------
+        // Get by oid
+        img_oid = ipool->get(oid_0, true);
+        CPPUNIT_ASSERT(img_oid != 0);
+
+        name_0 = img_oid->get_name();
+        uid_0  = img_oid->get_uid();
+
+        img_oid->unlock();
+
+        // Get by name and check it is the same object
+        img_name = ipool->get(name_0, uid_0, true);
+        CPPUNIT_ASSERT(img_name != 0);
+        img_name->unlock();
+
+        CPPUNIT_ASSERT(img_oid == img_name);
+
+        // ---------------------------------
+        // Clean the cache, forcing the pool to read the objects from the DB
+        ipool->clean();
+
+        // Get by oid
+        img_oid = ipool->get(oid_0, true);
+        CPPUNIT_ASSERT(img_oid != 0);
+        img_oid->unlock();
+
+        // Get by name and check it is the same object
+        img_name = ipool->get(name_0, uid_0, true);
+        CPPUNIT_ASSERT(img_name != 0);
+        img_name->unlock();
+
+        CPPUNIT_ASSERT(img_oid == img_name);
+
+        // ---------------------------------
+        // Clean the cache, forcing the pool to read the objects from the DB
+        ipool->clean();
+
+        // Get by name
+        img_name = ipool->get(name_0, uid_0, true);
+        CPPUNIT_ASSERT(img_name != 0);
+        img_name->unlock();
+
+        // Get by oid and check it is the same object
+        img_oid = ipool->get(oid_0, true);
+        CPPUNIT_ASSERT(img_oid != 0);
+        img_oid->unlock();
+
+        CPPUNIT_ASSERT(img_oid == img_name);
+    }
+
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+    void chown_name_index()
+    {
+        Image   *img_oid, *img_name;
+        int     oid;
+        int     old_uid;
+        int     new_uid = 3456;
+        string  name;
+
+        oid = allocate(0);
+
+        CPPUNIT_ASSERT(oid != -1);
+
+
+        // ---------------------------------
+        // Get by oid
+        img_oid = ipool->get(oid, true);
+        CPPUNIT_ASSERT(img_oid != 0);
+
+        name = img_oid->get_name();
+        old_uid  = img_oid->get_uid();
+
+        // Change owner and update cache index
+        img_oid->set_user(new_uid, "new_username");
+        ipool->update(img_oid);
+        img_oid->unlock();
+
+        ipool->update_cache_index(name, old_uid, name, new_uid);
+
+        // Get by name, new_uid and check it is the same object
+        img_name = ipool->get(name, new_uid, true);
+        CPPUNIT_ASSERT(img_name != 0);
+        img_name->unlock();
+
+        CPPUNIT_ASSERT(img_oid == img_name);
+
+        // Get by name, old_uid and check it does not exist
+        img_name = ipool->get(name, old_uid, true);
+        CPPUNIT_ASSERT(img_name == 0);
+
+        // ---------------------------------
+        // Clean the cache, forcing the pool to read the objects from the DB
+        ipool->clean();
+
+
+        // Get by name, old_uid and check it does not exist
+        img_name = ipool->get(name, old_uid, true);
+        CPPUNIT_ASSERT(img_name == 0);
+
+        // Get by oid
+        img_oid = ipool->get(oid, true);
+        CPPUNIT_ASSERT(img_oid != 0);
+        img_oid->unlock();
+
+        // Get by name, new_uid and check it is the same object
+        img_name = ipool->get(name, new_uid, true);
+        CPPUNIT_ASSERT(img_name != 0);
+        img_name->unlock();
+
+        CPPUNIT_ASSERT(img_oid == img_name);
+    }
 };
 
 /* ************************************************************************* */

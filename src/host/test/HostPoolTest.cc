@@ -139,6 +139,7 @@ class HostPoolTest : public PoolTest
     CPPUNIT_TEST (discover);
     CPPUNIT_TEST (duplicates);
     CPPUNIT_TEST (update_info);
+    CPPUNIT_TEST (name_index);
 
 //    CPPUNIT_TEST (scale_test);
 
@@ -181,7 +182,7 @@ protected:
         host->to_xml(xml_str);
 
 //  A little help for debugging
-/*
+//*
         if( xml_str != xmls[index] )
         {
             cout << endl << xml_str << endl << "========"
@@ -284,7 +285,7 @@ public:
         string result = oss.str();
 
 //  A little help for debugging
-/*
+//*
         if( result != xml_dump )
         {
             cout << endl << result << endl << "========"
@@ -311,14 +312,14 @@ public:
 
 
         ostringstream oss;
-        rc = ((HostPool*)pool)->dump(oss, "name LIKE 'a%' ORDER BY oid");
+        rc = ((HostPool*)pool)->dump(oss, "name LIKE 'a%'");
         CPPUNIT_ASSERT(rc == 0);
 
 
         string result = oss.str();
 
 //  A little help for debugging
-/*
+//*
         if( result != xml_dump_like_a )
         {
             cout << endl << result << endl << "========"
@@ -491,6 +492,70 @@ public:
 
         CPPUNIT_ASSERT( host != 0 );
         CPPUNIT_ASSERT( host->to_xml(str) == host0_updated );
+    }
+
+    /* ********************************************************************* */
+
+    void name_index()
+    {
+        HostPool *  hp = static_cast<HostPool *>(pool);
+        Host        *host_oid, *host_name;
+        int         oid_0;
+        int         uid_0;
+        string      name_0;
+
+        oid_0 = allocate(0);
+
+        CPPUNIT_ASSERT(oid_0 != -1);
+
+        // ---------------------------------
+        // Get by oid
+        host_oid = hp->get(oid_0, true);
+        CPPUNIT_ASSERT(host_oid != 0);
+
+        name_0 = host_oid->get_name();
+        uid_0  = host_oid->get_uid();
+
+        host_oid->unlock();
+
+        // Get by name and check it is the same object
+        host_name = hp->get(name_0, true);
+        CPPUNIT_ASSERT(host_name != 0);
+        host_name->unlock();
+
+        CPPUNIT_ASSERT(host_oid == host_name);
+
+        // ---------------------------------
+        // Clean the cache, forcing the pool to read the objects from the DB
+        hp->clean();
+
+        // Get by oid
+        host_oid = hp->get(oid_0, true);
+        CPPUNIT_ASSERT(host_oid != 0);
+        host_oid->unlock();
+
+        // Get by name and check it is the same object
+        host_name = hp->get(name_0, true);
+        CPPUNIT_ASSERT(host_name != 0);
+        host_name->unlock();
+
+        CPPUNIT_ASSERT(host_oid == host_name);
+
+        // ---------------------------------
+        // Clean the cache, forcing the pool to read the objects from the DB
+        hp->clean();
+
+        // Get by name
+        host_name = hp->get(name_0, true);
+        CPPUNIT_ASSERT(host_name != 0);
+        host_name->unlock();
+
+        // Get by oid and check it is the same object
+        host_oid = hp->get(oid_0, true);
+        CPPUNIT_ASSERT(host_oid != 0);
+        host_oid->unlock();
+
+        CPPUNIT_ASSERT(host_oid == host_name);
     }
 };
 
