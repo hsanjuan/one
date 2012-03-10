@@ -21,7 +21,7 @@ include OpenNebula
 
 module OpenNebulaHelper
     ONE_VERSION=<<-EOT
-OpenNebula 3.2.0
+OpenNebula 3.2.1
 Copyright 2002-2012, OpenNebula Project Leads (OpenNebula.org)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -287,7 +287,12 @@ EOT
         end
 
         def pool_to_array(pool)
-            phash = pool.to_hash
+    	    if !pool.instance_of?(Hash)
+                phash = pool.to_hash 
+            else
+                phash = pool
+            end
+            
             rname = self.class.rname
 
             if phash["#{rname}_POOL"] &&

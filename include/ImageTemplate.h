@@ -27,11 +27,55 @@ using namespace std;
 class ImageTemplate : public Template
 {
 public:
-    ImageTemplate() : Template(true,'=',"TEMPLATE"){};
+    ImageTemplate() :
+        Template(true,'=',"TEMPLATE"),
+        do_restricted_check(true){};
 
     ~ImageTemplate(){};
+
+    /**
+     *  Checks the template for RESTRICTED ATTRIBUTES
+     *    @param rs_attr the first restricted attribute found if any
+     *    @return true if a restricted attribute is found in the template
+     */
+    bool check(string& rs_attr);
+
+    /**
+     * Enables the restricted attributes check. It is enabled by default
+     */
+    void enable_restricted_check()
+    {
+        do_restricted_check = true;
+    };
+
+    /**
+     * Disables the restricted attributes check.
+     * When check() is called, it will always return false.
+     */
+    void disable_restricted_check()
+    {
+        do_restricted_check = false;
+    };
+
+private:
+    /**
+     * If set to false, disables the restricted attributes check
+     */
+    bool do_restricted_check;
+
+    /**
+     *  Number of restricted attributes
+     */
+    const static int    RS_ATTRS_LENGTH;
+
+    /**
+     *  Restricted template attributes in the form
+     *  'SINGLE' or 'VECTOR/ATTR'. Restricted attributes are only
+     *  allowed for ONE_ADMIN Group.
+     */
+    const static string RESTRICTED_ATTRIBUTES[];
 };
-    
+
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
