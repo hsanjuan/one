@@ -1035,6 +1035,11 @@ ECO_BIN_FILES="src/cloud/ec2/bin/econe-server \
                src/cloud/ec2/bin/econe-register \
                src/cloud/ec2/bin/econe-run-instances \
                src/cloud/ec2/bin/econe-terminate-instances \
+               src/cloud/ec2/bin/econe-describe-addresses \
+               src/cloud/ec2/bin/econe-allocate-address \
+               src/cloud/ec2/bin/econe-release-address \
+               src/cloud/ec2/bin/econe-associate-address \
+               src/cloud/ec2/bin/econe-disassociate-address \
                src/cloud/ec2/bin/econe-upload"
 
 ECO_BIN_CLIENT_FILES="src/cloud/ec2/bin/econe-describe-images \
@@ -1042,6 +1047,11 @@ ECO_BIN_CLIENT_FILES="src/cloud/ec2/bin/econe-describe-images \
                src/cloud/ec2/bin/econe-register \
                src/cloud/ec2/bin/econe-run-instances \
                src/cloud/ec2/bin/econe-terminate-instances \
+               src/cloud/ec2/bin/econe-describe-addresses \
+               src/cloud/ec2/bin/econe-allocate-address \
+               src/cloud/ec2/bin/econe-release-address \
+               src/cloud/ec2/bin/econe-associate-address \
+               src/cloud/ec2/bin/econe-disassociate-address \
                src/cloud/ec2/bin/econe-upload"
 
 ECO_ETC_FILES="src/cloud/ec2/etc/econe.conf"
@@ -1313,6 +1323,8 @@ OZONES_LIB_ZONE_FILES="src/ozones/Server/lib/OZones/Zones.rb \
                 src/ozones/Server/lib/OZones/AggregatedVirtualNetworks.rb \
                 src/ozones/Server/lib/OZones/AggregatedPool.rb \
                 src/ozones/Server/lib/OZones/AggregatedImages.rb \
+                src/ozones/Server/lib/OZones/AggregatedDatastores.rb \
+                src/ozones/Server/lib/OZones/AggregatedClusters.rb \
                 src/ozones/Server/lib/OZones/AggregatedTemplates.rb"
 
 OZONES_LIB_API_FILES="src/ozones/Client/lib/zona.rb"
