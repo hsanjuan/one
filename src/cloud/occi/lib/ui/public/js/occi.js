@@ -470,11 +470,7 @@ var OCCI = {
         },
         "startvnc" : function(params){
             OCCI.VM.vnc(params,"startvnc");
-        },
-        "stopvnc" : function(params){
-            OCCI.VM.vnc(params,"stopvnc");
-
-        },
+        }
 /*
         "monitor" : function(params){
             OCCI.Action.monitor(params,OCCI.VM.resource,false);
