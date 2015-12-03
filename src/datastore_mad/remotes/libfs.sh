@@ -162,7 +162,7 @@ function fs_size {
             SIZE=$(echo "$HEADERS" | grep "^OpenNebula-AppMarket-Size:" | tail -n1 | cut -d: -f2)
         else
             # Not an AppMarket/Marketplace URL
-            SIZE=$(echo "$HEADERS" | grep "^Content-Length:" | tail -n1 | cut -d: -f2)
+            SIZE=$(echo "$HEADERS" | grep "^Content-Length:" | head -n1 | cut -d: -f2)
         fi
         error=$?
         ;;

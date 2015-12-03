@@ -21,9 +21,10 @@ require "pp"
 XENTOP_PATH="/usr/sbin/xentop"
 
 dir=File.basename(Dir.pwd)
-if dir.match(/^xen4/)
-    XM_PATH="/usr/sbin/xl"
-else
+begin
+    ts= File.basename(`/usr/lib/xen-common/bin/xen-toolstack`.chomp)
+    XM_PATH="/usr/sbin/#{ts}"
+rescue Errno::ENOENT
     XM_PATH="/usr/sbin/xm"
 end
 

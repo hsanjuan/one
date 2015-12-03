@@ -16,7 +16,8 @@
 
 export LANG=C
 
-export XM_PATH="/usr/sbin/xl"
+ts_path=$(/usr/lib/xen-common/bin/xen-toolstack) || ts_path="/usr/sbin/xl"
+export XM_PATH="/usr/sbin/$(basename $ts_path)"
 export XM_CANCEL="sudo $XM_PATH destroy"
 export XM_CREATE="sudo $XM_PATH create"
 export XM_CREDITS="sudo $XM_PATH sched-cred"

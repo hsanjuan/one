@@ -24,11 +24,13 @@ module VNMNetwork
         # Return the command to talk to the Xen hypervisor xm or xl for
         # Xen 3 and 4
         def self.get_xen_command
-            if system("ps axuww | grep -v grep | grep '\\bxend\\b'")
-                "sudo xm"
-            else
-                "sudo xl"
+            begin
+                ts= File.basename(`/usr/lib/xen-common/bin/xen-toolstack`.chomp)
+                toolstack="sudo /usr/sbin/#{ts}"
+            rescue Errno::ENOENT
+                toolstack="sudo /usr/sbin/xm"
             end
+            return toolstack
         end
     end
 
